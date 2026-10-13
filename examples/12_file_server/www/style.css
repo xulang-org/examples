@@ -1,0 +1,36 @@
+html, body {
+  margin: 0;
+  background: #0f1419;
+  color: #e7ecf1;
+  font: 16px/1.55 ui-sans-serif, system-ui, sans-serif;
+}
+main {
+  max-width: 40rem;
+  margin: 12vh auto;
+  padding: 0 1.5rem;
+}
+.kicker {
+  color: #fb7185;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+h1 {
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+h1 img {
+  width: 40px;
+  height: 40px;
+}
+code {
+  background: #1b2430;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+a { color: #fb7185; }
+ul { line-height: 1.9; }

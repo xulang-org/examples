@@ -1,0 +1,5 @@
+module: example/standalone_elasticsearch
+version: !ver 1.0.1
+xu: !ver 0.8.3
+require:
+  "github.com/xulang-org/packages": file:../../../packages

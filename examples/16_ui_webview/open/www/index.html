@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="xu://app/brand/xu_classic.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="xu_prog"><div id="xu_prog_fill"></div></div>
+<div id="xu_prog_label"></div>
+<div class="brand"><img src="xu://app/brand/xu_classic.svg" alt="Xu" width="48" height="48">
+<h1>Xu WebView + IPC</h1></div>
+<p>xu://app/ · invoke · tray · window cmds · events</p>
+<button onclick="goPing()">invoke ping</button>
+<button class="secondary" onclick="goGreet()">invoke greet</button>
+<button class="secondary" onclick="goWin('hide')">hide</button>
+<button class="secondary" onclick="goWin('show')">show</button>
+<button class="secondary" onclick="goWin('minimize')">minimize</button>
+<button class="secondary" onclick="goWin('reload')">reload</button>
+<button class="secondary" onclick="goWin('float')">float</button>
+<button class="secondary" onclick="goWin('unfloat')">unfloat</button>
+<button class="secondary" onclick="goWin('fullscreen')">fullscreen</button>
+<button class="secondary" onclick="goWin('unfullscreen')">exit fullscreen</button>
+<button class="secondary" onclick="goWin('center')">center</button>
+<button class="secondary" onclick="goWin('zoom_in')">zoom+</button>
+<button class="secondary" onclick="goWin('zoom_out')">zoom-</button>
+<button class="secondary" onclick="goWin('zoom_100')">zoom 100%</button>
+<button class="secondary" onclick="goWin('devtools')">devtools</button>
+<button class="secondary" onclick="goWin('open_ext')">open URL</button>
+<button class="secondary" onclick="goWin('clip_set')">clip set</button>
+<button class="secondary" onclick="goWin('clip_get')">clip get</button>
+<button class="secondary" onclick="goWin('back')">back</button>
+<button class="secondary" onclick="goWin('forward')">forward</button>
+<button class="secondary" onclick="goWin('stop')">stop</button>
+<button class="secondary" onclick="goWin('maximize')">maximize</button>
+<button class="secondary" onclick="goWin('unmaximize')">unmaximize</button>
+<button class="secondary" onclick="goWin('bounce')">bounce</button>
+<button class="secondary" onclick="goWin('pick')">pick file</button>
+<button class="secondary" onclick="goWin('save')">save as</button>
+<button class="secondary" onclick="goWin('print')">print</button>
+<button class="secondary" onclick="goWin('shot')">screenshot</button>
+<button class="secondary" onclick="goWin('opacity_low')">opacity 70%</button>
+<button class="secondary" onclick="goWin('opacity_full')">opacity 100%</button>
+<button class="secondary" onclick="goWin('alert')">alert</button>
+<button class="secondary" onclick="goWin('confirm')">confirm</button>
+<button class="secondary" onclick="goWin('notify')">notify</button>
+<button class="secondary" onclick="goWin('folder')">pick folder</button>
+<button class="secondary" onclick="goWin('minsize')">min size</button>
+<button class="secondary" onclick="goWin('lock_size')">lock size</button>
+<button class="secondary" onclick="goWin('unlock_size')">unlock size</button>
+<button class="secondary" onclick="goWin('eval_result')">eval 1+2+3</button>
+<button class="secondary" onclick="goWin('find')">find WebView</button>
+<button class="secondary" onclick="goWin('find_clear')">find clear</button>
+<button class="secondary" onclick="goWin('bounds')">bounds</button>
+<button class="secondary" onclick="goWin('ua')">set UA</button>
+<button class="secondary" onclick="goWin('css')">inject CSS</button>
+<button class="secondary" onclick="goWin('titlebar_hide')">hide titlebar</button>
+<button class="secondary" onclick="goWin('titlebar_show')">show titlebar</button>
+<button class="secondary" onclick="goWin('guard_on')">close guard on</button>
+<button class="secondary" onclick="goWin('guard_off')">close guard off</button>
+<button class="secondary" onclick="goWin('accept_close')">accept close</button>
+<button class="secondary" onclick="goWin('reject_close')">reject close</button>
+<button class="secondary" onclick="goWin('clear_cache')">clear cache</button>
+<button class="secondary" onclick="goWin('state')">get state</button>
+<button class="secondary" onclick="goWin('all_spaces')">all spaces</button>
+<button class="secondary" onclick="goWin('mute')">mute</button>
+<button class="secondary" onclick="goWin('unmute')">unmute</button>
+<button class="secondary" onclick="playBeep()">play beep</button>
+<span id="xu_mute_badge">unmuted</span>
+<button class="secondary" onclick="goWin('bg')">bg red</button>
+<button class="secondary" onclick="goWin('bg2')">bg blue</button>
+<button class="secondary" onclick="goWin('reveal_shot')">reveal shot</button>
+<button class="secondary" onclick="goWin('open_shot')">open shot</button>
+<button class="secondary" onclick="goWin('dark')">dark</button>
+<button class="secondary" onclick="goWin('light')">light</button>
+<button class="secondary" onclick="goWin('ctx_off')">ctx menu off</button>
+<button class="secondary" onclick="goWin('ctx_on')">ctx menu on</button>
+<button class="secondary" onclick="goWin('badge')">dock badge</button>
+<button class="secondary" onclick="goWin('badge_clear')">clear badge</button>
+<button class="secondary" onclick="goWin('shot_clip')">shot→clipboard</button>
+<button class="secondary" onclick="goWin('shadow_off')">shadow off</button>
+<button class="secondary" onclick="goWin('shadow_on')">shadow on</button>
+<button class="secondary" onclick="goWin('magnify_on')">pinch zoom on</button>
+<button class="secondary" onclick="goWin('magnify_off')">pinch zoom off</button>
+<button class="secondary" onclick="goWin('cookie_set')">cookie set</button>
+<button class="secondary" onclick="goWin('cookies_get')">cookies get</button>
+<button class="secondary" onclick="goWin('cookies_clear')">cookies clear</button>
+<p style="opacity:.7;font-size:13px">drop files · downloads → ~/Downloads · Edit · ⌘⌥I ·
+<a href="https://example.com" style="color:#fb7185">external link</a> ·
+<a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" style="color:#fb7185">download pdf</a></p>
+<div id="out">ready</div>
+<script>
+window.__XU__=window.__XU__||{};
+function show(msg){document.getElementById('out').textContent=msg;}
+window.__XU__.listen('tick',function(p){show('emit tick '+p);});
+window.__XU__.listen('menu',function(p){show('menu '+p);});
+window.__XU__.listen('tray',function(p){show('tray '+p);});
+window.__XU__.listen('clipboard',function(p){show('clipboard: '+p);});
+window.__XU__.listen('file_picked',function(p){show(p?'pick:'+p:'pick:canceled');});
+window.__XU__.listen('file_saved',function(p){show(p?'save:'+p:'save:canceled');});
+window.__XU__.listen('folder_picked',function(p){show(p?'folder:'+p:'folder:canceled');});
+window.__XU__.listen('screenshot',function(p){show('shot:'+p);});
+window.__XU__.listen('alert',function(p){show('alert '+p);});
+window.__XU__.listen('confirm',function(p){show('confirm:'+p);});
+window.__XU__.listen('bounds',function(p){show('bounds:'+p);});
+window.__XU__.listen('state',function(p){show('state:'+p);});
+window.__XU__.listen('notify',function(p){show('notify '+p);});
+async function goPing(){try{const t0=performance.now();const r=await window.__XU__.invoke('ping','hi');const ms=Math.round(performance.now()-t0);show(r+' ('+ms+'ms)');}catch(e){show(String(e&&e.message?e.message:e));}}
+async function goGreet(){try{const t0=performance.now();const r=await window.__XU__.invoke('greet','Xu');const ms=Math.round(performance.now()-t0);show(r+' ('+ms+'ms)');}catch(e){show(String(e&&e.message?e.message:e));}}
+async function goWin(a){try{const t0=performance.now();const r=await window.__XU__.invoke('win',a);const ms=Math.round(performance.now()-t0);show(r+' ('+ms+'ms)');}catch(e){show(String(e&&e.message?e.message:e));}}
+setTimeout(async function(){try{const t0=performance.now();const r=await window.__XU__.invoke('ping','autobench');const ms=Math.round(performance.now()-t0);show('autobench '+r+' ('+ms+'ms)');document.title='Xu '+ms+'ms';}catch(e){show('autobench fail: '+String(e&&e.message?e.message:e));}},800);
+function playBeep(){
+if(window.__XU_MUTED__){document.getElementById('out').textContent='muted — beep blocked';return;}
+var AC=window.AudioContext||window.webkitAudioContext;if(!AC){return;}
+var ctx=window.__XU_AUDIO_CTX__||new AC();window.__XU_AUDIO_CTX__=ctx;
+if(ctx.state==='suspended'){ctx.resume();}
+var o=ctx.createOscillator();var g=ctx.createGain();
+o.connect(g);g.connect(ctx.destination);
+o.frequency.value=880;g.gain.value=0.12;
+o.start();o.stop(ctx.currentTime+0.2);
+document.getElementById('out').textContent='beep';
+}
+</script>
+</body>
+</html>

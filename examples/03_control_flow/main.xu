@@ -1,0 +1,41 @@
+@main
+
+fn main() int {
+    age := 16
+    if age >= 18 {
+        println("adult")
+    } else {
+        println("minor")
+    }
+
+    match age {
+        0:13 {
+            println("child")
+        }
+        13:20 {
+            println("teen")
+        }
+        else {
+            println("adult")
+        }
+    }
+
+    mut n := 3
+    while n > 0 {
+        println(n)
+        n -= 1
+    }
+
+    mut sum := 0
+    for i in 0:5 {
+        if i == 2 {
+            ->
+        }
+        if i == 4 {
+            <-
+        }
+        sum += i
+    }
+    println(sum)
+    << 0
+}

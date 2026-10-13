@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="shaped.css">
+</head>
+<body>
+<div class="panel">
+<div class="hint">drag top edge to move</div>
+<img class="mark" src="xu://app/brand/xu_classic.svg" alt="Xu" width="56" height="56">
+<h1>Xu</h1>
+<p>Shaped WebView — mask from brand icon · xu:// IPC</p>
+<div class="row">
+<button onclick="window.__XU__.invoke('ping','ui').then(function(r){document.getElementById('out').textContent=r})">ping</button>
+<button onclick="window.__XU__.invoke('greet','shaped').then(function(r){document.getElementById('out').textContent=r})">greet</button>
+</div>
+<div class="row">
+<button onclick="window.__XU__.invoke('win','minimize')">min</button>
+<button class="danger" onclick="window.__XU__.invoke('win','quit')">close</button>
+</div>
+<div id="out"></div>
+</div>
+</body>
+</html>

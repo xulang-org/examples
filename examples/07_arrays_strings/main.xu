@@ -1,0 +1,17 @@
+@main
+
+fn main() int {
+    mut nums := [1, 2, 3]
+    nums.push(4)
+    println(nums.len)
+    for n in nums {
+        println(n)
+    }
+
+    name := "Ada"
+    println("hi $name")
+    s := "hello"
+    println(s.len)
+    println(s[1:4])
+    << 0
+}

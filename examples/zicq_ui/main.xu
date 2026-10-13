@@ -1,0 +1,50 @@
+@main
+
+#ui
+#ui/draw
+
+fn paint(msg string) {
+    draw.begin()
+    draw.set_bg("#0b1020")
+    draw.text(20, 40, 13, "#e2e8f0", msg)
+    draw.present()
+}
+
+fn watch(ech chan ui.Event) {
+    paint("click to read file")
+    while true {
+        sleep_ns(40000000)
+        c := draw.poll_click(ech)
+        if c.ok == 1 {
+            fd := os_open("/tmp/zicq-ping", 0) or (err) {
+                paint("open fail")
+                ->
+            }
+            buf := os_fd_read(fd, 256) or (err) {
+                os_fd_close(fd) or (e2) {
+                    paint("read fail")
+                    ->
+                }
+                paint("read fail")
+                ->
+            }
+            os_fd_close(fd) or (err) {
+                paint("[" + buf + "]")
+                ->
+            }
+            paint("[" + buf + "]")
+        }
+    }
+}
+
+fn main() int {
+    mut app := ui.new_app()
+    mut win := app.new_window(ui.WindowOpts{title: "T", width: 480, height: 200})
+    r := mut &win
+    _ := draw.attach(r)
+    xu watch(app.event_ch)
+    app.run() or (err) {
+        << 1
+    }
+    << 0
+}

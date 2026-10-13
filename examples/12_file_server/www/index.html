@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Xu static</title>
+  <link rel="icon" href="/xu_classic.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <p class="kicker">net/http FileServer</p>
+    <h1><img src="/xu_classic.svg" alt="" width="40" height="40"> Xu static web</h1>
+    <p>Go：<code>http.ListenAndServe(":8080", http.FileServer(http.Dir(".")))</code><br>
+       Xu：<code>http.listen_and_serve("127.0.0.1:8080", ".")</code></p>
+    <p>自己写路由见示例 <code>11_http_server</code>。</p>
+    <ul>
+      <li><a href="/hello.txt">hello.txt</a></li>
+      <li><a href="/style.css">style.css</a></li>
+      <li><a href="/docs/">docs/</a> 目录列表</li>
+    </ul>
+  </main>
+</body>
+</html>

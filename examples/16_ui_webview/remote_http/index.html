@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Xu remote HTTP → xu:// IPC</title>
+<link rel="icon" href="xu_classic.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+  body { margin: 0; min-height: 100vh; background: #0f0e13; color: #e7e5e4;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 24px; }
+  img.mark { width: 64px; height: 64px; filter: drop-shadow(0 8px 16px rgba(136, 19, 55, 0.4)); }
+  h1 { margin: 0; font-size: 22px; font-weight: 650; }
+  p { margin: 0; opacity: .75; font-size: 14px; max-width: 36rem; text-align: center; line-height: 1.5; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  button { border: 0; border-radius: 8px; padding: 10px 14px; background: #1e293b; color: #f8fafc;
+    cursor: pointer; font-size: 14px; }
+  button.primary { background: #e11d48; color: #fff; font-weight: 600; }
+  button:active { transform: translateY(1px); }
+  #out { margin-top: 8px; min-height: 3rem; padding: 12px 14px; border-radius: 10px;
+    background: #020617; border: 1px solid #1e293b; width: min(420px, 100%); font-family: ui-monospace, monospace;
+    font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+  .ok { color: #4ade80; } .err { color: #f87171; }
+</style>
+</head>
+<body>
+  <img class="mark" src="xu_classic.svg" alt="Xu" width="64" height="64">
+  <h1>Remote HTTP page</h1>
+  <p>本页由<strong>独立 HTTP 服务</strong>提供（非 Xu）。在 WebView 里可调
+    <code>xu://app/__xu/*</code> 进入应用 IPC。优先用注入的 <code>window.__XU__</code>，否则直接 fetch。</p>
+  <div class="row">
+    <button class="primary" onclick="goPing()">invoke ping</button>
+    <button onclick="goGreet()">invoke greet</button>
+    <button onclick="probe()">probe bridge</button>
+  </div>
+  <div id="out">ready</div>
+<script>
+(function () {
+  var B = 'xu://app/__xu';
+  function sc(s) {
+    s = String(s == null ? '' : s);
+    if (!s.length) return '!s ';
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c === 10 || c === 13 || c === 9 || c === 35 || c === 58 || c === 32 || c === 33 || c === 64 || c === 36)
+        return '!s ' + s;
+    }
+    return s;
+  }
+  function enc(n, p) { return 'name: ' + sc(n) + '\npayload: ' + sc(p) + '\n'; }
+  function dec(t) {
+    var o = {};
+    String(t || '').split('\n').forEach(function (line) {
+      var i = line.indexOf(': ');
+      if (i > 0) {
+        var k = line.slice(0, i), v = line.slice(i + 2);
+        if (v.indexOf('!s ') === 0) v = v.slice(3);
+        o[k] = v;
+      }
+    });
+    return o;
+  }
+  function out(msg, cls) {
+    var el = document.getElementById('out');
+    el.className = cls || '';
+    el.textContent = msg;
+  }
+  async function invokeRaw(name, payload) {
+    if (window.__XU__ && typeof window.__XU__.invoke === 'function') {
+      return window.__XU__.invoke(name, payload);
+    }
+    var t = await fetch(B + '/invoke', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/xun; charset=utf-8' },
+      body: enc(name, payload)
+    }).then(function (r) { return r.text(); });
+    var o = dec(t);
+    if (o.ok === 'false' || o.ok === '0') throw new Error(o.error || 'error');
+    return o.result != null ? o.result : t;
+  }
+  window.goPing = async function () {
+    try {
+      var r = await invokeRaw('ping', 'remote');
+      out('ping → ' + r, 'ok');
+    } catch (e) {
+      out('ping failed: ' + (e && e.message ? e.message : e), 'err');
+    }
+  };
+  window.goGreet = async function () {
+    try {
+      var r = await invokeRaw('greet', 'HTTP');
+      out('greet → ' + r, 'ok');
+    } catch (e) {
+      out('greet failed: ' + (e && e.message ? e.message : e), 'err');
+    }
+  };
+  window.probe = function () {
+    var has = !!(window.__XU__ && window.__XU__.invoke);
+    out('origin=' + location.origin + '\n__XU__=' + has + '\nfetch target=' + B + '/invoke',
+        has ? 'ok' : '');
+  };
+  if (window.__XU__ && window.__XU__.listen) {
+    window.__XU__.listen('tick', function (p) {
+      out('emit tick ' + p, 'ok');
+    });
+  }
+})();
+</script>
+</body>
+</html>

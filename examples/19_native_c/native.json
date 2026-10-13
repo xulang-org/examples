@@ -1,0 +1,7 @@
+{
+  "module": "native_add",
+  "abi": "xu-c-1",
+  "exports": [
+    {"name": "add", "params": ["int", "int"], "ret": "int"}
+  ]
+}

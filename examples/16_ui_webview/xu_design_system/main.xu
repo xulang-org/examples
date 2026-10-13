@@ -1,0 +1,30 @@
+@main
+
+#ui
+#ui/webview
+
+// Xu 全套 VI 视觉规范与 UI 设计系统桌面应用 (Xu Design System Desktop App)
+// 编译与运行：
+//   xu build examples/16_ui_webview/xu_design_system --target macos-arm64 --desktop -o /tmp/XuDesignSystem
+//   open /tmp/XuDesignSystem.app
+
+fn main() int {
+    mut app := ui.new_app()
+    mut win := app.new_window(ui.WindowOpts{
+        title: "Xu Design System & VI Specification",
+        width: 1280,
+        height: 860,
+    })
+
+    r := mut &win
+    _ := webview.attach(r, webview.WebviewOpts{
+        url: "xu://app/index.html",
+        dev_tools: true,
+    })
+
+    app.run() or (err) {
+        println(err.msg())
+        << 1
+    }
+    << 0
+}

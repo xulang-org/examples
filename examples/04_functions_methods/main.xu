@@ -1,0 +1,27 @@
+@main
+
+fn add(a int, b int) int {
+    << a + b
+}
+
+struct Counter {
+    n int
+}
+
+fn (c Counter) get() int {
+    << c.n
+}
+
+fn (c &mut Counter) inc() {
+    c.n += 1
+}
+
+fn main() int {
+    println(add(2, 3))
+
+    mut c := Counter{n: 10}
+    println(c.get())
+    c.inc()
+    println(c.get())
+    << 0
+}

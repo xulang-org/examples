@@ -1,0 +1,8 @@
+@main
+
+#native_add
+
+fn main() int {
+    println(native_add.add(20, 22))
+    << 0
+}

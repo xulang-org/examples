@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XU 编程语言 · VIS 视觉识别与 UI 设计系统</title>
+  <link rel="icon" href="brand/xu_favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="fonts/xu-icons.css?v=3.1">
+  <link rel="stylesheet" href="vi-ui-design-system.css?v=3.2.1">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="header-bar">
+    <button class="brand-wrapper" type="button" data-tab-trigger="vi-spec" aria-label="返回 XU VIS 规范首页">
+      <img class="brand-lockup" src="brand/dark/xu_brand_lockup_horizontal_dark.svg" data-dark="brand/dark/xu_brand_lockup_horizontal_dark.svg" data-light="brand/light/xu_brand_lockup_horizontal_light.svg" alt="XU 横向标准组合">
+    </button>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" aria-label="XU 设计系统分区">
+      <button class="nav-tab-btn active" data-tab="vi-spec">
+        <span><i class="xi xi-logo" aria-hidden="true"></i></span><span class="nav-number">01</span> VIS 规范
+      </button>
+      <a href="xu_icons.html" class="nav-tab-btn" style="text-decoration:none; background:rgba(56,189,248,0.12); border-color:rgba(56,189,248,0.3); color:#38BDF8; font-weight:800;">
+        <span><i class="xi xi-code" aria-hidden="true"></i></span><span class="nav-number">02</span> 图标 ↗
+      </a>
+      <a href="office_merch.html" class="nav-tab-btn" style="text-decoration:none; background:rgba(225,29,72,0.12); border-color:rgba(225,29,72,0.3); color:#FF385C; font-weight:800;">
+        <span><i class="xi xi-package" aria-hidden="true"></i></span><span class="nav-number">03</span> 品牌应用 ↗
+      </a>
+      <button class="nav-tab-btn" data-tab="ui-components">
+        <span><i class="xi xi-grid" aria-hidden="true"></i></span><span class="nav-number">04</span> UI 组件
+      </button>
+      <button class="nav-tab-btn" data-tab="xuflow-ide">
+        <span><i class="xi xi-flow xi-brand" aria-hidden="true"></i></span><span class="nav-number">05</span> XUFLOW
+      </button>
+      <button class="nav-tab-btn" data-tab="official-portal">
+        <span><i class="xi xi-home" aria-hidden="true"></i></span><span class="nav-number">06</span> 门户
+      </button>
+    </nav>
+
+    <!-- Controls -->
+    <div class="header-controls">
+      <button class="icon-btn" id="audio-toggle-btn" type="button" title="切换音效" aria-label="切换音效"><svg class="xu-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+      <button class="icon-btn" id="theme-toggle-btn" type="button" title="切换至宣纸雪岩亮色模式" aria-label="切换明暗模式"><svg class="xu-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- ==========================================================================
+         TAB 1: VI 视觉识别规范 (Visual Identity Specification - Dual-Mode Ergonomics)
+         ========================================================================== -->
+    <section class="tab-pane active" id="vi-spec">
+      <div class="section-hero vis-hero">
+        <div class="hero-kicker"><span class="hero-index">01</span> MASTER SPEC v2.7 <span class="hero-rule"></span> SHOWCASE r3.2</div>
+        <h1><span class="hero-mark"><img src="brand/xu_classic.svg" alt="" aria-hidden="true"></span> XU 全域视觉识别系统</h1>
+        <p>从甲骨金石图腾到可生产的 1:1 物料，统一 XU 生态在屏幕、代码与实体媒介中的识别语言。<b>先定规则，再做表达。</b></p>
+        <div class="hero-facts" aria-label="VIS 核心规格">
+          <span><b>01</b> 双模光学</span><span><b>02</b> 质心 (250, 255)</span><span><b>03</b> 22 项物料</span><span><b>04</b> WCAG AA 基线</span>
+        </div>
+      </div>
+
+      <nav class="vis-toc" aria-label="VIS 页面目录">
+        <a href="#color-system"><span>01</span> 色彩与语法</a>
+        <a href="#logo-system"><span>02</span> 图腾与网格</a>
+        <a href="#usage-rules"><span>03</span> 使用规则</a>
+        <a href="#brand-family"><span>04</span> 品牌家族</a>
+        <a href="#applications"><span>05</span> 应用与生产</a>
+      </nav>
+
+      <!-- 1.1 明暗双模科学配色与人体工学专区 -->
+      <div class="xu-card glow-hover" id="color-system" style="margin-bottom:24px; border-color:var(--xu-border-highlight);">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9zm0 16V5a7 7 0 0 1 0 14z" fill="currentColor"/></svg></span> 明暗双模科学配色与光学抗疲劳体系 (Dual-Mode Ergonomics)</div>
+          <span class="badge badge-success">WCAG 2.1 AA BASELINE</span>
+        </div>
+        <div class="grid-2">
+          <div style="padding:18px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <b style="font-size:14px;">暗黑曜石钛金体系 (Obsidian Dark)</b>
+              <span class="badge badge-brand">Dark Default</span>
+            </div>
+            <p style="font-size:12px; color:var(--xu-text-secondary); line-height:1.6;">
+              • <b>基底哲学</b>：采用 <code>#050508</code> 黑曜石底 + <code>#F8FAFC</code> 柔和钛白，避免 100% 刺眼纯黑纯白跳跃；主文字实测对比度为 <b>19.46:1</b>。<br>
+              • <b>发光增益</b>：朱砂金石红融入 <code>#FF385C</code> 霓虹微光，提升暗部环境下的字形聚焦力。
+            </p>
+          </div>
+
+          <div style="padding:18px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+              <b style="font-size:14px;">宣纸雪岩明亮体系 (Stone Paper Light)</b>
+              <span class="badge badge-info">Light Mode</span>
+            </div>
+            <p style="font-size:12px; color:var(--xu-text-secondary); line-height:1.6;">
+              • <b>基底哲学</b>：采用温润如玉的 <code>#F8F9FA</code> 宣纸浅灰底色，<b>杜绝全屏高光白灼</b>；纯白 <code>#FFFFFF</code> 仅用于卡片，形成自然景深层次。<br>
+              • <b>光学加权</b>：彩色字符（朱砂 <code>#BE123C</code>、海蓝 <code>#0369A1</code>、墨绿 <code>#047857</code>）针对小字号加深，均达到 <b>WCAG AA 4.5:1+</b>。
+            </p>
+          </div>
+        </div>
+
+        <!-- 语法高亮明暗双模光学对照 -->
+        <div style="margin-top:20px;">
+          <div style="font-size:13px; font-weight:700; margin-bottom:10px;">代码语法高亮在当前模式下的光学渲染测试：</div>
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span>syntax_ergonomics_preview.xu</span>
+              <span>DUAL-MODE TOKEN CHECK · AA BASELINE</span>
+            </div>
+            <div class="code-content"><span class="syn-cmt">// 1. 模块与库导入 (# 声明，严禁与注释混淆)</span>
+<span class="syn-import"><span class="hash">#</span>net/http</span>
+<span class="syn-import"><span class="hash">#</span>std/sync</span>
+
+<span class="syn-cmt">// 2. 接口与约束声明</span>
+<span class="syn-kw">struct@</span> <span class="syn-trait">Serializable</span> { <span class="syn-kw">fn</span> <span class="syn-fn">to_bytes</span>() []<span class="syn-type">u8</span> }
+
+<span class="syn-cmt">// 3. 函数、独占借用 (&amp;mut) 与流控 (&gt;&gt; / &lt;&lt;)</span>
+<span class="syn-kw">fn</span> <span class="syn-fn">transfer_ownership</span>(<span class="syn-borrow">user &amp;mut User</span>, amount <span class="syn-type">f64</span>) <span class="syn-type">int</span> {
+    <span class="syn-kw">if</span> amount &lt;= <span class="syn-num">0.0</span> {
+        <span class="syn-flow">&gt;&gt;</span> errors.new(<span class="syn-str">"invalid amount payload"</span>) <span class="syn-cmt">// &gt;&gt; 抛出错误</span>
+    }
+    user.balance += amount
+    <span class="syn-flow">&lt;&lt;</span> <span class="syn-num">0</span> <span class="syn-cmt">// &lt;&lt; 零成本返回/转移所有权</span>
+}</div>
+          </div>
+
+          <!-- 10 大核心语法 Token 对照表 -->
+          <div style="margin-top:16px; overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:12px; text-align:left;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--xu-border-medium); color:var(--xu-text-muted); font-family:var(--xu-font-mono);">
+                  <th style="padding:8px 10px;">Token 分类</th>
+                  <th style="padding:8px 10px;">语法示例</th>
+                  <th style="padding:8px 10px;">暗黑模式色值</th>
+                  <th style="padding:8px 10px;">明亮模式色值</th>
+                  <th style="padding:8px 10px;">光学对比度 / 语义规范</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;"><span style="color:var(--xu-syn-import-hash);">#</span> 库与模块导入</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-import"><span class="hash">#</span>net/http</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#FF385C;">#FF385C</code> + <code style="color:#38BDF8;">#38BDF8</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#BE123C;">#BE123C</code> + <code style="color:#0369A1;">#0369A1</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (5.63:1+) · 区别于注释</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">核心关键字</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-kw">fn</span>, <span class="syn-kw">struct</span>, <span class="syn-kw">xu</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#FF385C;">#FF385C</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#BE123C;">#BE123C</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success);">AA (5.79:1+) · 霓虹/深朱砂</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">流控操作符</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-flow">&gt;&gt;</span> (抛错), <span class="syn-flow">&lt;&lt;</span> (返回)</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#F59E0B;">#F59E0B</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#B45309;">#B45309</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (4.76:1+) · 琥珀流光</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">原生与结构类型</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-type">int</span>, <span class="syn-type">f64</span>, <span class="syn-type">User</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#38BDF8;">#38BDF8</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#0369A1;">#0369A1</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (5.63:1+) · 冰魄天蓝</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">函数与方法名</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-fn">transfer</span>, <span class="syn-fn">println</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#A855F7;">#A855F7</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#7E22CE;">#7E22CE</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (5.14:1+) · 激光紫电</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">借用与所有权修饰</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-borrow">&amp;mut User</span>, <span class="syn-borrow">mut &amp;</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#EC4899;">#EC4899</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#9D174D;">#9D174D</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (5.77:1+) · 洋红/深莓红</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">接口与约束</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-kw">struct@</span> <span class="syn-trait">Serializable</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#60A5FA;">#60A5FA</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#1D4ED8;">#1D4ED8</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (6.36:1+) · 天青/钴蓝</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">字符串字面量</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-str">"Stream payload"</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#34D399;">#34D399</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#047857;">#047857</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (5.20:1+) · 薄荷/墨绿</td>
+                </tr>
+                <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                  <td style="padding:8px 10px; font-weight:700;">数值字面量</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-num">0</span>, <span class="syn-num">10.0</span>, <span class="syn-num">3.14159</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#FBBF24;">#FBBF24</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#92400E;">#92400E</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (6.73:1+) · 暖亮金</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 10px; font-weight:700;">纯代码注释</td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-cmt">// 仅双斜杠引导</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#6B7C93;">#6B7C93</code></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#78716C;">#78716C</code></td>
+                  <td style="padding:8px 10px; color:var(--xu-text-muted);">AA (4.55:1+) · 中灰斜体</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.2 标志精确几何构型与单色/反白沙盒 -->
+      <div class="grid-2" id="logo-system">
+        <div class="xu-card">
+          <div class="xu-card-header">
+            <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M2 22 22 2H18L2 18z"/><path d="M6 18h2"/><path d="M10 14h2"/><path d="M14 10h2"/><path d="M18 6h2"/></svg></span> 标志几何构型与数学坐标网格</div>
+            <span class="badge badge-brand">Math Grid 500×500</span>
+          </div>
+          <div class="geometry-preview-box">
+            <div class="grid-overlay-lines"></div>
+            <img src="brand/xu_classic.svg" alt="XU 图腾几何网格" style="width:160px; height:160px; z-index:2;">
+            <div style="margin-top:16px; font-family:var(--xu-font-mono); font-size:12px; color:var(--xu-brand-glow); z-index:2; text-align:center;">
+              U框: 26px 粗 · 折笔夹角 64° · 黄金气隙 40px · 安全边距 0.25X
+            </div>
+          </div>
+          <div style="margin-top:14px; font-size:12px; color:var(--xu-text-muted); line-height:1.6;">
+            • <b>U 型容器外框</b>：<code>P1(105,140) → P2(90,295) → P3(250,370) → P4(410,295) → P5(395,140)</code><br>
+            • <b>左折笔 (&gt;)</b>：交折于黄金分割重心 <code>y=218</code>，右折笔 (<code>&lt;</code>) 与其保持 <b>40px</b> 黄金通透气隙。
+          </div>
+        </div>
+
+        <div class="xu-card">
+          <div class="xu-card-header">
+            <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9zm0 16V5a7 7 0 0 0 0 14z" fill="currentColor"/></svg></span> 标志单色、反白与多场景沙盒</div>
+            <span class="badge badge-info">Interactive Mode</span>
+          </div>
+          <div class="logo-mode-switcher-bar">
+            <button class="logo-mode-btn active" data-mode="dark">朱砂渐变 (Dark)</button>
+            <button class="logo-mode-btn" data-mode="white">纯白反白 (Solid White)</button>
+            <button class="logo-mode-btn" data-mode="black">纯黑单色 (Solid Black)</button>
+            <button class="logo-mode-btn" data-mode="light">宣纸素白 (Light)</button>
+          </div>
+          <div class="logo-display-stage" id="logo-mode-stage" style="background:radial-gradient(circle, #1A0912 0%, #050508 100%);">
+            <img id="logo-mode-img" src="brand/xu_classic.svg" alt="XU 图腾多场景预览" style="width:110px; height:110px;">
+          </div>
+          <div style="margin-top:14px; font-size:12px; color:var(--xu-text-muted); line-height:1.5;">
+            提供纯白、纯黑、渐变及纸质单色规范，满足单色激光印刷、发票白纸、高对比度无障碍及彩色媒介等全场景需求。
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.3 基础使用规则：留白、尺寸、排版与禁用示例 -->
+      <section class="vis-foundations" id="usage-rules" aria-labelledby="usage-rules-title">
+        <div class="vis-section-heading">
+          <div>
+            <div class="section-eyebrow">03 / USAGE RULES</div>
+            <h2 id="usage-rules-title">基础使用规则</h2>
+          </div>
+          <p>把“看起来像 XU”变成可交付、可验收的明确条件。</p>
+        </div>
+
+        <div class="vis-rule-grid">
+          <article class="vis-rule-panel vis-rule-panel-wide">
+            <div class="vis-rule-index">01</div>
+            <div class="vis-rule-copy">
+              <h3>安全留白 · Clear Space</h3>
+              <p>以图腾外框笔画宽度 <code>X</code> 为单位，任何文字、边框、图片或裁切线都不得进入 <code>0.25X</code> 安全区。</p>
+              <dl class="spec-list"><div><dt>基准单位</dt><dd>1X = 外框笔画宽度</dd></div><div><dt>最小安全区</dt><dd>四边 ≥ 0.25X</dd></div><div><dt>裁切出血</dt><dd>不替代安全区</dd></div></dl>
+            </div>
+            <div class="clearspace-stage" aria-label="图腾安全留白示意">
+              <span class="clearspace-label clearspace-label-top">0.25X</span>
+              <span class="clearspace-label clearspace-label-side">0.25X</span>
+              <div class="clearspace-box"><img src="brand/xu_classic.svg" alt="XU 金石图腾安全留白示意"></div>
+            </div>
+          </article>
+
+          <article class="vis-rule-panel">
+            <div class="vis-rule-index">02</div>
+            <h3>最小尺寸 · Minimum Size</h3>
+            <p>低于以下尺寸时只使用图腾，不叠加字标或副标，避免笔画糊化。</p>
+            <div class="size-ladder"><div><img src="brand/xu_classic.svg" alt="XU 图腾 24px" style="width:24px;height:24px"><span>24px · favicon / app icon</span></div><div><img src="brand/xu_classic.svg" alt="XU 图腾 48px" style="width:48px;height:48px"><span>48px · compact UI</span></div><div><img src="brand/xu_brand_lockup_horizontal_light.svg" alt="XU 横向组合最小示例"><span>160px · lockup minimum</span></div></div>
+          </article>
+
+          <article class="vis-rule-panel">
+            <div class="vis-rule-index">03</div>
+            <h3>字标与排版 · Wordmark</h3>
+            <p>品牌字标始终全大写；说明文字采用清晰的中英双语层级，不把品牌名当作普通句首词。</p>
+            <div class="type-specimen"><div class="type-display">XU</div><div class="type-meta">Avenir Next / PingFang SC · 700–900</div><div class="type-body">XU Programming Language<br><span>坚固 · 原生 · 清晰</span></div><div class="type-meta">正文 15/24 · 注释 12/18 · 代码等宽</div></div>
+          </article>
+
+          <article class="vis-rule-panel vis-rule-panel-wide">
+            <div class="vis-rule-index">04</div>
+            <div class="vis-rule-copy">
+              <h3>四种禁用方式 · Never Alter</h3>
+              <p>图腾不是可自由变形的装饰图形。以下操作会破坏识别，应在设计评审中直接退回。</p>
+            </div>
+            <div class="misuse-grid" aria-label="XU 图腾禁用示例"><div class="misuse-sample misuse-stretch"><img src="brand/xu_classic.svg" alt="禁止拉伸图腾"><span>禁止拉伸</span></div><div class="misuse-sample misuse-rotate"><img src="brand/xu_classic.svg" alt="禁止旋转图腾"><span>禁止旋转</span></div><div class="misuse-sample misuse-shadow"><img src="brand/xu_classic.svg" alt="禁止添加投影"><span>禁止投影</span></div><div class="misuse-sample misuse-color"><img src="brand/xu_classic.svg" alt="禁止任意改色"><span>禁止改色</span></div></div>
+          </article>
+        </div>
+
+        <div class="supergraphic-rule"><span class="section-eyebrow">05 / SUPER GRAPHIC</span><strong>向心折线可作为背景超级图形，但必须保持 8°–24° 的低密度、低对比度裁切。</strong><span class="supergraphic-swatch" aria-hidden="true"></span><span class="supergraphic-swatch supergraphic-swatch-offset" aria-hidden="true"></span></div>
+      </section>
+
+      <!-- 1.4 明暗双轨全套资产独立展厅 (White vs Black Dedicated Suites) -->
+      <div class="xu-card" id="brand-family" style="margin-bottom:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><line x1="2" y1="20" x2="22" y2="20"/><line x1="4" y1="10" x2="4" y2="20"/><line x1="9" y1="10" x2="9" y2="20"/><line x1="15" y1="10" x2="15" y2="20"/><line x1="20" y1="10" x2="20" y2="20"/><polygon points="12 2 2 7 22 7 12 2"/></svg></span> 官方全套资产：白底专版 vs 黑底专版独立矩阵</div>
+          <span class="badge badge-brand">Pure Oracle · Zero Clutter</span>
+        </div>
+        <p style="font-size:13px; color:var(--xu-text-secondary); margin-bottom:20px;">
+          严格按照<b>白色/浅色背景</b>与<b>黑色/深色背景</b>分立设计：彻底剔除外挂杂符，母品牌图腾 100% 保持纯粹金石朱砂红；白底采用高对比碳黑字标，黑底采用柔和钛白反色字标。
+        </p>
+
+        <!-- <svg class="xu-icon xu-icon-gold" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> 1.3.1 白底/浅色背景专用全套 (Light Background Suite) -->
+        <div style="margin-bottom:24px; padding:20px; background:#FFFFFF; border-radius:var(--xu-radius-lg); border:1px solid rgba(0,0,0,0.08); box-shadow:0 4px 16px rgba(0,0,0,0.04);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;"><svg class="xu-icon xu-icon-gold" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+              <b style="color:#111827; font-size:15px;">白色 / 浅色背景专用体系 (White Background Suite)</b>
+            </div>
+            <span style="font-size:11px; font-family:var(--xu-font-mono); color:#4B5563; background:#F3F4F6; padding:2px 8px; border-radius:4px;">碳黑 #111827 + 朱砂红 #E11D48</span>
+          </div>
+
+          <div class="grid-4" style="margin-bottom:14px;">
+            <div style="padding:14px; background:#F9FAFB; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; text-align:center;">
+              <img src="brand/light/xu_subbrand_xuflow_light.svg" alt="XUFLOW Light" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#111827;">XUFLOW Code Review</div>
+              <div style="font-size:10px; color:#6B7280;">brand/light/xu_subbrand_xuflow_light.svg</div>
+            </div>
+            <div style="padding:14px; background:#F9FAFB; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; text-align:center;">
+              <img src="brand/light/xu_subbrand_xupkg_light.svg" alt="XUPKG 浅色版" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#111827;">XUPKG Registry</div>
+              <div style="font-size:10px; color:#6B7280;">brand/light/xu_subbrand_xupkg_light.svg</div>
+            </div>
+            <div style="padding:14px; background:#F9FAFB; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; text-align:center;">
+              <img src="brand/light/xu_subbrand_xudocs_light.svg" alt="XUDOCS 浅色版" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#111827;">XUDOCS Learn</div>
+              <div style="font-size:10px; color:#6B7280;">brand/light/xu_subbrand_xudocs_light.svg</div>
+            </div>
+            <div style="padding:14px; background:#F9FAFB; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; text-align:center;">
+              <img src="brand/light/xu_subbrand_xuui_light.svg" alt="XUUI 浅色版" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#111827;">XUUI Toolkit</div>
+              <div style="font-size:10px; color:#6B7280;">brand/light/xu_subbrand_xuui_light.svg</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div style="padding:14px; background:#F9FAFB; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; text-align:center;">
+              <img src="brand/light/xu_brand_lockup_horizontal_light.svg" alt="Lockup Horizontal Light" style="height:54px; max-width:100%;">
+              <div style="font-size:11px; font-weight:600; color:#4B5563; margin-top:6px;">横向标准主组合 (白底版)</div>
+            </div>
+            <div style="padding:14px; background:#F9FAFB; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; text-align:center;">
+              <img src="brand/light/xu_brand_lockup_zh_light.svg" alt="Lockup ZH Light" style="height:54px; max-width:100%;">
+              <div style="font-size:11px; font-weight:600; color:#4B5563; margin-top:6px;">中英文官方组合 (白底版)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <svg class="xu-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 1.3.2 黑底/深色背景专用全套 (Dark Background Suite) -->
+        <div style="padding:20px; background:#050508; border-radius:var(--xu-radius-lg); border:1px solid rgba(255,255,255,0.1); box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;"><svg class="xu-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+              <b style="color:#F8FAFC; font-size:15px;">黑色 / 深色背景专用体系 (Dark Background Suite)</b>
+            </div>
+            <span style="font-size:11px; font-family:var(--xu-font-mono); color:#94A3B8; background:#121118; padding:2px 8px; border-radius:4px;">钛白 #F8FAFC + 霓虹红 #FF385C</span>
+          </div>
+
+          <div class="grid-4" style="margin-bottom:14px;">
+            <div style="padding:14px; background:#0D0C12; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+              <img src="brand/dark/xu_subbrand_xuflow_dark.svg" alt="XUFLOW Dark" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#F8FAFC;">XUFLOW Code Review</div>
+              <div style="font-size:10px; color:#94A3B8;">brand/dark/xu_subbrand_xuflow_dark.svg</div>
+            </div>
+            <div style="padding:14px; background:#0D0C12; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+              <img src="brand/dark/xu_subbrand_xupkg_dark.svg" alt="XUPKG 暗色版" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#F8FAFC;">XUPKG Registry</div>
+              <div style="font-size:10px; color:#94A3B8;">brand/dark/xu_subbrand_xupkg_dark.svg</div>
+            </div>
+            <div style="padding:14px; background:#0D0C12; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+              <img src="brand/dark/xu_subbrand_xudocs_dark.svg" alt="XUDOCS 暗色版" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#F8FAFC;">XUDOCS Learn</div>
+              <div style="font-size:10px; color:#94A3B8;">brand/dark/xu_subbrand_xudocs_dark.svg</div>
+            </div>
+            <div style="padding:14px; background:#0D0C12; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+              <img src="brand/dark/xu_subbrand_xuui_dark.svg" alt="XUUI 暗色版" style="height:46px; max-width:100%;">
+              <div style="font-weight:700; font-size:12px; margin-top:6px; color:#F8FAFC;">XUUI Toolkit</div>
+              <div style="font-size:10px; color:#94A3B8;">brand/dark/xu_subbrand_xuui_dark.svg</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div style="padding:14px; background:#0D0C12; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+              <img src="brand/dark/xu_brand_lockup_horizontal_dark.svg" alt="Lockup Horizontal Dark" style="height:54px; max-width:100%;">
+              <div style="font-size:11px; font-weight:600; color:#94A3B8; margin-top:6px;">横向标准主组合 (黑底版)</div>
+            </div>
+            <div style="padding:14px; background:#0D0C12; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+              <img src="brand/dark/xu_brand_lockup_zh_dark.svg" alt="Lockup ZH Dark" style="height:54px; max-width:100%;">
+              <div style="font-size:11px; font-weight:600; color:#94A3B8; margin-top:6px;">中英文官方组合 (黑底版)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.5 办公行政与商务事务 VI 全套展厅 (Corporate Office & Stationery) -->
+      <div class="xu-card" id="applications" style="margin-bottom:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg></span> 1.5 办公行政与商务事务 VIS 全套展厅 (Corporate Office &amp; Stationery)</div>
+          <span class="badge badge-accent">350g 特种卡 / 局部烫红金 / 实体工艺规范</span>
+        </div>
+        <p style="color:var(--xu-text-secondary); font-size:13px; margin-bottom:20px; line-height:1.6;">
+          XU 官方实体办公与行政事务载体，严格遵循「黑红双色」、「宣纸白卡」与「极客曜石」标准，全套矢量文件均已按 1:1 实体尺寸与出血线规范分立交付。
+        </p>
+
+        <!-- 板块 1: <svg class="xu-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8" cy="11" r="3"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="13" x2="18" y2="13"/><path d="M4 18c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg> 官方商务名片系统 (Business Cards 90×54mm) -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px; font-weight:800; color:var(--xu-text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <span><svg class="xu-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="8" cy="11" r="3"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="13" x2="18" y2="13"/><path d="M4 18c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg></span> 官方商务名片体系 (Business Cards · 90×54mm · 正背面分立)
+          </div>
+
+          <div class="grid-2" style="gap:20px;">
+            <!-- 宣纸白底商务版 -->
+            <div style="background:#FFFFFF; padding:16px; border-radius:var(--xu-radius-md); border:1px solid #E5E7EB; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:12px; font-weight:800; color:#111827;"><svg class="xu-icon xu-icon-gold" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> 宣纸白底商务版</span>
+                <span style="font-size:10px; font-weight:600; color:#BE123C; background:#FFF1F2; padding:2px 8px; border-radius:4px;">350g 棉质白卡 · 局部烫红金</span>
+              </div>
+              <div class="grid-2" style="gap:12px;">
+                <a href="brand/office/xu_business_card_light_front.svg" target="_blank" style="text-decoration:none;">
+                  <img src="brand/office/xu_business_card_light_front.svg" alt="Light Front" style="width:100%; border-radius:6px; border:1px solid #E5E7EB; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  <div style="font-size:11px; font-weight:700; color:#111827; margin-top:6px; text-align:center;">[ 正面 Front ] 架构师身份</div>
+                  <div style="font-size:9.5px; color:#6B7280; text-align:center;">xu_business_card_light_front.svg</div>
+                </a>
+                <a href="brand/office/xu_business_card_light_back.svg" target="_blank" style="text-decoration:none;">
+                  <img src="brand/office/xu_business_card_light_back.svg" alt="Light Back" style="width:100%; border-radius:6px; border:1px solid #E5E7EB; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  <div style="font-size:11px; font-weight:700; color:#111827; margin-top:6px; text-align:center;">[ 背面 Back ] 烫金图腾</div>
+                  <div style="font-size:9.5px; color:#6B7280; text-align:center;">xu_business_card_light_back.svg</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- 曜石黑底极客版 -->
+            <div style="background:#0D0C12; padding:16px; border-radius:var(--xu-radius-md); border:1px solid rgba(255,255,255,0.08); box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:12px; font-weight:800; color:#F8FAFC;"><svg class="xu-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 曜石黑底极客版</span>
+                <span style="font-size:10px; font-weight:600; color:#FF385C; background:rgba(255,56,92,0.12); padding:2px 8px; border-radius:4px;">350g 触感黑卡 · 激光雕刻</span>
+              </div>
+              <div class="grid-2" style="gap:12px;">
+                <a href="brand/office/xu_business_card_dark_front.svg" target="_blank" style="text-decoration:none;">
+                  <img src="brand/office/xu_business_card_dark_front.svg" alt="Dark Front" style="width:100%; border-radius:6px; border:1px solid rgba(255,255,255,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  <div style="font-size:11px; font-weight:700; color:#F8FAFC; margin-top:6px; text-align:center;">[ 正面 Front ] 钛白丝印</div>
+                  <div style="font-size:9.5px; color:#94A3B8; text-align:center;">xu_business_card_dark_front.svg</div>
+                </a>
+                <a href="brand/office/xu_business_card_dark_back.svg" target="_blank" style="text-decoration:none;">
+                  <img src="brand/office/xu_business_card_dark_back.svg" alt="Dark Back" style="width:100%; border-radius:6px; border:1px solid rgba(255,255,255,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  <div style="font-size:11px; font-weight:700; color:#F8FAFC; margin-top:6px; text-align:center;">[ 背面 Back ] 发光红标</div>
+                  <div style="font-size:9.5px; color:#94A3B8; text-align:center;">xu_business_card_dark_back.svg</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 板块 2: <svg class="xu-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> 官方公文与行政信函 (Letterhead & Envelope) -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px; font-weight:800; color:var(--xu-text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> 官方公文与行政信函系统 (Correspondence &amp; Envelope)
+          </div>
+          <div class="grid-2" style="gap:20px;">
+            <!-- A4 公文信纸 -->
+            <div style="background:var(--xu-bg-canvas); padding:16px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle);">
+              <div style="font-size:12px; font-weight:800; color:var(--xu-text-primary); margin-bottom:8px;"><svg class="xu-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> A4 标准公文信纸 (210×297mm)</div>
+              <a href="brand/office/xu_letterhead_a4.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/office/xu_letterhead_a4.svg" alt="Letterhead A4" style="height:240px; width:100%; object-fit:contain; border-radius:6px; background:#FAFAF9; border:1px solid rgba(0,0,0,0.08);">
+                <div style="font-size:10.5px; color:var(--xu-text-muted); margin-top:6px; text-align:center;">80g 纯木浆道林纸 · 官方双语页眉 · 5% 超低透光甲骨金石防伪水印</div>
+              </a>
+            </div>
+            <!-- DL 商业信封 -->
+            <div style="background:var(--xu-bg-canvas); padding:16px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle);">
+              <div style="font-size:12px; font-weight:800; color:var(--xu-text-primary); margin-bottom:8px;"><svg class="xu-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a4 4 0 0 0 0-8h-1"/><polyline points="16 6 19 3 22 6"/></svg> DL 商业公文信封 (220×110mm)</div>
+              <a href="brand/office/xu_envelope_dl.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/office/xu_envelope_dl.svg" alt="Envelope DL" style="height:240px; width:100%; object-fit:contain; border-radius:6px; background:#F3F4F6;">
+                <div style="font-size:10.5px; color:var(--xu-text-muted); margin-top:6px; text-align:center;">120g 雅致双胶纸 · 6 位国标红框邮编格 · 封口 4pt 朱砂金石红底边</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 板块 3: <svg class="xu-icon" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><line x1="2" y1="10" x2="22" y2="10"/></svg> 实体办公装备与官方印章 (Office Gear & Identification) -->
+        <div>
+          <div style="font-size:13px; font-weight:800; color:var(--xu-text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> 实体办公装备与官方印章 (Equipment &amp; Identification)
+          </div>
+          <div class="grid-4" style="gap:16px;">
+            <!-- 档案文件夹 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/office/xu_presentation_folder.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/office/xu_presentation_folder.svg" alt="Presentation Folder" style="height:140px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">双折档案资料袋</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">310×220mm · 内置名片插槽</div>
+              </a>
+            </div>
+            <!-- 员工工牌 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/office/xu_staff_id_card.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/office/xu_staff_id_card.svg" alt="Staff ID" style="height:140px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">NFC 员工工牌与通行卡</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">CR80 85.6×54mm · 芯片防伪</div>
+              </a>
+            </div>
+            <!-- 办公笔记本 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/office/xu_notebook_cover.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/office/xu_notebook_cover.svg" alt="Notebook" style="height:140px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">A5 极客精装笔记本</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">硬壳压凹烫红 · 5mm 点阵页</div>
+              </a>
+            </div>
+            <!-- 官方公章 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/office/xu_corporate_seal.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/office/xu_corporate_seal.svg" alt="Corporate Seal" style="height:140px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">40mm 官方认证印章</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">国际双环 · 朱砂印泥红</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.6 企业周边与文创文娱衍生品全套展厅 (Corporate Merchandise & Swag) -->
+      <div class="xu-card" style="margin-bottom:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> 1.6 企业周边、文化衫与极客礼品衍生品展厅 (Merchandise &amp; Swag)</div>
+          <span class="badge badge-accent">280g 重磅精梳棉 · 激光镭雕 · 阳极氧化铝</span>
+        </div>
+
+        <!-- 板块 A: <svg class="xu-icon" viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg> 官方文化衫与极客连帽卫衣 (Apparel & Wearables) -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:13px; font-weight:800; color:var(--xu-text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> 官方文化衫与极客连帽卫衣 (Apparel &amp; Wearables · 正反面设计)
+          </div>
+          <div class="grid-3" style="gap:16px;">
+            <!-- 曜石黑文化衫 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_tshirt_dark.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_tshirt_dark.svg" alt="Dark T-Shirt" style="height:170px; width:100%; object-fit:contain; border-radius:4px; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">曜石黑极客文化衫</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">280g 重磅精梳棉 · 前胸小标+后背代码</div>
+              </a>
+            </div>
+
+            <!-- 宣纸白文化衫 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_tshirt_light.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_tshirt_light.svg" alt="Light T-Shirt" style="height:170px; width:100%; object-fit:contain; border-radius:4px; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">宣纸白极简文化衫</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">280g 纯棉白T · 碳黑+朱砂红丝印</div>
+              </a>
+            </div>
+
+            <!-- 极客连帽卫衣 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_hoodie.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_hoodie.svg" alt="Hoodie" style="height:170px; width:100%; object-fit:contain; border-radius:4px; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">450g 重磅极客连帽卫衣</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">金属红封头抽绳 · 袖口高密刺绣标</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 板块 B: <svg class="xu-icon" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> 极客小礼品与文创衍生品 (Developer Swag & Accessories) -->
+        <div>
+          <div style="font-size:13px; font-weight:800; color:var(--xu-text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <span><svg class="xu-icon" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span> 极客小礼品与文创衍生品 (Developer Swag &amp; Accessories)
+          </div>
+          <div class="grid-3" style="gap:16px; margin-bottom:16px;">
+            <!-- 帆布托特包 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_tote_bag.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_tote_bag.svg" alt="Tote Bag" style="height:150px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">16安原色双股帆布托特包</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">380×420mm · 环保原布织唛</div>
+              </a>
+            </div>
+
+            <!-- 极客速查桌垫 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_desk_mat.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_desk_mat.svg" alt="Desk Mat" style="height:150px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">900×400mm 极客速查桌垫</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">4mm 天然橡胶锁边 · 语法速查表</div>
+              </a>
+            </div>
+
+            <!-- 保温杯与马克杯 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_coffee_mug.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_coffee_mug.svg" alt="Mug" style="height:150px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">316 保温杯 &amp; 极客咖啡杯</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">激光镭雕金色标 · 哑光陶瓷</div>
+              </a>
+            </div>
+          </div>
+
+          <div class="grid-3" style="gap:16px;">
+            <!-- 定制机械键盘键帽 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_keycap.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_keycap.svg" alt="Keycap" style="height:150px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">定制机械键盘 ESC 键帽</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">CNC 阳极氧化铝 / 树脂 RGB 透光</div>
+              </a>
+            </div>
+
+            <!-- 锌合金珐琅徽章 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_enamel_pin.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_enamel_pin.svg" alt="Enamel Pin" style="height:150px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">25mm 锌合金珐琅金属徽章</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">真朱砂红填油 · 架构师限量版</div>
+              </a>
+            </div>
+
+            <!-- 极客贴纸套件 -->
+            <div style="background:var(--xu-bg-canvas); padding:12px; border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); text-align:center;">
+              <a href="brand/merch/xu_merch_stickers_pack.svg" target="_blank" style="text-decoration:none;">
+                <img src="brand/merch/xu_merch_stickers_pack.svg" alt="Stickers" style="height:150px; width:100%; object-fit:contain; border-radius:4px;">
+                <div style="font-size:11.5px; font-weight:700; color:var(--xu-text-primary); margin-top:6px;">全套 6 款极客笔记本贴纸</div>
+                <div style="font-size:9.5px; color:var(--xu-text-muted);">模切防水 PVC · 终端+语法金句</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.7 色彩体系与全色值矩阵 -->
+      <div class="xu-card" style="margin-bottom:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></span> 1.7 品牌标准色彩与科学分级色阶 (点击复制色值)</div>
+          <span class="badge badge-success">WCAG 2.1 AA BASELINE</span>
+        </div>
+        <div class="grid-4">
+          <div class="color-swatch-card" data-hex="#E11D48">
+            <div class="swatch-color-box" style="background:#E11D48; color:#fff;">Pantone 199 C</div>
+            <div class="swatch-info">
+              <div class="swatch-name">朱砂金石 (Oracle Red)</div>
+              <div class="swatch-meta">#E11D48 · C0 M95 Y65 K0</div>
+              <div class="swatch-meta" style="color:var(--xu-success); margin-top:2px;">白字 AA · 4.70:1</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#BE123C">
+            <div class="swatch-color-box" style="background:#BE123C; color:#fff;">Pantone 7427 C</div>
+            <div class="swatch-info">
+              <div class="swatch-name">深朱砂 (Deep Cinnabar)</div>
+              <div class="swatch-meta">#BE123C · C15 M100 Y70 K10</div>
+              <div class="swatch-meta" style="color:var(--xu-success); margin-top:2px;">白字 AA · 6.29:1</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#F59E0B">
+            <div class="swatch-color-box" style="background:#F59E0B; color:#000;">Pantone 137 C</div>
+            <div class="swatch-info">
+              <div class="swatch-name">日落金/琥珀 (Amber Glow)</div>
+              <div class="swatch-meta">#F59E0B · C0 M45 Y95 K0</div>
+              <div class="swatch-meta" style="color:var(--xu-warning); margin-top:2px;">能量流光/告警</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#050508">
+            <div class="swatch-color-box" style="background:#050508; border:1px solid #333; color:#fff;">Void Base</div>
+            <div class="swatch-info">
+              <div class="swatch-name">黑曜石底 (Obsidian Void)</div>
+              <div class="swatch-meta">#050508 · RGB(5,5,8)</div>
+              <div class="swatch-meta" style="color:var(--xu-text-muted); margin-top:2px;">全暗夜基底</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#10B981">
+            <div class="swatch-color-box" style="background:#10B981; color:#050508;">Safe 100%</div>
+            <div class="swatch-info">
+              <div class="swatch-name">翡翠绿 (Emerald Safe)</div>
+              <div class="swatch-meta">#10B981 · C80 M0 Y70 K0</div>
+              <div class="swatch-meta" style="color:var(--xu-success); margin-top:2px;">暗色画布 AAA · 8.02:1</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#06B6D4">
+            <div class="swatch-color-box" style="background:#06B6D4; color:#000;">Channels</div>
+            <div class="swatch-info">
+              <div class="swatch-name">冰魄蓝 (Cyan Flow)</div>
+              <div class="swatch-meta">#06B6D4 · C75 M5 Y15 K0</div>
+              <div class="swatch-meta" style="color:var(--xu-success); margin-top:2px;">暗色画布 AAA · 8.38:1</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#141218">
+            <div class="swatch-color-box" style="background:#141218; border:1px solid #333; color:#fff;">Elevated</div>
+            <div class="swatch-info">
+              <div class="swatch-name">钛金属黑 (Surface)</div>
+              <div class="swatch-meta">#141218 · 面板/侧边栏</div>
+              <div class="swatch-meta" style="color:var(--xu-text-muted); margin-top:2px;">高精中性色阶</div>
+            </div>
+          </div>
+          <div class="color-swatch-card" data-hex="#FAFAF9">
+            <div class="swatch-color-box" style="background:#FAFAF9; color:#000;">Stone Paper</div>
+            <div class="swatch-info">
+              <div class="swatch-name">宣纸素白 (Stone Paper)</div>
+              <div class="swatch-meta">#FAFAF9 · 东方白玉石</div>
+              <div class="swatch-meta" style="color:var(--xu-text-secondary); margin-top:2px;">明亮模式主底</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.8 声音识别与硬件微缩丝印 -->
+      <div class="grid-2">
+        <div class="xu-card">
+          <div class="xu-card-header">
+            <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span> 品牌声音识别系统 (Sonic Branding)</div>
+            <span class="badge badge-brand">Web Audio API</span>
+          </div>
+          <p style="font-size:12px; color:var(--xu-text-secondary); margin-bottom:14px;">
+            系统级提示声音频规范，用于 IDE、编译器通知与命令行构建反馈。
+          </p>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md);">
+              <div>
+                <div style="font-weight:700; font-size:13px;">启动共振弦音 (Startup Chime)</div>
+                <div style="font-size:11px; color:var(--xu-text-muted);">440Hz → 880Hz 升频纯净正弦波 (500ms)</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btn-play-chime">▶ 播放</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md);">
+              <div>
+                <div style="font-weight:700; font-size:13px;">编译成功升调 (Build Success)</div>
+                <div style="font-size:11px; color:var(--xu-text-muted);">880Hz + 1320Hz 双音阶轻盈升调</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btn-play-success">▶ 播放</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md);">
+              <div>
+                <div style="font-weight:700; font-size:13px;">错误诊断阻尼音 (Diagnostic Alert)</div>
+                <div style="font-size:11px; color:var(--xu-text-muted);">280Hz 锯齿波阻尼警报</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btn-play-alert">▶ 播放</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="xu-card">
+          <div class="xu-card-header">
+            <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="15" x2="23" y2="15"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="15" x2="4" y2="15"/></svg></span> 芯片硬件与极限微缩丝印 (PCB Silkscreen)</div>
+            <span class="badge badge-info">3.0mm Extreme Scale</span>
+          </div>
+          <div style="display:flex; gap:16px; align-items:center;">
+            <img src="brand/xu_pcb_silkscreen.svg" alt="PCB Silkscreen" style="width:120px; height:120px; border-radius:12px; border:1px solid #333;">
+            <div style="font-size:12px; color:var(--xu-text-secondary); line-height:1.6;">
+              • <b>极小物理尺度</b>：$3.0 \times 3.0\text{ mm}$ 芯片丝印<br>
+              • <b>工艺要求</b>：白色高对比耐高温油墨，线宽 $\ge 0.15\text{ mm}$<br>
+              • <b>极简降级</b>：省略渐变与立体投影，仅保留坚固的几何外框与核心折笔。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.9 全域物料资产矩阵 (包含幻灯片、周边贴纸、胸牌) -->
+      <div class="xu-card" style="margin-top:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> 官方全域矢量资产全景矩阵 (Omni-Channel Asset Suite)</div>
+          <span class="badge badge-brand">15+ Vector Assets Ready</span>
+        </div>
+        <div class="grid-3" style="margin-top:14px;">
+          <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:13px;">Keynote 幻灯片封面</div>
+              <div style="font-size:11px; color:var(--xu-text-muted);">xu_keynote_template_cover.svg</div>
+            </div>
+            <a href="brand/xu_keynote_template_cover.svg" target="_blank" class="btn btn-secondary btn-sm">查看 SVG</a>
+          </div>
+          <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:13px;">官方周边贴纸套件</div>
+              <div style="font-size:11px; color:var(--xu-text-muted);">xu_swag_sticker_pack.svg</div>
+            </div>
+            <a href="brand/xu_swag_sticker_pack.svg" target="_blank" class="btn btn-secondary btn-sm">查看 SVG</a>
+          </div>
+          <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:13px;">技术大会胸牌与挂绳</div>
+              <div style="font-size:11px; color:var(--xu-text-muted);">xu_conference_badge.svg</div>
+            </div>
+            <a href="brand/xu_conference_badge.svg" target="_blank" class="btn btn-secondary btn-sm">查看 SVG</a>
+          </div>
+          <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:13px;">.xumod 模块配置文件</div>
+              <div style="font-size:11px; color:var(--xu-text-muted);">xu_file_xumod_icon.svg</div>
+            </div>
+            <a href="brand/xu_file_xumod_icon.svg" target="_blank" class="btn btn-secondary btn-sm">查看 SVG</a>
+          </div>
+          <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:13px;">.xubin 机器码产物</div>
+              <div style="font-size:11px; color:var(--xu-text-muted);">xu_file_xubin_icon.svg</div>
+            </div>
+            <a href="brand/xu_file_xubin_icon.svg" target="_blank" class="btn btn-secondary btn-sm">查看 SVG</a>
+          </div>
+          <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:13px;">中英文官方组合</div>
+              <div style="font-size:11px; color:var(--xu-text-muted);">xu_brand_lockup_zh.svg</div>
+            </div>
+            <a href="brand/xu_brand_lockup_zh.svg" target="_blank" class="btn btn-secondary btn-sm">查看 SVG</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         TAB 2: UI 核心组件库 (Core Component Suite)
+         ========================================================================== -->
+    <section class="tab-pane" id="ui-components">
+      <div class="section-hero">
+        <h2><span><svg class="xu-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> XU 核心 UI 组件库 (Component Library)</h2>
+        <p>为 XU 官方桌面工具集与 `#ui` / `#ui/webview` 应用量身打造的高性能、高对比度组件套件。</p>
+      </div>
+
+      <!-- 2.1 按钮系统 -->
+      <div class="xu-card" style="margin-bottom:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg></span> 按钮体系 (Buttons System)</div>
+          <span class="badge badge-brand">Interactive</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
+          <button class="btn btn-primary" type="button" data-toast="点击了 Primary 朱砂霓虹按钮" data-toast-icon="bolt">Primary 朱砂霓虹</button>
+          <button class="btn btn-secondary" type="button" data-toast="点击了 Secondary 曜石暗灰按钮" data-toast-icon="sliders">Secondary 曜石暗灰</button>
+          <button class="btn btn-outline" type="button" data-toast="点击了 Outline 描边按钮" data-toast-icon="eye">Outline 细边框</button>
+          <button class="btn btn-danger" type="button" data-toast="点击了 Danger 警示按钮" data-toast-icon="alert">Danger 警示操作</button>
+          <button class="btn btn-ghost" type="button" data-toast="点击了 Ghost 幽灵按钮" data-toast-icon="palette">Ghost 幽灵按钮</button>
+          <button class="btn btn-primary btn-loading">编译中...</button>
+          <button class="btn btn-primary btn-sm">小按钮 (sm)</button>
+          <button class="btn btn-primary btn-lg">大按钮 (lg)</button>
+        </div>
+      </div>
+
+      <!-- 2.2 表单与控制控件 -->
+      <div class="grid-2">
+        <div class="xu-card">
+          <div class="xu-card-header">
+            <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span> 输入与表单控件 (Inputs & Selects)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">命令搜索框 (带快捷键高亮)</label>
+            <div class="input-wrapper">
+              <input type="text" class="xu-input" placeholder="输入命令或符号（例如 xu build, #ui）...">
+              <span class="input-shortcut">⌘K</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">目标构建平台 (Target Architecture)</label>
+            <select class="xu-select">
+              <option value="macos-arm64">Apple Silicon (macos-arm64)</option>
+              <option value="macos-x64">Intel Mac (macos-x64)</option>
+              <option value="linux-x64">Linux x86_64 (linux-x64)</option>
+              <option value="windows-x64">Windows x64 (windows-x64)</option>
+            </select>
+          </div>
+          <div style="margin-top:18px;">
+            <label class="xu-toggle-wrapper">
+              <span style="font-size:13px; font-weight:600;">严格借用检查 (Strict Borrow Checker)</span>
+              <div class="xu-toggle checked"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="xu-card">
+          <div class="xu-card-header">
+            <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><circle cx="7" cy="7" r=".5" fill="currentColor"/></svg></span> 状态徽章与指标卡 (Badges & Metrics)</div>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
+            <span class="badge badge-success"><span class="pulse-dot"></span> Memory Safe (No GC)</span>
+            <span class="badge badge-brand"><span class="pulse-dot"></span> Static AOT Link</span>
+            <span class="badge badge-info">12 Coroutines Running</span>
+            <span class="badge badge-warning">Borrow Scope Check</span>
+            <span class="badge badge-danger">Process Exited (0)</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle);">
+              <div style="font-size:11px; color:var(--xu-text-muted);">编译延迟 (LATENCY)</div>
+              <div style="font-size:24px; font-weight:800; color:var(--xu-brand-500); font-family:var(--xu-font-mono);">11.8 ms</div>
+            </div>
+            <div style="padding:14px; background:var(--xu-bg-canvas); border-radius:var(--xu-radius-md); border:1px solid var(--xu-border-subtle);">
+              <div style="font-size:11px; color:var(--xu-text-muted);">GC 暂停开销 (OVERHEAD)</div>
+              <div style="font-size:24px; font-weight:800; color:var(--xu-success); font-family:var(--xu-font-mono);">0.00 ms</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2.3 开发者特色组件：所有权可视化与 XU 语法高亮 -->
+      <div class="xu-card" style="margin-top:24px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M8 2h8a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4Z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg></span> 开发者专属：XU 语法高亮与所有权流向标注</div>
+          <button class="btn btn-secondary btn-sm" data-copy="xu-code-snippet">复制代码</button>
+        </div>
+        <div class="code-block-wrapper">
+          <div class="code-block-header">
+            <span>src/concurrency/channel_stream.xu</span>
+            <span>XU v0.1.0</span>
+          </div>
+          <div class="code-content" id="xu-code-snippet"><span class="syn-import"><span class="hash">#</span>errors</span>
+<span class="syn-import"><span class="hash">#</span>net/http</span>
+
+<span class="syn-kw">struct</span> User {
+    <span class="syn-kw">pub</span> name <span class="syn-type">string</span>
+    <span class="syn-kw">pub</span> age  <span class="syn-type">int</span>
+}
+
+<span class="syn-kw">fn</span> (<span class="syn-borrow">u &amp;mut User</span>) <span class="syn-fn">have_birthday</span>() {
+    u.age += <span class="syn-num">1</span>
+}
+
+<span class="syn-kw">fn</span> <span class="syn-fn">process_user</span>(path <span class="syn-type">string</span>) <span class="syn-type">User</span> {
+    <span class="syn-kw">if</span> path == <span class="syn-str">""</span> {
+        <span class="syn-flow">&gt;&gt;</span> errors.new(<span class="syn-str">"path cannot be empty"</span>) <span class="syn-cmt">// 抛出错误</span>
+    }
+    <span class="syn-kw">mut</span> user := User{name: <span class="syn-str">"Alice"</span>, age: <span class="syn-num">20</span>}
+    user.have_birthday()
+    <span class="syn-flow">&lt;&lt;</span> user <span class="syn-cmt">// 零成本返回所有权</span>
+}</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         TAB 3: XUFLOW 流程图代码审查与质量评审工作台 (Flowchart Code Review)
+         ========================================================================== -->
+    <section class="tab-pane" id="xuflow-ide">
+      <div class="section-hero">
+        <h2><span><svg class="xu-icon xu-icon-brand" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> XUFLOW 官方流程图代码审查工作台 (Flowchart Code Review)</h2>
+        <p>专为 XU 语言所有权流转、协程并发借用生命周期与异常传播路径打造的<b>可视化流程图审查系统</b>，直观审计每一段内存转移与并发安全。</p>
+      </div>
+
+      <!-- Review Workspace Frame -->
+      <div class="review-workspace-container">
+        <!-- Titlebar -->
+        <div class="review-titlebar">
+          <div class="review-pr-info">
+            <span class="badge badge-brand">XUFLOW REVIEW</span>
+            <span>PR #1024: <code>net/http</code> 零拷贝流式缓冲架构与所有权生命周期审查</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="review-view-modes">
+              <button class="review-mode-btn active" id="mode-ownership-flow"><svg class="xu-icon xu-icon-cyan" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> 所有权流图</button>
+              <button class="review-mode-btn" id="mode-concurrency-flow"><svg class="xu-icon xu-icon-brand" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 协程并发流</button>
+              <button class="review-mode-btn" id="mode-error-flow"><svg class="xu-icon xu-icon-gold" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 异常传播流</button>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-approve-flow"><svg class="xu-icon xu-icon-green" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> 通过审查 (Approve)</button>
+            <button class="btn btn-secondary btn-sm" id="btn-comment-flow"><svg class="xu-icon xu-icon-cyan" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 评审批注</button>
+          </div>
+        </div>
+
+        <!-- Review Body (Left: Flowchart Canvas, Right: Audit Inspector) -->
+        <div class="review-workspace-body">
+          <!-- Flowchart Canvas (流程图主画布) -->
+          <div class="flowchart-canvas" id="flowchart-canvas">
+
+            <!-- 节点 1: 库与模块导入 (# 是 import 库，专色高亮) -->
+            <div class="flow-node-card node-entry" onclick="selectFlowNode(1)">
+              <div class="flow-node-header">
+                <div class="flow-node-title">
+                  <span style="color:#38BDF8;"><svg class="xu-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> 1. 模块与库导入 (Module &amp; Library Imports)
+                </div>
+                <span class="badge badge-success">RESOLVED · ZERO CYCLES</span>
+              </div>
+              <p style="font-size:11.5px; color:var(--xu-text-secondary); margin-bottom:4px;">
+                XU 语言使用 <code>#</code> 声明模块与第三方包依赖导入，严格进行编译期依赖拓扑解析与无环检测。
+              </p>
+              <div class="flow-node-code">
+<span class="syn-import"><span class="hash">#</span>net/http</span>
+<span class="syn-import"><span class="hash">#</span>ui/draw</span>
+<span class="syn-import"><span class="hash">#</span>std/sync</span></div>
+            </div>
+
+            <!-- 向下流程箭头 -->
+            <div class="flow-arrow-down">
+              <span class="flow-arrow-label">AST Execution Flow</span>
+              ↓
+            </div>
+
+            <!-- 节点 2: 函数入口与所有权建立 -->
+            <div class="flow-node-card node-borrow" onclick="selectFlowNode(2)">
+              <div class="flow-node-header">
+                <div class="flow-node-title">
+                  <span style="color:#10B981;"><svg class="xu-icon xu-icon-green" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> 2. 局部栈变量所有权建立 (Ownership Allocation)
+                </div>
+                <span class="badge badge-success">STACK SCOPE · UNIQUE OWNER</span>
+              </div>
+              <p style="font-size:11.5px; color:var(--xu-text-secondary); margin-bottom:4px;">
+                分配 <code>buffer</code> 局部变量，栈帧绑定唯一所有权（Unique Owner），生命周期处于当前作用域。
+              </p>
+              <div class="flow-node-code">
+<span class="syn-kw">fn</span> <span class="syn-fn">handle_stream</span>(req <span class="syn-borrow">&amp;http.Request</span>) <span class="syn-type">http.Response</span> {
+    <span class="syn-kw">mut</span> buffer := <span class="syn-str">"Stream payload initialized"</span> <span class="inline-borrow-tag">Owner: buffer</span></div>
+            </div>
+
+            <!-- 向下流程箭头 (分支流) -->
+            <div class="flow-arrow-down">
+              <span class="flow-arrow-label">Exclusive Mutable Borrow &amp; Fork</span>
+              ↓
+            </div>
+
+            <!-- 节点 3: 协程并发分支与排他性借用 -->
+            <div class="flow-node-card node-fork" onclick="selectFlowNode(3)">
+              <div class="flow-node-header">
+                <div class="flow-node-title">
+                  <span style="color:#F59E0B;"><svg class="xu-icon xu-icon-brand" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> 3. 协作式协程并发分支 (Concurrency &amp; Borrow Check)
+                </div>
+                <span class="badge badge-warning">EXCLUSIVE BORROW · 0 RACE</span>
+              </div>
+              <p style="font-size:11.5px; color:var(--xu-text-secondary); margin-bottom:4px;">
+                通过 <code>xu</code> 关键字分发后台轻量级协程，传入排他性可变借用 <code>mut &amp;buffer</code>，生命周期限定在协程执行期内，期间主协程对 buffer 的写操作受限，彻底消除数据竞争。
+              </p>
+              <div class="flow-node-code">
+    <span class="syn-cmt">// 启动 XU 官方轻量级并发协程</span>
+    <span class="syn-kw">xu</span> worker_coroutine(<span class="syn-borrow">mut &amp;buffer</span>) <span class="inline-borrow-tag">Exclusive Borrow: 40ms</span></div>
+            </div>
+
+            <!-- 向下流程箭头 (合并汇聚) -->
+            <div class="flow-arrow-down">
+              <span class="flow-arrow-label">Borrow Lifetime End → Ownership Reclaimed</span>
+              ↓
+            </div>
+
+            <!-- 节点 4: 所有权安全转移与零 GC 返回 -->
+            <div class="flow-node-card node-move" onclick="selectFlowNode(4)">
+              <div class="flow-node-header">
+                <div class="flow-node-title">
+                  <span style="color:#E11D48;"><svg class="xu-icon xu-icon-brand" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span> 4. 零成本所有权移交 (Move Semantics &amp; Return)
+                </div>
+                <span class="badge badge-brand">ZERO GC TRANSFER · PASS</span>
+              </div>
+              <p style="font-size:11.5px; color:var(--xu-text-secondary); margin-bottom:4px;">
+                借用生命周期结束，所有权通过 <code>&lt;&lt;</code> 零拷贝转移（Move）给调用方，无堆逃逸，零 GC 暂停时间。
+              </p>
+              <div class="flow-node-code">
+    <span class="syn-flow">&lt;&lt;</span> http.ok(buffer) <span class="inline-borrow-tag">Ownership Moved to Response</span>
+}</div>
+            </div>
+
+          </div>
+
+          <!-- Review Audit Inspector (右侧审查批注与静态审计详情) -->
+          <div class="review-audit-pane">
+            <div class="audit-metric-title"><svg class="xu-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 流程图节点审查指标 (Review Metrics)</div>
+
+            <div class="audit-metric-box">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span style="font-size:12px; font-weight:700;">所有权生命周期拓扑</span>
+                <span style="color:var(--xu-success); font-weight:800; font-size:12px;">100% PASS</span>
+              </div>
+              <div style="font-size:11.5px; color:var(--xu-text-secondary); line-height:1.6;">
+                • 变量 <code>buffer</code>：节点 2 栈分配<br>
+                • 借用域：节点 3 (独占可变借用 <code>&amp;mut</code>)<br>
+                • 移交目标：<code>http.ok</code> (节点 4 零拷贝转移)<br>
+                • 数据竞争隐患 (Data Race Hazards)：<b>0</b>
+              </div>
+            </div>
+
+            <div class="audit-metric-box">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span style="font-size:12px; font-weight:700;">依赖拓扑 (# 库导入)</span>
+                <span style="color:var(--xu-info); font-weight:800; font-size:12px;">3 Imports</span>
+              </div>
+              <div style="font-size:11.5px; color:var(--xu-text-secondary); line-height:1.6;">
+                • <code>#net/http</code>: 系统级原生网络包<br>
+                • <code>#ui/draw</code>: 图形渲染引擎<br>
+                • <code>#std/sync</code>: 协程同步通道
+              </div>
+            </div>
+
+            <div class="audit-metric-title"><svg class="xu-icon xu-icon-cyan" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 审查讨论区 (Review Thread)</div>
+            <div class="review-comment-item">
+              <div class="review-comment-user">
+                <span><svg class="xu-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> @Alex Chen (Chief Architect)</span>
+                <span style="font-size:10px; color:var(--xu-text-muted);">10分钟前</span>
+              </div>
+              <div style="color:var(--xu-text-secondary); font-size:11.5px;">
+                节点 3 的 <code>xu worker_coroutine(mut &amp;buffer)</code> 流程借用域已完成静态生命周期闭环，无泄漏风险，建议合并。
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-sm" style="width:100%; margin-top:8px;" onclick="addReviewComment()">
+              <svg class="xu-icon" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> 添加流程图节点批注
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         TAB 4: 官方互动门户 & Playground (Web Portal Experience)
+         ========================================================================== -->
+    <section class="tab-pane" id="official-portal">
+      <!-- Portal Hero -->
+      <div style="text-align:center; padding:48px 16px 40px; background:radial-gradient(circle at top center, rgba(225,29,72,0.18) 0%, transparent 60%); border-radius:var(--xu-radius-xl); border:1px solid var(--xu-border-subtle); margin-bottom:32px;">
+        <img src="brand/xu_classic.svg" alt="XU 金石图腾" style="width:96px; height:96px; filter:drop-shadow(0 0 32px rgba(225,29,72,0.6)); margin-bottom:16px;">
+        <h1 style="font-size:42px; font-weight:900; letter-spacing:-1px; margin-bottom:12px;">
+          The <span style="background:var(--xu-brand-grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">XU</span> Programming Language
+        </h1>
+        <p style="font-size:18px; color:var(--xu-text-secondary); max-width:680px; margin:0 auto 24px;">
+          坚如磐石的零运行时开销内存安全，闪电般的编译速度，极致清晰的心智体验。
+        </p>
+        <div style="display:flex; justify-content:center; gap:14px;">
+          <button class="btn btn-primary btn-lg" onclick="document.getElementById('playground-anchor').scrollIntoView({behavior:'smooth'})"><svg class="xu-icon xu-icon-brand" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> 立即在线试用</button>
+          <button class="btn btn-secondary btn-lg" onclick="copyText('curl -fsSL https://xulang.org/install.sh | sh', '安装命令')"><svg class="xu-icon" viewBox="0 0 24 24"><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg> 安装编译器</button>
+        </div>
+      </div>
+
+      <!-- Playground Live Runner -->
+      <div class="xu-card" id="playground-anchor" style="margin-bottom:32px;">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="6"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="11" x2="15.01" y2="11"/><line x1="18" y1="13" x2="18.01" y2="13"/></svg></span> 交互式 Playground (浏览器秒级运行)</div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:12px; color:var(--xu-text-muted);">耗时估算: <b id="play-bench-time" style="color:var(--xu-brand-500);">--</b></span>
+            <button class="btn btn-primary" id="play-run-btn"><svg class="xu-icon xu-icon-brand" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Run Code</button>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div style="font-size:12px; font-weight:600; color:var(--xu-text-muted); margin-bottom:6px;">EDIT CODE (XU Syntax)</div>
+            <div class="code-block-wrapper">
+              <div class="code-content"><span class="syn-kw">fn</span> <span class="syn-fn">calculate_area</span>(r <span class="syn-type">f64</span>) <span class="syn-type">f64</span> {
+    <span class="syn-flow">&lt;&lt;</span> <span class="syn-num">3.14159</span> * r * r
+}
+
+<span class="syn-kw">fn</span> <span class="syn-fn">main</span>() <span class="syn-type">int</span> {
+    area := calculate_area(<span class="syn-num">10.0</span>)
+    println(<span class="syn-str">"Area of circle: "</span> + area.str())
+    <span class="syn-flow">&lt;&lt;</span> <span class="syn-num">0</span>
+}</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px; font-weight:600; color:var(--xu-text-muted); margin-bottom:6px;">EXECUTION OUTPUT</div>
+            <div class="code-block-wrapper" style="height:175px;">
+              <div class="code-content" id="play-output" style="color:var(--xu-info);">Click "Run Code" above to compile & run XU code instantly in sandbox...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Matrix -->
+      <div class="xu-card">
+        <div class="xu-card-header">
+          <div class="xu-card-title"><span><svg class="xu-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> 语言特性综合对比 (XU vs Rust vs Go vs Vlang)</div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; font-size:13px; text-align:left;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--xu-border-medium); color:var(--xu-text-muted);">
+                <th style="padding:10px 14px;">特性指标</th>
+                <th style="padding:10px 14px; color:var(--xu-brand-500);">XU 语言</th>
+                <th style="padding:10px 14px;">Rust</th>
+                <th style="padding:10px 14px;">Golang</th>
+                <th style="padding:10px 14px;">Vlang</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                <td style="padding:10px 14px; font-weight:600;">内存安全模型</td>
+                <td style="padding:10px 14px; color:var(--xu-success); font-weight:700;">零 GC 所有权/借用</td>
+                <td style="padding:10px 14px;">所有权/借用检查</td>
+                <td style="padding:10px 14px; color:var(--xu-warning);">并发三色标记 GC</td>
+                <td style="padding:10px 14px;">Autofree / 启发式</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                <td style="padding:10px 14px; font-weight:600;">构建速度 (AOT)</td>
+                <td style="padding:10px 14px; color:var(--xu-success); font-weight:700;">毫秒级极速构建</td>
+                <td style="padding:10px 14px; color:var(--xu-danger);">较慢 (LLVM 重型)</td>
+                <td style="padding:10px 14px; color:var(--xu-success);">极速构建</td>
+                <td style="padding:10px 14px; color:var(--xu-success);">极速构建</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--xu-border-subtle);">
+                <td style="padding:10px 14px; font-weight:600;">语法心智负担</td>
+                <td style="padding:10px 14px; color:var(--xu-success); font-weight:700;">极简清晰 (>> / &lt;&lt; / or)</td>
+                <td style="padding:10px 14px; color:var(--xu-warning);">高 (生命周期/特征)</td>
+                <td style="padding:10px 14px;">极简 (样板多)</td>
+                <td style="padding:10px 14px;">极简</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 14px; font-weight:600;">原生并发模型</td>
+                <td style="padding:10px 14px; color:var(--xu-success); font-weight:700;">xu f() + chan/select</td>
+                <td style="padding:10px 14px;">async/await 库生态</td>
+                <td style="padding:10px 14px; color:var(--xu-success);">go f() + chan/select</td>
+                <td style="padding:10px 14px;">go / 线程池</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Interactive Logic -->
+  <script src="app.js?v=3.2.2"></script>
+</body>
+</html>

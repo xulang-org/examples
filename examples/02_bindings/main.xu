@@ -1,0 +1,14 @@
+@main
+
+const max = 100
+
+fn main() int {
+    name := "Xu"
+    mut age := 20
+    age += 1
+
+    println(name)
+    println(age)
+    println(max)
+    << 0
+}

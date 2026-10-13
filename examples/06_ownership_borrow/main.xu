@@ -1,0 +1,27 @@
+@main
+
+fn take(s string) {
+    println(s)
+}
+
+fn len_of(s &string) int {
+    << s.len
+}
+
+fn append_bang(s &mut string) {
+    s.push_str("!")
+}
+
+fn main() int {
+    msg := "hello"
+    println(len_of(&msg))
+    println(msg)
+
+    mut owned := "hi"
+    append_bang(mut &owned)
+    println(owned)
+
+    take(owned)
+    // owned 已 move，不可再使用
+    << 0
+}
