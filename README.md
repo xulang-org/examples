@@ -8,6 +8,7 @@
 ```sh
 make run EXAMPLE=01_hello
 make check EXAMPLE=17_database_postgres
+make wasm # 编译并验证 WASM 的加法、循环、递归（需要 Node.js）
 XU_ROOT=/path/to/xu make run EXAMPLE=01_hello
 ```
 

@@ -1,0 +1,17 @@
+@main
+
+// Public @main functions become WASM <name>_frame exports.
+pub fn add(a int, b int) int { << a + b }
+
+pub fn fibonacci(n int) int {
+    if n < 2 { << n }
+    << fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+pub fn sum_to(n int) int {
+    mut total := 0
+    for i in 1:n + 1 { total += i }
+    << total
+}
+
+fn main() int { << 0 }
