@@ -1,0 +1,3 @@
+module: example/ownership_borrow
+version: !ver 0.1.0
+xu: !ver 0.8.12
