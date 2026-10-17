@@ -1,6 +1,6 @@
 # C 静态原生模块与多数据类型交互 (Native C & .xulib)
 
-本示例展示如何使用 Xu 的 `xu-c-1` 原生 ABI，在 C 与 Xu 之间进行丰富数据类型的双向互操作，并通过 `xunative` 工具链生成跨平台便携式 `.xulib` 归档包。
+本示例展示如何使用 Xu 的 `xu-c-1` 原生 ABI，在 C 与 Xu 之间进行丰富数据类型的双向互操作，并通过 `xu native` 原生工具链生成跨平台便携式 `.xulib` 归档包。
 
 ---
 
@@ -102,31 +102,34 @@ xu_int XU_NATIVE_SYMBOL(xu_native_add_get_counter)(void) { return g_counter; }
 }
 ```
 
-### 动作三：使用 `xunative compile` 分别编译单目标切片
+### 动作三：使用 `xu native compile` 分别编译单目标切片
 为不同目标平台分别编译生成嵌入了 `.xumeta` 数据段的 Unix 静态归档切片（`.a`）：
 
 ```bash
 # 针对 macOS Apple Silicon (ARM64)
-python3 path/to/xu/scripts/xunative.py compile \
+xu native compile \
   --manifest native.json --target macos-arm64 bridge.c \
   -o native/native_add-arm64.a
 
 # 针对 macOS Intel (x86_64)
-python3 path/to/xu/scripts/xunative.py compile \
+xu native compile \
   --manifest native.json --target macos-x64 bridge.c \
   -o native/native_add-x64.a
 ```
 
-### 动作四：使用 `xunative pack` 聚合打包为便携式 `.xulib`
+### 动作四：使用 `xu native pack` 聚合打包为便携式 `.xulib`
 将多个平台的 `.a` 切片与元数据清单封装进单一 `.xulib` 容器文件：
 
 ```bash
-python3 path/to/xu/scripts/xunative.py pack \
+xu native pack \
   --manifest native.json \
   --slice macos-arm64=native/native_add-arm64.a \
   --slice macos-x64=native/native_add-x64.a \
   -o native/native_add.xulib
 ```
+
+> [!TIP]
+> 打包完成后，可使用 `xu native inspect native/native_add.xulib` 随时检视容器内的切片架构、SHA-256 校验和与元数据。需要解包时也可通过 `xu native extract native/native_add.xulib --target macos-arm64 -o slice.a` 提取单目标切片。
 
 ### 动作五：在工程项目配置中声明原生模块 (`xu.xun`)
 在项目的 `xu.xun` 配置文件中添加 `native:` 映射：
