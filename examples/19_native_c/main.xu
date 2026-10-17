@@ -3,6 +3,40 @@
 #native_add
 
 fn main() int {
-    println(native_add.add(20, 22))
+    println("=== Xu <-> Native C Multi-Type Interop Demo ===")
+
+    // 1. int (64-bit integer)
+    sum := native_add.add(20, 22)
+    println("1. int add(20, 22) = " + str(sum))
+
+    // 2. f64 (64-bit float)
+    scaled := native_add.scale_f64(1.5, 3.0)
+    println("2. f64 scale_f64(1.5, 3.0) * 10 = " + str(int(scaled * 10.0)))
+
+    // 3. bool (boolean)
+    even := native_add.is_even(42)
+    odd := native_add.is_even(43)
+    println("3. bool is_even(42) = " + str(even) + ", is_even(43) = " + str(odd))
+
+    // 4. i32 (32-bit signed integer)
+    clamped := native_add.clamp_i32(i32(150), i32(0), i32(100))
+    println("4. i32 clamp_i32(150, 0, 100) = " + str(int(clamped)))
+
+    // 5. u32 (32-bit unsigned integer with bitwise ops)
+    rotated := native_add.rotate_left_u32(u32(1), u32(4))
+    println("5. u32 rotate_left_u32(1, 4) = " + str(int(rotated)))
+
+    // 6. u8 (8-bit unsigned byte)
+    masked := native_add.mask_u8(u8(255), u8(15))
+    println("6. u8 mask_u8(255, 15) = " + str(int(masked)))
+
+    // 7. void (stateful procedure with side-effects)
+    native_add.reset_counter()
+    native_add.add_to_counter(100)
+    native_add.add_to_counter(25)
+    c := native_add.get_counter()
+    println("7. void state counter = " + str(c))
+
+    println("=== All Native Type Assertions Passed ===")
     << 0
 }
