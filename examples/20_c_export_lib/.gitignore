@@ -1,0 +1,14 @@
+*.xuobj
+*.o
+*.obj
+*.a
+*.lib
+*.dylib
+*.so
+*.dll
+*.exe
+test_dynamic_bin
+test_static_bin
+test_cpp_bin
+test_rust_bin
+test_go_bin

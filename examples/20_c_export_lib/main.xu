@@ -1,0 +1,296 @@
+@main
+
+// ============================================================================
+// Xu Native Library: Complete Multi-Type Export Demo
+// ============================================================================
+// This library provides exports covering the complete type system of Xu:
+//   1.  int      - 64-bit signed integer (math & recursion)
+//   2.  i32      - 32-bit signed integer (boundary clamp & signed arithmetic)
+//   3.  u32      - 32-bit unsigned integer (wrapping math & bitwise rotate)
+//   4.  u8       - 8-bit unsigned byte (byte masking & byte arithmetic)
+//   5.  bool     - boolean logic (predicates & logic gates)
+//   6.  f64      - 64-bit IEEE-754 double precision float (addition & scale)
+//   7.  string   - UTF-8 string (length, char counting, byte indexing,
+//                  printing, returning string via sret, string concatenation)
+//   8.  struct   - aggregate layout (Point2D as parameter, Point2D as return,
+//                  MixedRecord containing int + f64 + bool)
+//   9.  slice    - dynamic array views ([]int, []u8 byte slice, []f64 float slice)
+//   10. array    - fixed-size array ([4]int with descending element layout)
+//   11. enum     - enumeration with variants (Status: Ok, Pending, Failed)
+//   12. &mut     - mutable reference / in-place pointer mutation (&mut Counter)
+//   13. callback - higher-order function / closure (fn(int, int) int)
+//   14. void     - procedure with console / runtime side-effects
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 1. int (64-bit signed integer)
+// ----------------------------------------------------------------------------
+pub fn xu_add_int(a int, b int) int {
+    << a + b
+}
+
+pub fn xu_factorial(n int) int {
+    if n <= 1 { << 1 }
+    mut res := 1
+    mut i := 2
+    while i <= n {
+        res = res * i
+        i = i + 1
+    }
+    << res
+}
+
+// ----------------------------------------------------------------------------
+// 2. i32 (32-bit signed integer)
+// ----------------------------------------------------------------------------
+pub fn xu_add_i32(a i32, b i32) i32 {
+    << a + b
+}
+
+pub fn xu_clamp_i32(val i32, min_v i32, max_v i32) i32 {
+    if val < min_v { << min_v }
+    if val > max_v { << max_v }
+    << val
+}
+
+// ----------------------------------------------------------------------------
+// 3. u32 (32-bit unsigned integer)
+// ----------------------------------------------------------------------------
+pub fn xu_add_u32(a u32, b u32) u32 {
+    << a + b
+}
+
+pub fn xu_rotate_left_u32(val u32, shift u32) u32 {
+    s := shift & 31
+    if s == 0 { << val }
+    << (val << s) | (val >> (32 - s))
+}
+
+// ----------------------------------------------------------------------------
+// 4. u8 (8-bit unsigned byte)
+// ----------------------------------------------------------------------------
+pub fn xu_mask_u8(val u8, mask u8) u8 {
+    << val & mask
+}
+
+pub fn xu_add_u8(a u8, b u8) u8 {
+    << a + b
+}
+
+// ----------------------------------------------------------------------------
+// 5. bool (boolean logic)
+// ----------------------------------------------------------------------------
+pub fn xu_is_even(n int) bool {
+    << (n & 1) == 0
+}
+
+pub fn xu_logical_and(a bool, b bool) bool {
+    << a && b
+}
+
+// ----------------------------------------------------------------------------
+// 6. f64 (64-bit IEEE-754 double precision float)
+// ----------------------------------------------------------------------------
+pub fn xu_add_f64(a f64, b f64) f64 {
+    << a + b
+}
+
+pub fn xu_scale_f64(val f64, factor f64) f64 {
+    << val * factor
+}
+
+// ----------------------------------------------------------------------------
+// 7. string (UTF-8 string with 3-word descriptor [cap, len, ptr])
+// ----------------------------------------------------------------------------
+pub fn xu_string_length(s string) int {
+    << s.len
+}
+
+pub fn xu_count_char(s string, ch int) int {
+    mut count := 0
+    mut i := 0
+    while i < s.len {
+        if s[i] == ch {
+            count = count + 1
+        }
+        i = i + 1
+    }
+    << count
+}
+
+pub fn xu_string_byte_at(s string, index int) int {
+    if index < 0 || index >= s.len {
+        << -1
+    }
+    << s[index]
+}
+
+pub fn xu_print_string(s string) {
+    println("[Xu Library Received String]: " + s)
+}
+
+pub fn xu_greeting() string {
+    << "Hello from Xu compiled library!"
+}
+
+pub fn xu_concat_hello(name string) string {
+    << "Hello, " + name + " from Xu!"
+}
+
+// ----------------------------------------------------------------------------
+// 8. struct (aggregate types: passing, returning, mixed scalar fields)
+// ----------------------------------------------------------------------------
+pub struct Point2D {
+    x int
+    y int
+}
+
+pub fn xu_point_distance_sq(p Point2D) int {
+    << p.x * p.x + p.y * p.y
+}
+
+pub fn xu_make_point(x int, y int) Point2D {
+    << Point2D{x: x, y: y}
+}
+
+pub struct MixedRecord {
+    id int
+    score f64
+    flag bool
+}
+
+pub fn xu_check_mixed_record(r MixedRecord) bool {
+    << r.id > 0 && r.score >= 60.0 && r.flag
+}
+
+// ----------------------------------------------------------------------------
+// 9. slice / dynamic array ([]int, []u8, []f64)
+// ----------------------------------------------------------------------------
+pub fn xu_sum_slice(arr []int) int {
+    mut sum := 0
+    mut i := 0
+    while i < arr.len {
+        sum = sum + arr[i]
+        i = i + 1
+    }
+    << sum
+}
+
+pub fn xu_sum_byte_slice(arr []u8) int {
+    mut sum := 0
+    mut i := 0
+    while i < arr.len {
+        sum = sum + int(arr[i])
+        i = i + 1
+    }
+    << sum
+}
+
+pub fn xu_sum_f64_slice(arr []f64) f64 {
+    mut sum := 0.0
+    mut i := 0
+    while i < arr.len {
+        sum = sum + arr[i]
+        i = i + 1
+    }
+    << sum
+}
+
+// ----------------------------------------------------------------------------
+// 10. fixed-size array ([4]int)
+// ----------------------------------------------------------------------------
+pub fn xu_sum_fixed_array(arr [4]int) int {
+    << arr[0] + arr[1] + arr[2] + arr[3]
+}
+
+// ----------------------------------------------------------------------------
+// 11. enum (enumeration with variants)
+// ----------------------------------------------------------------------------
+pub enum Status {
+    Ok
+    Pending
+    Failed
+}
+
+pub fn xu_status_code(s Status) int {
+    match s {
+        Status.Ok { << 100 }
+        Status.Pending { << 200 }
+        Status.Failed { << 300 }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// 12. &mut (mutable pointer / in-place struct mutation)
+// ----------------------------------------------------------------------------
+pub struct Counter {
+    val int
+}
+
+pub fn xu_mutate_counter(c &mut Counter, delta int) {
+    c.val = c.val + delta
+}
+
+// ----------------------------------------------------------------------------
+// 13. callback / function pointer (fn(int, int) int)
+// ----------------------------------------------------------------------------
+pub fn xu_apply_callback(x int, y int, op fn(int, int) int) int {
+    << op(x, y)
+}
+
+// ----------------------------------------------------------------------------
+// 14. void (procedure with console output / side-effects)
+// ----------------------------------------------------------------------------
+pub fn xu_hello_from_lib() {
+    println("[Xu Library] Hello! Successfully invoked procedure with no return value.")
+}
+
+// ============================================================================
+// Standalone Self-Test Entry Point
+// Can be executed directly via: xu run main.xu
+// ============================================================================
+fn main() int {
+    println("=== Xu Multi-Type Library Self-Test ===")
+    println("1.  int: add(10, 20) = " + str(xu_add_int(10, 20)))
+    println("    int: factorial(5) = " + str(xu_factorial(5)))
+    println("2.  i32: add(-10, 25) = " + str(int(xu_add_i32(i32(-10), i32(25)))))
+    println("    i32: clamp(150, 0, 100) = " + str(int(xu_clamp_i32(i32(150), i32(0), i32(100)))))
+    println("3.  u32: add(0xFFFFFF00, 0x10) = " + str(int(xu_add_u32(u32(4294967040), u32(16)))))
+    println("    u32: rotate_left(1, 4) = " + str(int(xu_rotate_left_u32(u32(1), u32(4)))))
+    println("4.  u8: mask(0xAB, 0x0F) = " + str(int(xu_mask_u8(u8(171), u8(15)))))
+    println("    u8: add(200, 50) = " + str(int(xu_add_u8(u8(200), u8(50)))))
+    println("5.  bool: is_even(42) = " + str(xu_is_even(42)))
+    println("    bool: logical_and(true, false) = " + str(xu_logical_and(true, false)))
+    println("6.  f64: add(1.25, 2.75) = " + str(int(xu_add_f64(1.25, 2.75))))
+    println("    f64: scale(2.5, 4.0) = " + str(int(xu_scale_f64(2.5, 4.0))))
+    println("7.  string: len('Hello, Xu!') = " + str(xu_string_length("Hello, Xu!")))
+    println("    string: count 'a' in 'banana' = " + str(xu_count_char("banana", 97)))
+    println("    string: byte at 'XuLang'[2] = " + str(xu_string_byte_at("XuLang", 2)))
+    println("    string: greeting = " + xu_greeting())
+    println("    string: concat = " + xu_concat_hello("World"))
+    xu_print_string("Self-test message")
+    println("8.  struct: Point2D distance_sq(3, 4) = " + str(xu_point_distance_sq(Point2D{x: 3, y: 4})))
+    pt := xu_make_point(7, 24)
+    println("    struct: make_point(7, 24) = (" + str(pt.x) + ", " + str(pt.y) + ")")
+    rec := MixedRecord{id: 101, score: 85.5, flag: true}
+    println("    struct: check_mixed_record = " + str(xu_check_mixed_record(rec)))
+    println("9.  slice: sum_slice([10, 20, 30, 40]) = " + str(xu_sum_slice([10, 20, 30, 40])))
+    bytes := [u8(1), u8(2), u8(3), u8(4)]
+    println("    slice: sum_byte_slice = " + str(xu_sum_byte_slice(bytes)))
+    floats := [1.25, 2.75, 6.0]
+    println("    slice: sum_f64_slice = " + str(int(xu_sum_f64_slice(floats))))
+    fixed := [4]int{100, 200, 300, 400}
+    println("10. array: sum_fixed_array = " + str(xu_sum_fixed_array(fixed)))
+    println("11. enum: status_code(Pending) = " + str(xu_status_code(Status.Pending)))
+    mut c := Counter{val: 50}
+    xu_mutate_counter(mut &c, 25)
+    println("12. &mut: mutate_counter(50, 25) = " + str(c.val))
+    println("13. callback: apply_callback(7, 8, mult) = " + str(xu_apply_callback(7, 8, self_test_mult)))
+    xu_hello_from_lib()
+    println("=== All Xu Self-Tests Completed Successfully ===")
+    << 0
+}
+
+fn self_test_mult(a int, b int) int {
+    << a * b
+}

@@ -28,11 +28,3 @@ XU="$(pwd)/../xu/bin/xu" # 当前产品编译器
 /tmp/xu_13_ctx
 # http://127.0.0.1:18081
 ```
-
-如需排查 primer，只能显式走 oracle/recovery（不属于产品或自举证据）：
-
-```bash
-cargo build --manifest-path bootstrap/Cargo.toml -p xu
-XU_BOOT=./bootstrap/target/debug/xu
-"$XU_BOOT" examples/13_http_context/main.xu -o /tmp/xu_13_ctx_oracle
-```

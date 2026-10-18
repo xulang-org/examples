@@ -20,11 +20,3 @@ XU="$(pwd)/../xu/bin/xu" # 当前产品编译器
 # 或：/tmp/xu_12_fs /path/to/dir
 # http://127.0.0.1:8080
 ```
-
-如需排查 primer，只能显式走 oracle/recovery（不属于产品或自举证据）：
-
-```bash
-cargo build --manifest-path bootstrap/Cargo.toml -p xu
-XU_BOOT=./bootstrap/target/debug/xu
-"$XU_BOOT" examples/12_file_server/main.xu -o /tmp/xu_12_fs_oracle
-```
