@@ -1,0 +1,392 @@
+@main
+#ui
+#ui/draw
+#ui/widgets
+#ui/layout
+demo #"github.com/xulang-org/examples/ui_demo"
+
+// IDs follow the stable topology created below. All control bounds are local;
+// Editor.place receives the separate canvas rectangle for native IME geometry.
+struct Model {
+    theme widgets.Button
+    scale widgets.Button
+    density widgets.Button
+    brand widgets.Button
+    disabled widgets.Button
+    check widgets.Checkbox
+    input widgets.Editor
+    invalid widgets.Editor
+    read_only widgets.Editor
+    area widgets.Editor
+    progress widgets.Progress
+    scroll widgets.Scroll
+    context draw.Context
+    icon draw.Image
+    mode int
+    theme_label widgets.StyledLabel
+    scale_label widgets.StyledLabel
+    density_label widgets.StyledLabel
+    brand_label widgets.StyledLabel
+    disabled_label widgets.StyledLabel
+    check_label widgets.StyledLabel
+}
+fn (m &mut Model) measure_node(id int,s &widgets.Styles) layout.Size {
+    if id == 4 { control := m.theme
+        label := mut &m.theme_label
+        << control.measure_styled(label,s) or >> }
+    if id == 5 { control := m.scale
+        label := mut &m.scale_label
+        << control.measure_styled(label,s) or >> }
+    if id == 6 { control := m.density
+        label := mut &m.density_label
+        << control.measure_styled(label,s) or >> }
+    if id == 8 { control := m.brand
+        label := mut &m.brand_label
+        << control.measure_icon_styled(label,s) or >> }
+    if id == 9 { control := m.disabled
+        label := mut &m.disabled_label
+        << control.measure_styled(label,s) or >> }
+    if id == 10 { control := m.check
+        label := mut &m.check_label
+        << control.measure_styled(label,s) or >> }
+    if id == 12 { control := mut &m.input
+        << control.measure_styled(s) or >> }
+    if id == 13 { control := mut &m.invalid
+        << control.measure_styled(s) or >> }
+    if id == 14 { control := mut &m.read_only
+        << control.measure_styled(s) or >> }
+    if id == 15 { control := mut &m.area
+        << control.measure_styled(s) or >> }
+    << layout.Size{width: 0.0,height: 0.0}
+}
+fn (m &mut Model) measure_styled(id int,s &widgets.Styles) layout.Size {
+    << m.measure_node(id,s) or (err) { eprintln(err.msg())
+        << layout.Size{width: -1.0,height: -1.0} }
+}
+fn (m &mut Model) draw_node(id int,b &layout.Rect,s &widgets.Styles,f &mut draw.Frame) int {
+    if id == 4 { target := mut &m.theme
+        target.set_bounds(b) or >>
+        control := m.theme
+        label := mut &m.theme_label
+        control.paint_styled(f,label,s) or >> }
+    if id == 5 { target := mut &m.scale
+        target.set_bounds(b) or >>
+        control := m.scale
+        label := mut &m.scale_label
+        control.paint_styled(f,label,s) or >> }
+    if id == 6 { target := mut &m.density
+        target.set_bounds(b) or >>
+        control := m.density
+        label := mut &m.density_label
+        control.paint_styled(f,label,s) or >> }
+    if id == 8 { target := mut &m.brand
+        target.set_bounds(b) or >>
+        control := m.brand
+        icon := m.icon
+        label := mut &m.brand_label
+        control.paint_icon_styled(f,label,&icon,s) or >> }
+    if id == 9 { target := mut &m.disabled
+        target.set_bounds(b) or >>
+        control := m.disabled
+        label := mut &m.disabled_label
+        control.paint_styled(f,label,s) or >> }
+    if id == 10 { target := mut &m.check
+        target.set_bounds(b) or >>
+        control := m.check
+        label := mut &m.check_label
+        control.paint_styled(f,label,s) or >> }
+    if id == 12 { control := mut &m.input
+        control.paint_styled(f,s) or >> }
+    if id == 13 { control := mut &m.invalid
+        control.paint_styled(f,s) or >> }
+    if id == 14 { control := mut &m.read_only
+        control.paint_styled(f,s) or >> }
+    if id == 15 { control := mut &m.area
+        control.paint_styled(f,s) or >> }
+    if id == 11 { control := mut &m.progress
+        control.set_bounds(b) or >>
+        control.paint_styled(f,s) or >> }
+    if id == 2 {
+        demo.text(&m.context,f,0.0,0.0,24.0,s.button.palette.foreground,"A theme that reaches every control") or >>
+        demo.text(&m.context,f,0.0,33.0,13.0,s.button.palette.muted,"Light / dark / contrast · typography · density · local overrides · no idle redraw") or >>
+    }
+    if id >= 18 && id <= 29 {
+        f.fill_rect(0.0,0.0,b.width,b.height,s.input.palette.normal) or >>
+        demo.text(&m.context,f,12.0,5.0,14.0,s.input.palette.foreground,"Scrollable item " + str(id - 17) + "   —   wheel, drag the thumb, or Page Down") or >>
+    }
+    if id == 30 {
+        demo.text(&m.context,f,0.0,0.0,12.0,s.button.palette.muted,"The green button keeps its own font and palette. Error and read-only fields are distinct states.") or >>
+        demo.text(&m.context,f,0.0,21.0,12.0,s.button.palette.muted,"Tab / Shift+Tab to move focus · copy from read-only text · Escape to quit") or >>
+    }
+    << 0
+}
+fn (m &mut Model) paint_styled(id int,b &layout.Rect,s &widgets.Styles,f &mut draw.Frame) bool {
+    m.draw_node(id,b,s,f) or (err) { eprintln(err.msg())
+        << false }
+    << true
+}
+fn (m &mut Model) overlay_styled(id int,b &layout.Rect,s &widgets.Styles,f &mut draw.Frame) bool {
+    if id == 16 { control := mut &m.scroll
+        control.paint_scrollbar(f,s) or (err) { eprintln(err.msg())
+            << false } }
+    << true
+}
+fn (m &mut Model) input(id int,kind int,event &ui.InputEvent) widgets.Action {
+    if id == 4 { control := mut &m.theme
+        << control.route(kind,event) or >> }
+    if id == 5 { control := mut &m.scale
+        << control.route(kind,event) or >> }
+    if id == 6 { control := mut &m.density
+        << control.route(kind,event) or >> }
+    if id == 8 { control := mut &m.brand
+        << control.route(kind,event) or >> }
+    if id == 9 { control := mut &m.disabled
+        << control.route(kind,event) or >> }
+    if id == 10 { control := mut &m.check
+        << control.route(kind,event) or >> }
+    if id == 12 { control := mut &m.input
+        << control.route(kind,event) or >> }
+    if id == 13 { control := mut &m.invalid
+        << control.route(kind,event) or >> }
+    if id == 14 { control := mut &m.read_only
+        << control.route(kind,event) or >> }
+    if id == 15 { control := mut &m.area
+        << control.route(kind,event) or >> }
+    if id == 16 { control := mut &m.scroll
+        << control.route(kind,event) or >> }
+    << widgets.Action{kind: 0,id: id,needs_paint: false,request_focus: false,consumed: false,value: 0.0}
+}
+fn (m &mut Model) place(view &mut widgets.View) int {
+    input := mut &m.input
+    widgets.place_editor(view,input) or >>
+    invalid := mut &m.invalid
+    widgets.place_editor(view,invalid) or >>
+    read_only := mut &m.read_only
+    widgets.place_editor(view,read_only) or >>
+    area := mut &m.area
+    widgets.place_editor(view,area) or >>
+    bounds := view.node_bounds(16) or >>
+    styles := view.styles_for(16) or >>
+    control := mut &m.scroll
+    control.set_bounds(&layout.Rect{x: 0.0,y: 0.0,width: bounds.width,height: bounds.height}) or >>
+    control.apply_styles(&styles) or >>
+    view.set_scroll(16,0.0,control.offset()) or >>
+    << 0
+}
+fn (m &mut Model) native_event(view &mut widgets.View,event &ui.Event) int {
+    input := mut &m.input
+    action_12 := input.event(event) or >>
+    if action_12.needs_paint { view.mark_paint(12) or >> }
+    invalid := mut &m.invalid
+    action_13 := invalid.event(event) or >>
+    if action_13.needs_paint { view.mark_paint(13) or >> }
+    read_only := mut &m.read_only
+    action_14 := read_only.event(event) or >>
+    if action_14.needs_paint { view.mark_paint(14) or >> }
+    area := mut &m.area
+    action_15 := area.event(event) or >>
+    if action_15.needs_paint { view.mark_paint(15) or >> }
+    << 0
+}
+fn (m &mut Model) acknowledge() {
+    theme := mut &m.theme
+    theme.painted()
+    scale := mut &m.scale
+    scale.painted()
+    density := mut &m.density
+    density.painted()
+    brand := mut &m.brand
+    brand.painted()
+    disabled := mut &m.disabled
+    disabled.painted()
+    check := mut &m.check
+    check.painted()
+    input := mut &m.input
+    input.painted()
+    invalid := mut &m.invalid
+    invalid.painted()
+    read_only := mut &m.read_only
+    read_only.painted()
+    area := mut &m.area
+    area.painted()
+    progress := mut &m.progress
+    progress.painted()
+    scroll := mut &m.scroll
+    scroll.painted()
+}
+fn (m &mut Model) cleanup() {
+    icon := mut &m.icon
+    icon.dispose() or (err) { eprintln(err.msg())
+        << }
+    theme_label := mut &m.theme_label
+    theme_label.dispose()
+    scale_label := mut &m.scale_label
+    scale_label.dispose()
+    density_label := mut &m.density_label
+    density_label.dispose()
+    brand_label := mut &m.brand_label
+    brand_label.dispose()
+    disabled_label := mut &m.disabled_label
+    disabled_label.dispose()
+    check_label := mut &m.check_label
+    check_label.dispose()
+    input := mut &m.input
+    input.dispose()
+    invalid := mut &m.invalid
+    invalid.dispose()
+    read_only := mut &m.read_only
+    read_only.dispose()
+    area := mut &m.area
+    area.dispose()
+}
+fn leaf(view &mut widgets.View,parent int,width f64,height f64) int {
+    style := layout.box_style(layout.box_leaf)
+    << view.add(parent,&style,&layout.Size{width: width,height: height}) or >>
+}
+fn brand_scope(view &mut widgets.View) int {
+    mut brand := widgets.light_styles()
+    brand.button.palette.normal = draw.rgb(10,91,69)
+    brand.button.palette.hovered = draw.rgb(17,120,90)
+    brand.button.palette.pressed = draw.rgb(7,65,49)
+    brand.button.palette.foreground = draw.rgb(255,255,255)
+    brand.button.font.size = 17.0
+    brand.button.font.weight = 600
+    brand.button.inherit_font = false
+    brand.button.radius = 18.0
+    brand.button.icon_size = 22.0
+    brand.button.icon_placement = widgets.icon_trailing
+    mut hover := widgets.state_paint(widgets.state_hovered)
+    hover.unless = widgets.state_disabled
+    hover.fields = widgets.paint_foreground | widgets.paint_border
+    hover.foreground = draw.rgb(209,250,229)
+    hover.border = draw.rgb(110,231,183)
+    brand.button.states = [hover]
+    brand.button.shadow = draw.rgba(0,0,0,90)
+    brand.button.shadow_y = 2.0
+    brand.button.shadow_blur = 3.0
+    view.set_style_scope(8,&brand) or >>
+    << 0
+}
+fn apply_theme(view &mut widgets.View,mode int,text_scale f64,density f64) int {
+    mut styles := widgets.dark_styles()
+    if mode == 1 { styles = widgets.light_styles() }
+    if mode == 2 { styles = widgets.contrast_styles() }
+    styles.text_scale = text_scale
+    styles.density = density
+    << view.set_styles(&styles) or >>
+}
+fn scene(ech chan ui.Event) int {
+    ready := demo.ready(ech) or >>
+    if ready.kind == ui.ev_exit { << 0 }
+    identity := ui.canvas_of(&ready) or >>
+    context := draw.context_of(&ready) or >>
+    host := widgets.Host{context: context,identity: identity}
+    mut column := layout.box_style(layout.box_column)
+    column.padding = layout.insets(22.0) or >>
+    column.gap = 10.0
+    column.cross_alignment = layout.cross_stretch
+    mut view := host.view(&column,draw.rgb(20,25,34)) or >>
+    _ := leaf(mut &view,1,400.0,56.0) or >> // 2 header
+    mut row := layout.box_style(layout.box_row)
+    row.gap = 12.0
+    _ := view.add(1,&row,&layout.Size{width: 0.0,height: 0.0}) or >> // 3 toolbar
+    for i in 0:3 { _ := leaf(mut &view,3,0.0,0.0) or >> } // 4..6
+    _ := view.add(1,&row,&layout.Size{width: 0.0,height: 0.0}) or >> // 7 controls
+    for i in 0:3 { _ := leaf(mut &view,7,0.0,0.0) or >> } // 8..10
+    _ := leaf(mut &view,1,300.0,12.0) or >> // 11 progress
+    for i in 0:4 { _ := leaf(mut &view,1,300.0,0.0) or >> } // 12..15 editors
+    mut viewport := layout.box_style(layout.box_column)
+    viewport.height = 84.0
+    viewport.clip = true
+    viewport.cross_alignment = layout.cross_stretch
+    _ := view.add(1,&viewport,&layout.Size{width: 0.0,height: 0.0}) or >> // 16 scroll
+    mut items := layout.box_style(layout.box_column)
+    items.gap = 6.0
+    items.cross_alignment = layout.cross_stretch
+    _ := view.add(16,&items,&layout.Size{width: 0.0,height: 0.0}) or >> // 17 items
+    for i in 0:12 { _ := leaf(mut &view,17,300.0,28.0) or >> } // 18..29
+    _ := leaf(mut &view,1,400.0,42.0) or >> // 30 footer
+    for id in [2,4,5,6,8,9,10,11,12,13,14,15,16,30] { view.set_boundary(id,true) or >> }
+    for id in [4,5,6,8,10,12,13,14,15,16] { view.set_input(id,true,true) or >> }
+    view.set_capture_outside(16,true) or >>
+    for id in [4,5,6,8,9,10,12,13,14,15] { view.set_style_measure(id,true) or >> }
+    empty := layout.Rect{x: 0.0,y: 0.0,width: 0.0,height: 0.0}
+    mut m := Model{theme: widgets.button(&identity,4,&empty) or >>,scale: widgets.button(&identity,5,&empty) or >>,
+        density: widgets.button(&identity,6,&empty) or >>,brand: widgets.button(&identity,8,&empty) or >>,
+        disabled: widgets.button(&identity,9,&empty) or >>,check: widgets.checkbox(&identity,10,&empty,true) or >>,
+        input: widgets.input(&context,&identity,12,&empty,&"Editable input · 你好 Xu") or >>,
+        invalid: widgets.input(&context,&identity,13,&empty,&"Invalid value — custom error colors") or >>,
+        read_only: widgets.input(&context,&identity,14,&empty,&"Read-only · select and copy, edits are ignored") or >>,
+        area: widgets.text_area(&context,&identity,15,&empty,&"TextArea uses the same font, padding and selection theme.\nIME, preedit and caret geometry follow typography changes.") or >>,
+        progress: widgets.progress(&empty,0.64) or >>,scroll: widgets.scroll(&identity,16,&empty,widgets.axis_vertical,402.0) or >>,
+        context: context,icon: context.load_embedded_image(&"logo.png") or >>,mode: 0,
+        theme_label: widgets.styled_label(&context,&"Theme: dark / light / contrast"),
+        scale_label: widgets.styled_label(&context,&"Text: 100% / 140%"),
+        density_label: widgets.styled_label(&context,&"Density: normal / compact"),
+        brand_label: widgets.styled_label(&context,&"Local green"),
+        disabled_label: widgets.styled_label(&context,&"Disabled"),
+        check_label: widgets.styled_label(&context,&"Checkbox")}
+    disabled := mut &m.disabled
+    disabled.set_enabled(false)
+    invalid := mut &m.invalid
+    invalid.set_invalid(true)
+    read_only := mut &m.read_only
+    read_only.set_read_only(true) or >>
+    mut text_scale := 1.0
+    mut density := 1.0
+    apply_theme(mut &view,0,text_scale,density) or >>
+    brand_scope(mut &view) or >>
+    mut width := 960.0
+    mut height := 820.0
+    mut event := ui.Event{kind: ui.ev_none,window_id: 0,menu_id: "",width: 0,height: 0}
+    // Drain input bursts before painting. Native text snapshots already hold
+    // the latest revision; rendering each queued key would fill the frame queue.
+    while true {
+        if event.kind == ui.ev_none {
+            constraints := layout.tight(width,height) or >>
+            _ := widgets.layout_styled(mut &view,&constraints,mut &m) or >>
+            m.place(mut &view) or >>
+            if widgets.present_styled(mut &view,&constraints,mut &m) or >> { m.acknowledge() }
+            event = demo.next(ech)
+        }
+        if event.kind == ui.ev_exit { <- }
+        if event.window_id == identity.window_id {
+            if event.kind == ui.ev_canvas_closed || event.kind == ui.ev_closed { <- }
+            if event.kind == ui.ev_canvas_metrics { metrics := ui.metrics_of(&event) or >>
+                width = metrics.width
+                height = metrics.height }
+            actions := widgets.dispatch_event(mut &view,&event,mut &m) or >>
+            m.native_event(mut &view,&event) or >>
+            for action in actions {
+                if action.kind == widgets.action_activate {
+                    if action.id == 4 {
+                        m.mode = (m.mode + 1) % 3
+                        apply_theme(mut &view,m.mode,text_scale,density) or >>
+                    }
+                    if action.id == 5 { if text_scale == 1.0 { text_scale = 1.4 }
+                        else { text_scale = 1.0 }
+                        apply_theme(mut &view,m.mode,text_scale,density) or >> }
+                    if action.id == 6 { if density == 1.0 { density = 0.8 }
+                        else { density = 1.0 }
+                        apply_theme(mut &view,m.mode,text_scale,density) or >> }
+                }
+                if action.id == 16 && action.kind == widgets.action_scroll { view.set_scroll(16,0.0,action.value) or >> }
+            }
+            if ui.is_input_event(event.kind) { input := ui.input_of(&event) or >>
+                if input.kind == ui.ev_key_down && input.key == ui.key_escape { demo.quit() or >> } }
+        }
+        event = ui.poll_chan(ech)
+    }
+    view.dispose()
+    if demo.alive(&identity) { m.cleanup() }
+    << 0
+}
+fn worker(ech chan ui.Event) { scene(ech) or (err) { demo.fail(err.msg())
+    << } }
+fn main() int {
+    mut app := demo.app("Xu UI / Style Gallery",960,820) or (err) { eprintln(err.msg())
+        << 1 }
+    xu worker(app.event_ch)
+    << app.run() or (err) { eprintln(err.msg())
+        << 1 }
+}

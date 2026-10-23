@@ -17,9 +17,16 @@ XU_ROOT=/path/to/xu make run EXAMPLE=01_hello
 若改变目录布局，应相应调整这些显式依赖路径。
 输出放在忽略的 `build/`，不提交编译器或运行产物。
 
+- [UI 示例：绘图、编辑控件、菜单、屏幕查询、多窗口与 WebView 请求](examples/16_ui_webview/)
 - [示例索引](examples/README.md)
 - [语言使用帮助](USAGE.md)
 - [语言特色](FEATURES.md)
 
 UI 打包器和 HTTP 部署工具仍属于语言产品工具，可从 `$XU_ROOT/scripts/`
 调用，并用 `XU_EXAMPLES_ROOT` 或显式 `--src` / `--source` 选择本仓库内容。
+
+```sh
+make ui-list
+make ui-check UI=all
+make ui-run UI=workbench
+```

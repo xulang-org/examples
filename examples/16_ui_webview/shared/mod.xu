@@ -1,0 +1,63 @@
+@"github.com/xulang-org/examples/ui_demo"
+#ui
+#ui/draw
+#errors
+
+// All examples drain App.event_ch from one worker. Idle waits do not redraw.
+pub fn next(ech chan ui.Event) ui.Event {
+    while true {
+        event := ui.poll_chan(ech)
+        if event.kind != ui.ev_none { << event }
+        sleep_ns(8000000)
+    }
+    << ui.Event{kind: ui.ev_exit,window_id: 0,menu_id: "",width: 0,height: 0}
+}
+pub fn ready(ech chan ui.Event) ui.Event {
+    while true {
+        event := next(ech)
+        if event.kind == ui.ev_canvas_ready {
+            // Commands sent before canvas_ready can precede native attachment.
+            identity := ui.canvas_of(&event) or >>
+            window := ui.Window{id: identity.window_id,generation: identity.generation,
+                title: "",width: 0,height: 0,content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
+            window.content_command("input_enabled\t1") or >>
+            window.content_command("pan_enabled\t0") or >>
+            << event
+        }
+        if event.kind == ui.ev_exit { << event }
+    }
+    << ui.Event{kind: ui.ev_exit,window_id: 0,menu_id: "",width: 0,height: 0}
+}
+pub fn app(title string,width int,height int) ui.App {
+    mut app := ui.new_app()
+    mut window := app.new_window(ui.WindowOpts{title: title,width: width,height: height})
+    if draw.attach(mut &window) < 0 { >> errors.new("demo: failed to attach draw content") }
+    << app
+}
+// Window commands share the main App's channel without starting another pump.
+// This value is only a command owner; the original App owns run()/event pumping.
+pub fn windows(ech chan ui.Event) ui.App {
+    post := chan int{cap: 1}
+    << ui.App{next_id: 1,icon: ui.Icon{path: ""},quit_flag: 0,sim: 0,event_ch: ech,post_ch: post,
+              menu_ids: []string{},win_title: "",win_w: 800,win_h: 600}
+}
+pub fn alive(identity &ui.CanvasEvent) bool {
+    window := ui.Window{id: identity.window_id,generation: identity.generation,
+        title: "",width: 0,height: 0,content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
+    << window.is_open()
+}
+pub fn background() draw.Color { << draw.rgb(17,24,34) }
+pub fn ink() draw.Color { << draw.rgb(237,242,247) }
+pub fn muted() draw.Color { << draw.rgb(157,173,190) }
+pub fn accent() draw.Color { << draw.rgb(78,205,196) }
+// Inline labels copy their UTF-8 into the frame. Explicit TextLayout handles
+// must instead remain live until present/freeze/snapshot has accepted them.
+pub fn text(context &draw.Context,frame &mut draw.Frame,x f64,y f64,size f64,color draw.Color,value string) int {
+    << frame.text(x,y,size,color,&value) or >>
+}
+pub fn quit() int { << ui.append_shell_cmd("quit_app") or >> }
+pub fn fail(message string) {
+    eprintln(message)
+    quit() or (err) { eprintln(err.msg())
+        << }
+}
