@@ -1,78 +1,72 @@
-# 16 — UI + WebView 桌面应用示例
+# 16 — 原生 UI 与 WebView 示例
 
-<p align="center"><img src="../../../brand/xu_classic.svg" alt="Xu" width="72" height="72"></p>
+这组示例覆盖 Xu 0.10.0 至 0.10.1-dev.3 新增的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、webview_requests，最后用图片工作台串起各层。
 
-对应 U 轨：`#ui` 窗口/菜单/托盘 + `#ui/webview` 内容槽。
+| 示例 | 内容 | 主要操作 |
+|---|---|---|
+| [draw](draw/) | Frame、逻辑坐标、变换栈、裁剪、指针 | 点击圆、调整窗口 |
+| [draw_gallery](draw_gallery/) | 路径、渐变、PNG、排版、图层、DisplayList、SurfaceCache | Space 切换缓存、R 失效 |
+| [widgets](widgets/) | 约束布局、控件、焦点、捕获、滚动、重绘边界 | Tab、Enter、勾选、滚动 |
+| [text_input](text_input/) | IME、预编辑、UTF-8 选区、光标几何 | 输入中文/emoji、选择、删除 |
+| [desktop_services](desktop_services/) | 剪贴板、文件/保存/目录、提示、取消/超时 | 按 1–6、观察请求终态 |
+| [multiwindow](multiwindow/) | 动态原生窗口、独立 Canvas、集中事件路由 | N/W/F/R、关闭首窗 |
+| [workbench](workbench/) | 图片浏览与独立预览的综合应用 | 选择图片、缩放窗口 |
+| [editor_workbench](editor_workbench/) | Input、TextArea、结构化菜单、屏幕查询 | 文字编辑、Tab、快捷键、Document 菜单 |
+| [style_gallery](style_gallery/) | 统一主题、字体缩放、密度、局部覆盖、状态与滚动条 | 点击 Theme/Text/Density、编辑、拖动滑块 |
+| [webview_requests](webview_requests/) | WebView 并发、取消、超时、大文本、原生查询 | Run all checks、请求中关闭窗口 |
+| [open](open/) | 原有 WebView、菜单、托盘示例 | 网页与原生壳交互 |
+| [shaped](shaped/) | 原有透明异形窗口 | 拖动窗口 |
+| [remote](remote/) | 原有远程 WebView + Xu IPC | 先启动 remote_http 服务 |
 
-**分层**： bootstrap 只编译 Xu；打包用产品 xu：`xu doctor` / `xu build <App> --desktop`。
+## 统一入口
 
-## 桌面应用目录约定（固定）
+基础示例需要 **Xu 0.10.0+**，`editor_workbench` 与 `webview_requests` 需要 **Xu 0.10.1-dev.2+**，`style_gallery` 需要 **Xu 0.10.1-dev.3+**。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
 
-每个应用是独立项目根：
-
-```text
-App/
- xu.xun # 必需：module / require 包映射
- main.xu # 入口（必需）
- www/ # 本地 xu:// 静态页（有 #ui/webview 时；可选）
- index.html
- brand/ # 品牌资源（图标必需）
- xu_app_logo.png # 桌面图标 / 异形蒙版（亦认 brand/icon.png、xu_app_icon.png）
- xu_classic.svg # 内容标识（页面 / favicon）
+```sh
+python3 scripts/ui_examples.py list
+python3 scripts/ui_examples.py check all
+python3 scripts/ui_examples.py build draw_gallery
+python3 scripts/ui_examples.py run workbench
+# 已打包后再次运行：
+python3 scripts/ui_examples.py run workbench --no-build
+# 指定目标（须具备对应工具链）：
+python3 scripts/ui_examples.py build widgets --target windows-x64
+# 同样可用 Make：
+make ui-list
+make ui-check UI=all
+make ui-run UI=workbench
 ```
 
-**必需**：`App/brand/` 下至少有一个 PNG 图标（`icon.png` / `xu_app_icon.png` / `xu_app_logo.png`）。pack **不会**回退到仓库根 `brand/`。
+所有产物写入忽略的 `build/ui/<target>/`。macOS 输出 `.app`，Windows 输出 `.exe`，Linux 输出原生可执行文件。跨平台 `build` 由对应工具链执行，`run` 只允许本机目标；示例启动器不会自动安装系统依赖。WebView 示例还需要对应的 WebView 工具链。
 
-本目录下的应用：
+使用产品命令直接打包时，当前桌面打包器从工作目录向上查找 `src/ui/host`，因此先进入 Xu 源码目录，再传入应用的绝对路径：
 
-| 应用 | 路径 | 说明 |
-|------|------|------|
-| open | [`open/`](open/) | 标准窗 + WebView + 菜单/托盘 |
-| shaped | [`shaped/`](shaped/) | 异形窗（无 WebView） |
-| shaped_webview | [`shaped_webview/`](shaped_webview/) | 异形 + WebView |
-| draw | [`draw/`](draw/) | 直绘画布 `#ui/draw`（无 WebView） |
-| remote | [`remote/`](remote/) | 远程 HTTP 文档 + `xu://` IPC |
-| remote_http | [`remote_http/`](remote_http/) | 仅测试用静态服（非桌面应用） |
-
-## 打包 / 运行
-
-`--desktop` **必须**指定应用目录（不能传 `.xu` 文件），目录内必须有 `xu.xun`。**macOS 直接产出 `.app`**（`-o Foo` → `Foo.app`；缺省用目录名）：
-
-```bash
-xu doctor --desktop --target macos-arm64
-
-xu build examples/16_ui_webview/open \
- --target macos-arm64 --desktop -o /tmp/XuOpen
-open /tmp/XuOpen.app
-
-xu build examples/16_ui_webview/shaped \
- --target macos-arm64 --desktop -o /tmp/XuShaped
-open /tmp/XuShaped.app
-
-xu build examples/16_ui_webview/shaped_webview \
- --target macos-arm64 --desktop -o /tmp/XuShapedWebView
-
-xu build examples/16_ui_webview/draw \
- --target macos-arm64 --desktop -o /tmp/XuDraw
+```sh
+cd /path/to/xu
+bin/xu doctor --desktop --target macos-arm64
+bin/xu build /path/to/examples/examples/16_ui_webview/workbench \
+  --target macos-arm64 --desktop -o /tmp/XuWorkbench
+open /tmp/XuWorkbench.app
 ```
 
-其它 target：
+统一启动器会代为设置该工作目录。`--desktop` 接收含 `xu.xun` 的应用目录。每个应用自带 `brand/` PNG 图标；资源图库另有内嵌 `www/sample.png`，其余原生示例不需要 HTML。共享模块通过本地 `file:` 依赖导入，不需联网。
 
-```bash
-xu build …/open --target macos-x64 --desktop -o /tmp/XuOpen
-# windows/linux --desktop：本刀报「未实现」（不回退 ）
-```
+## 读代码时关注
 
-产品路径 **零 **：`xu doctor` / `xu build … --desktop` 在 `src/cmd/compile` 内编排（`--emit-obj` → XUOBJ→Mach-O → swiftc/clang/ar → `.app` + icns/codesign）。`scripts/pack_*.py` 仅 CI/调试。
+- 只有一个 worker 消费 `App.event_ch`，先等 `canvas_ready` 再创建原生资源。
+- `window_id`、`canvas_id`、generation 一起确定目标，关闭后不复用旧 Context。
+- 一个完整 Frame 只提交一次；空闲不重绘；View 按脏节点更新并复用重绘边界。
+- TextLayout、Image、DisplayList、SurfaceCache 和文本会话都有明确释放位置。尚未提交的 Frame 仅记录资源引用，相关句柄必须保留到 `present`、`freeze` 或 `snapshot` 成功；接受后才由原生帧持有资源版本。普通标签直接记录内联文字。
+- 文件选择返回路径；剪贴板、提示和对话框通过请求终态完成，不阻塞事件消费者。
+- `text_input` 演示低层 IME 会话；`editor_workbench` 展示可复用 Input / TextArea。滚动示例展示保留节点的可见区绘制，不宣称按需构建的虚拟列表。
 
-`www/` 由 pack 按入口旁路嵌入；`brand/` 图标必须在应用目录内（缺则报错退出）。App 图标同时进 `Contents/Resources/AppIcon.icns`。
+各 README 给出操作、API 和生命周期说明。此处示例支持的具体能力以当前宿主实现与系统工具链为准。
 
-### 远程 HTTP 自测
+## 远程网页
 
-```bash
+```sh
 python3 examples/16_ui_webview/remote_http/serve.py
-xu build examples/16_ui_webview/remote \
- --target macos-arm64 --desktop -o /tmp/XuRemote
-open /tmp/XuRemote.app
-# 可选：XU_UI_REMOTE_URL=http://127.0.0.1:8765/
+# 另一个终端：
+python3 scripts/ui_examples.py run remote
+# 可选 XU_UI_REMOTE_URL=http://127.0.0.1:8765/
 ```

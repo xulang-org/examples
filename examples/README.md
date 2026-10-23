@@ -35,7 +35,7 @@ chmod +x /tmp/xu_ex && /tmp/xu_ex
 | [`13_http_context`](13_http_context) | HTTP Context / mux | `../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build examples/13_http_context/main.xu -o /tmp/xu_13_ctx && /tmp/xu_13_ctx` |
 | [`14_tcp_echo`](14_tcp_echo) | TCP echo | `../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build examples/14_tcp_echo/main.xu -o /tmp/xu_14_tcp && /tmp/xu_14_tcp` |
 | [`15_udp_echo`](15_udp_echo) | UDP echo | `../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build examples/15_udp_echo/main.xu -o /tmp/xu_15_udp && /tmp/xu_15_udp` |
-| [`16_ui_webview`](16_ui_webview) | UI + WebView 桌面应用（`App/main.xu`+`www/`+`brand/`） | `xu build examples/16_ui_webview/open --target macos-arm64 --desktop -o /tmp/xu_open && /tmp/xu_open` |
+| [`16_ui_webview`](16_ui_webview) | 原生 UI 学习路径与综合工作台，另含 WebView | `python3 scripts/ui_examples.py run workbench` |
 | [`16_ui_webview/xu_design_system`](16_ui_webview/xu_design_system) | 设计系统静态 HTTP 服务 | `../xu/scripts/deploy_xu_server.sh build-local --source examples/16_ui_webview/xu_design_system/server.xu` |
 | [`17_database_postgres`](17_database_postgres) | PostgreSQL：连接、查询、Prepare、事务 | `../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build examples/17_database_postgres/main.xu -o /tmp/xu_17_postgres && chmod +x /tmp/xu_17_postgres && /tmp/xu_17_postgres` |
 | [`18_database_mysql`](18_database_mysql) | MySQL/MariaDB：连接、查询、Prepare、事务 | `../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build examples/18_database_mysql/main.xu -o /tmp/xu_18_mysql && chmod +x /tmp/xu_18_mysql && /tmp/xu_18_mysql` |
