@@ -80,6 +80,10 @@ def main() -> int:
                XU_EXAMPLES_ROOT=str(ROOT), XUPATH="", XU_CACHE=str(ROOT / "build" / "ui" / "package-cache"))
     for key in ("XUOS", "XUARCH", "XU_BOOT_EXTRA", "XU_UI_SIM", "XU_UI_PACK", "XU_UI_TMP"):
         env.pop(key, None)
+    # The released compiler selects its larger task stack while emitting UI
+    # objects. Set the profile before the desktop packager invokes it.
+    if args.action != "check":
+        env["XU_UI_PACK"] = "1"
     names = list(SAMPLES) if args.sample == "all" else [args.sample]
     for name in names:
         project = APPLICATIONS / name

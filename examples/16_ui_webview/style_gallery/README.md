@@ -13,14 +13,20 @@ XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py run style_gallery
 
 | API | 用法与边界 |
 |---|---|
-| `dark_styles()` / `light_styles()` / `contrast_styles()` | 创建完整 `Styles`；修改后 `validate()`，非法值抛出错误 |
+| `dark_styles()` / `light_styles()` / `contrast_styles()` / `preset_styles()` | 创建完整 `Styles`；修改后 `validate()`，非法值抛出错误 |
+| `StyleSwitcher` / `style_switcher()` | 统一管理主题预设、自定义命名主题、`text_scale` 与 `density`，通过 `apply(view)` / `cycle(view)` 一键切换 |
 | `Styles.font` / `text_scale` / `density` | 字体与文字缩放独立于几何密度；缩放和密度范围均为 0.5–4.0 |
-| `ControlStyle` | 各控件独立的调色板、字体继承、内边距、圆角、边框、焦点、最小尺寸、对齐、图标和阴影 |
+| `ControlStyle` / `set_style()` / `clear_style()` | 支持“全局 `Styles` + `View` 子树作用域 + 单控件实例 `set_style`”三级优先级覆盖 |
 | `state_paint(when)` / `ControlStyle.states` | 组合状态规则；设置 `fields` 才覆盖相应字段，后匹配规则胜出，最多 32 条 |
-| `StyledLabel` | 拥有标签文字与排版缓存；改色复用排版，字体变化重新排版，用完 `dispose()` |
-| `Button.paint_icon_styled` | 图片保持纵横比；支持 leading / trailing / above / below，调用者持有 Image |
-| `Editor.apply_styles` / `paint_styled` | 字体、行高、占位、选区、光标与预编辑；`set_read_only` 切换只读 |
-| `Scroll.apply_styles` / `paint_scrollbar` | 调整条宽与滑块几何，在 `overlay_styled` 中绘制滚动条 |
+| `StyledLabel` / `paint_box_styled` | 拥有标签文字与排版缓存，支持 `paint_styled` / `paint_text_styled` 与通用容器盒子绘制，用完 `dispose()` |
+| `Button.paint_icon_styled` / `Checkbox.paint_styled` | 图标与复选框均支持 leading / trailing / above / below 排布及 `align_x` / `align_y` 对齐 |
+| `Progress.measure_styled` / `paint_styled` | 支持基于 `min_width` / `min_height` / `padding` / `density` 的自动测量与内缩圆角进度填充 |
+| `Switch` / `Radio` / `Slider` | 拨动开关、单选框、滑块（支持鼠标拖拽与键盘步进），均支持 `Styles.switch_style()` / `radio_style()` / `slider_style()` 与单实例 `set_style` |
+| `Tabs` / `segmented()` / `Select` | 分段控制器/标签栏与下拉选择框（支持内联步进、弹出面板 `paint_popup_styled` 与键盘导航） |
+| `Divider` / `Badge` / `Card` | 水平/垂直分割线（支持带标题分割 `paint_labeled_styled`）、状态徽章（支持圆点指示器与四向排布）、带标题卡片容器 |
+| `Stepper` / `ListBox` | 数值加减步进器与可滚动单选列表框（支持滚轮滚动、键盘翻页与自动滚动可见 `ensure_visible`） |
+| `Editor.apply_styles` / `paint_styled` | 字体、行高、水平/垂直对齐、占位、选区、光标与预编辑；`set_read_only` 切换只读 |
+| `Scroll.measure_styled` / `paint_scrollbar` | 调整条宽与滑块几何，在 `overlay_styled` 中绘制滚动条 |
 
 状态位为 disabled=1、hovered=2、pressed=4、focused=8、selected=16、invalid=32、read_only=64。规则要求全部 `when` 位存在、全部 `unless` 位不存在；只覆盖 `paint_*` 掩码指定的字段。默认背景优先级为禁用、错误、只读、选中、按下、悬停、普通。
 

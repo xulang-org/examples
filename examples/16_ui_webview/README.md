@@ -45,12 +45,12 @@ make ui-run UI=workbench
 ```sh
 cd /path/to/xu
 bin/xu doctor --desktop --target macos-arm64
-bin/xu build /path/to/examples/examples/16_ui_webview/workbench \
+XU_UI_PACK=1 bin/xu build /path/to/examples/examples/16_ui_webview/workbench \
   --target macos-arm64 --desktop -o /tmp/XuWorkbench
 open /tmp/XuWorkbench.app
 ```
 
-统一启动器会代为设置该工作目录。`--desktop` 接收含 `xu.xun` 的应用目录。每个应用自带 `brand/` PNG 图标；资源图库另有内嵌 `www/sample.png`，其余原生示例不需要 HTML。共享模块通过本地 `file:` 依赖导入，不需联网。
+统一启动器会代为设置该工作目录与 `XU_UI_PACK=1` 编译配置，使桌面 worker 使用 1 MiB 栈；直接打包时也设置该变量，避免复杂 UI 超出普通任务的 128 KiB 栈。`--desktop` 接收含 `xu.xun` 的应用目录。每个应用自带 `brand/` PNG 图标；资源图库另有内嵌 `www/sample.png`，其余原生示例不需要 HTML。共享模块通过本地 `file:` 依赖导入，不需联网。
 
 ## 读代码时关注
 
