@@ -1,6 +1,6 @@
 # WebView request lifecycle
 
-使用 Xu 0.10.1 正式版 的本地 WebView 示例，无 HTTP 服务器。
+使用 Xu 0.10.2 正式版 的本地 WebView 示例，无 HTTP 服务器。
 
 ```sh
 python3 scripts/ui_examples.py run webview_requests

@@ -23,7 +23,7 @@ python3 scripts/ui_examples.py build draw
 
 点击青色圆增加计数；调整窗口大小触发重绘；Esc 退出。
 
-画布默认保持固定，拖拽和滚轮不会自动移动整幅图。Xu 0.10.1-dev.1 起三个桌面后端都默认关闭相机平移；需要移动画布的应用可在 `canvas_ready` 后调用 `draw.set_pan_enabled(1)`。示例也显式关闭平移，以兼容 Xu 0.10.0。
+画布默认保持固定，拖拽和滚轮不会自动移动整幅图。Xu 0.10.2-dev.1 起三个桌面后端都默认关闭相机平移；需要移动画布的应用可在 `canvas_ready` 后调用 `draw.set_pan_enabled(1)`。示例也显式关闭平移，以兼容 Xu 0.10.0。
 
 ## 代码要点
 

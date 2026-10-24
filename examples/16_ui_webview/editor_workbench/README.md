@@ -1,6 +1,6 @@
 # Writing desk
 
-Xu 0.10.1 正式版 原生 Input、TextArea、结构化菜单与显示器查询示例。
+Xu 0.10.2 正式版 原生 Input、TextArea、结构化菜单与显示器查询示例。
 
 ```sh
 python3 scripts/ui_examples.py run editor_workbench

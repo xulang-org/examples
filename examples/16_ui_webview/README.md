@@ -1,6 +1,6 @@
 # 16 — 原生 UI 与 WebView 示例
 
-这组示例覆盖 Xu 0.10.1 正式版及 0.10.2-dev 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
+这组示例覆盖 Xu 0.10.2 正式版及 0.10.2-dev 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
@@ -22,7 +22,7 @@
 
 ## 统一入口
 
-整组示例需要 **Xu 0.10.1+**（新增组件与样式画廊支持 **0.10.2-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
+整组示例需要 **Xu 0.10.2+**（新增组件与样式画廊支持 **0.10.2-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
 
 ```sh
 python3 scripts/ui_examples.py list
