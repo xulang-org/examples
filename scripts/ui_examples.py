@@ -22,6 +22,8 @@ SAMPLES = {
     "multiwindow": "Dynamic windows, independent canvases and one event channel",
     "workbench": "Image browser combining layout, controls, file requests and preview windows",
     "editor_workbench": "Input, TextArea, structured menus and actual screen queries",
+    "component_catalog": "Tables, trees, inputs, anchored overlays, modal focus and feedback",
+    "date_time": "Calendar date picker, segmented time picker and typed time values",
     "style_gallery": "Control themes, typography, density, local overrides and styled scrollbars",
     "webview_requests": "Concurrent WebView invokes, cancellation, deadlines and native queries",
     "open": "Existing WebView, menu and tray example",
@@ -76,8 +78,10 @@ def main() -> int:
         release = tuple(map(int, version.groups()[:3]))
         if release < (0, 10, 1) or (release == (0, 10, 1) and version.group(4) is not None and int(version.group(4)) < 2):
             parser.error("editor_workbench and webview_requests require Xu 0.10.1-dev.2 or newer")
-    if "style_gallery" in selected and (tuple(map(int, version.groups()[:3])) < (0, 10, 1) or (tuple(map(int, version.groups()[:3])) == (0, 10, 1) and version.group(4) and int(version.group(4)) < 3)):
-        parser.error("style_gallery requires Xu 0.10.1-dev.3 or newer")
+    if any(name in ("style_gallery", "date_time", "component_catalog") for name in selected):
+        release = tuple(map(int, version.groups()[:3]))
+        if release < (0, 10, 2):
+            parser.error("style_gallery, date_time and component_catalog require Xu 0.10.2-dev.1 or newer")
     output = ROOT / "build" / "ui" / target
     output.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, XU_ROOT=str(compiler_root), XU_STDLIB_ROOT=str(compiler_root / "src"),
