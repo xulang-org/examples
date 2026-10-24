@@ -182,7 +182,9 @@ fn new_model(screen &mut widgets.Screen) Model {
     << m
 }
 fn scene(events chan ui.Event) int {
+    eprintln("scene: enter, waiting ready")
     ready := demo.ready(events) or >>
+    eprintln("scene: ready received, kind=" + str(ready.kind))
     if ready.kind == ui.ev_exit { << 0 }
     mut screen := widgets.screen(&ready) or >>
     screen.resize(1040.0,820.0) or >>
@@ -191,10 +193,27 @@ fn scene(events chan ui.Event) int {
         >> err }
     << widgets.run_screen(mut &screen,events,mut &model) or >>
 }
-fn worker(events chan ui.Event) { scene(events) or (err) { demo.fail(err.msg())
-    << } }
-fn launch() int { mut app := demo.app("Xu UI / Component Catalog",1040,820) or >>
+fn worker(events chan ui.Event) {
+    eprintln("worker: enter")
+    scene(events) or (err) { demo.fail(err.msg())
+        << }
+    eprintln("worker: exit")
+}
+fn launch() int {
+    eprintln("launch: calling demo.app")
+    mut app := demo.app("Xu UI / Component Catalog",1040,820) or (err) {
+        eprintln("launch: demo.app failed: " + err.msg())
+        >> err
+    }
+    eprintln("launch: spawning worker")
     xu worker(app.event_ch)
-    << app.run() or >> }
+    eprintln("launch: calling app.run")
+    rc := app.run() or (err) {
+        eprintln("launch: app.run failed: " + err.msg())
+        >> err
+    }
+    eprintln("launch: app.run returned " + str(rc))
+    << rc
+}
 fn main() int { << launch() or (err) { eprintln(err.msg())
     << 1 } }
