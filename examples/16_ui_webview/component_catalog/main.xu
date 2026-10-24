@@ -1,922 +1,200 @@
 @main
 #ui
-#ui/draw
 #ui/widgets
-#ui/layout
+#ui/draw
 #time
 #math
 demo #"github.com/xulang-org/examples/ui_demo"
 
-struct Command {
-    control widgets.Button
-    label widgets.StyledLabel
-}
-fn command(context &draw.Context,identity &ui.CanvasEvent,id int,text string) Command {
-    bounds := layout.Rect{x: 0.0,y: 0.0,width: 0.0,height: 0.0}
-    control := widgets.button(identity,id,&bounds) or >>
-    label := widgets.styled_label(context,&text)
-    << Command{control: control,label: label}
-}
-fn (item &mut Command) place(x f64,y f64,width f64,height f64) int {
-    control := mut &item.control
-    << control.set_bounds(&layout.Rect{x: x,y: y,width: width,height: height}) or >>
-}
-fn (item &mut Command) paint(frame &mut draw.Frame,styles &widgets.Styles) int {
-    control := item.control
-    label := mut &item.label
-    << control.paint_styled(frame,label,styles) or >>
-}
-fn (item &mut Command) input(event &ui.InputEvent) widgets.Action {
-    control := mut &item.control
-    << control.input(event)
-}
-fn (item &mut Command) focus(focused bool) {
-    control := mut &item.control
-    control.set_focus(focused)
-}
-fn (item &mut Command) acknowledge() { control := mut &item.control
-    control.painted() }
-fn (item &mut Command) selected(selected bool) { control := mut &item.control
-    control.set_selected(selected) }
-fn (item &mut Command) cancel() { control := mut &item.control
-    control.cancel() }
-fn (item &mut Command) dispose() { label := mut &item.label
-    label.dispose() }
-
+// The model contains business choices and screen-local handles only.
 struct Model {
-    identity ui.CanvasEvent
-    context draw.Context
-    window ui.Window
-    styles widgets.Styles
-    theme int
     page int
-    focus_id int
-    pointer int
-    reduced bool
-    now time.Instant
-    width f64
-    height f64
-    note string
-    nav_data Command
-    nav_inputs Command
-    nav_overlays Command
-    theme_button Command
-    text_button Command
-    density_button Command
-    pop_button Command
-    modal_button Command
-    toast_button Command
-    hint_button Command
-    modal_save Command
-    modal_close Command
-    table widgets.Table
-    tree widgets.TreeView
-    pager widgets.Pagination
-    crumbs widgets.Breadcrumbs
-    combo widgets.ComboBox
-    multi widgets.MultiSelect
-    color widgets.ColorPicker
-    spinner widgets.Spinner
-    pop widgets.Popover
-    modal widgets.Modal
-    tooltip widgets.Tooltip
-    toast widgets.Toast
-    pop_label widgets.StyledLabel
-    tip_label widgets.StyledLabel
-    toast_label widgets.StyledLabel
+    theme int
+    nav []int
+    settings []int
+    pages []int
+    headings []int
+    captions []int
+    table int
+    tree int
+    pager int
+    crumbs int
+    combo int
+    multi int
+    color int
+    spinner int
+    overlay_buttons []int
+    popover int
+    modal int
+    modal_actions []int
+    value_label int
+    note int
 }
-fn (m &mut Model) fill_table() int {
+fn (m &Model) fill_table(screen &mut widgets.Screen) int {
     names := ["Compiler","Widgets","Runtime","Desktop","Examples","Tooling"]
     states := ["Ready","Review","Ready","Draft","Ready","Review"]
     clocks := ["10:30","11:15","09:40","12:00","10:05","08:50"]
     mut order := [0,1,2,3,4,5]
-    col := m.table.sort_column()
+    col := screen.sort_column(m.table) or >>
     if col == 0 { order = [0,3,4,2,5,1] }
     if col == 1 { order = [3,0,2,4,1,5] }
     if col == 2 { order = [5,2,4,0,1,3] }
-    desc := m.table.sort_descending()
-    page := m.pager.selected() + 1
-    table := mut &m.table
+    desc := screen.sort_descending(m.table) or >>
+    page := (screen.selected(m.pager) or >>) + 1
     for row in 0:6 {
         mut slot := row
         if desc { slot = 5 - row }
         i := order[slot]
-        name := names[i] + " / " + str(page)
-        table.set_cell(row,0,&name) or >>
-        table.set_cell(row,1,&states[i]) or >>
-        table.set_cell(row,2,&clocks[i]) or >>
+        screen.set_cell(m.table,row,0,names[i] + " / " + str(page)) or >>
+        screen.set_cell(m.table,row,1,states[i]) or >>
+        screen.set_cell(m.table,row,2,clocks[i]) or >>
     }
     << 0
 }
-fn (m &mut Model) focus(id int) int {
-    if m.focus_id == id { << 0 }
-    m.focus_id = id
-    a := mut &m.nav_data
-    a.focus(id == 1)
-    b := mut &m.nav_inputs
-    b.focus(id == 2)
-    c := mut &m.nav_overlays
-    c.focus(id == 3)
-    theme := mut &m.theme_button
-    theme.focus(id == 4)
-    text := mut &m.text_button
-    text.focus(id == 5)
-    density := mut &m.density_button
-    density.focus(id == 6)
-    table := mut &m.table
-    table.set_focus(id == 20)
-    tree := mut &m.tree
-    tree.set_focus(id == 21)
-    pager := mut &m.pager
-    pager.set_focus(id == 22)
-    crumbs := mut &m.crumbs
-    crumbs.set_focus(id == 23)
-    combo := mut &m.combo
-    combo.focus_session(id == 30) or >>
-    multi := mut &m.multi
-    multi.set_focus(id == 31)
-    color := mut &m.color
-    color.set_focus(id == 32)
-    pop := mut &m.pop_button
-    pop.focus(id == 40)
-    modal := mut &m.modal_button
-    modal.focus(id == 41)
-    toast := mut &m.toast_button
-    toast.focus(id == 42)
-    hint := mut &m.hint_button
-    hint.focus(id == 43)
-    now := m.now
-    feedback := mut &m.toast
-    feedback.set_focus(id == 63,now) or >>
-    tip := mut &m.tooltip
-    tip.set_focus(id == 43,now) or >>
+fn (m &mut Model) layout(screen &mut widgets.Screen) int {
+    width := screen.width()
+    height := screen.height()
+    row := screen.row_height()
+    for i in 0:3 {
+        screen.place(m.nav[i],28.0 + f64(i) * 124.0,142.0,112.0,row) or >>
+        screen.set_selected_button(m.nav[i],m.page == i) or >>
+        screen.set_visible(m.pages[i],m.page == i) or >>
+        screen.place(m.settings[i],width - 420.0 + f64(i) * 132.0,142.0,120.0,row) or >>
+    }
+    screen.place(m.headings[0],28.0,26.0,width - 56.0,24.0) or >>
+    screen.place(m.headings[1],28.0,61.0,width - 56.0,46.0) or >>
+    screen.place(m.headings[2],28.0,108.0,width - 56.0,30.0) or >>
+    screen.place(m.crumbs,28.0,204.0,width - 56.0,row) or >>
+    screen.place(m.note,28.0,height - 48.0,width - 56.0,30.0) or >>
+    content := math.max(160.0,height - 420.0)
+    screen.place(m.captions[0],28.0,253.0,width * 0.62 - 40.0,30.0) or >>
+    screen.place(m.captions[1],width * 0.62 + 12.0,253.0,width * 0.38 - 40.0,30.0) or >>
+    screen.place(m.table,28.0,280.0,width * 0.62 - 40.0,content) or >>
+    screen.place(m.tree,width * 0.62 + 12.0,280.0,width * 0.38 - 40.0,content) or >>
+    screen.place(m.pager,28.0,height - 118.0,380.0,row) or >>
+    screen.place(m.captions[2],28.0,253.0,400.0,30.0) or >>
+    screen.place(m.captions[3],28.0,363.0,400.0,30.0) or >>
+    screen.place(m.captions[4],450.0,253.0,width - 478.0,30.0) or >>
+    screen.place(m.combo,28.0,280.0,370.0,row) or >>
+    screen.place(m.multi,28.0,390.0,370.0,row) or >>
+    screen.place(m.color,450.0,280.0,width - 478.0,240.0) or >>
+    screen.place(m.spinner,28.0,562.0,28.0,28.0) or >>
+    screen.place(m.captions[5],70.0,568.0,width - 98.0,30.0) or >>
+    screen.place(m.value_label,28.0,620.0,width - 56.0,36.0) or >>
+    screen.place(m.captions[6],28.0,253.0,width - 56.0,30.0) or >>
+    for i in 0:4 { screen.place(m.overlay_buttons[i],28.0 + f64(i) * 208.0,280.0,190.0,row) or >>
+        screen.place(m.captions[i + 7],28.0,365.0 + f64(i) * 40.0,width - 56.0,32.0) or >> }
+    screen.place(m.modal_actions[0],24.0,210.0,194.0,row) or >>
+    screen.place(m.modal_actions[1],234.0,210.0,194.0,row) or >>
     << 0
 }
-fn (m &mut Model) modal_focus() {
-    id := m.modal.focused_id()
-    save := mut &m.modal_save
-    save.focus(id == 50)
-    close := mut &m.modal_close
-    close.focus(id == 51)
-}
-fn (m &mut Model) place() int {
-    width := m.width
-    height := m.height
-    styles := m.styles.clone()
-    row := math.max(36.0 * styles.density,29.0 * styles.text_scale)
-    page := m.page
-    a := mut &m.nav_data
-    a.place(28.0,142.0,112.0,row) or >>
-    a.selected(page == 0)
-    b := mut &m.nav_inputs
-    b.place(152.0,142.0,112.0,row) or >>
-    b.selected(page == 1)
-    c := mut &m.nav_overlays
-    c.place(276.0,142.0,112.0,row) or >>
-    c.selected(page == 2)
-    theme := mut &m.theme_button
-    theme.place(width - 420.0,142.0,120.0,row) or >>
-    text := mut &m.text_button
-    text.place(width - 288.0,142.0,120.0,row) or >>
-    density := mut &m.density_button
-    density.place(width - 156.0,142.0,128.0,row) or >>
-    crumbs := mut &m.crumbs
-    crumbs.set_bounds(&layout.Rect{x: 28.0,y: 204.0,width: width - 56.0,height: row}) or >>
-    crumbs.apply_styles(&styles) or >>
-    if m.page == 0 {
-        content := math.max(160.0,height - 420.0)
-        table := mut &m.table
-        table.set_bounds(&layout.Rect{x: 28.0,y: 280.0,width: width * 0.62 - 40.0,height: content}) or >>
-        table.apply_styles(&styles) or >>
-        tree := mut &m.tree
-        tree.set_bounds(&layout.Rect{x: width * 0.62 + 12.0,y: 280.0,width: width * 0.38 - 40.0,height: content}) or >>
-        tree.apply_styles(&styles) or >>
-        pager := mut &m.pager
-        pager.set_bounds(&layout.Rect{x: 28.0,y: height - 118.0,width: 380.0,height: row}) or >>
-        pager.apply_styles(&styles) or >>
-    } else if m.page == 1 {
-        combo := mut &m.combo
-        combo.set_bounds(&layout.Rect{x: 28.0,y: 280.0,width: 370.0,height: row}) or >>
-        combo.apply_styles(&styles) or >>
-        multi := mut &m.multi
-        multi.set_bounds(&layout.Rect{x: 28.0,y: 390.0,width: 370.0,height: row}) or >>
-        multi.apply_styles(&styles) or >>
-        color := mut &m.color
-        size := color.measure_styled(&styles) or >>
-        color.set_bounds(&layout.Rect{x: 450.0,y: 280.0,width: width - 478.0,height: size.height}) or >>
-        spinner := mut &m.spinner
-        spinner.set_bounds(&layout.Rect{x: 28.0,y: 562.0,width: 28.0,height: 28.0}) or >>
-    } else {
-        pop := mut &m.pop_button
-        pop.place(28.0,280.0,190.0,row) or >>
-        modal := mut &m.modal_button
-        modal.place(236.0,280.0,190.0,row) or >>
-        toast := mut &m.toast_button
-        toast.place(444.0,280.0,190.0,row) or >>
-        hint := mut &m.hint_button
-        hint.place(652.0,280.0,190.0,row) or >>
-    }
-    viewport := layout.Rect{x: 12.0,y: 12.0,width: width - 24.0,height: height - 24.0}
-    anchor := m.pop_button.control.bounds()
-    pop := mut &m.pop
-    pop.set_geometry(&anchor,&layout.Size{width: 310.0,height: 146.0},&viewport) or >>
-    hint := m.hint_button.control.bounds()
-    tip := mut &m.tooltip
-    tip.set_geometry(&hint,&layout.Size{width: 280.0,height: 64.0},&viewport) or >>
-    panel := layout.Rect{x: (width - 460.0) * 0.5,y: (height - 280.0) * 0.5,width: 460.0,height: 280.0}
-    modal := mut &m.modal
-    canvas := layout.Rect{x: 0.0,y: 0.0,width: width,height: height}
-    modal.set_geometry(&panel,&canvas) or >>
-    save := mut &m.modal_save
-    save.place(panel.x + 24.0,panel.y + 210.0,194.0,row) or >>
-    close := mut &m.modal_close
-    close.place(panel.x + 234.0,panel.y + 210.0,194.0,row) or >>
-    toast := mut &m.toast
-    toast.set_bounds(&layout.Rect{x: width - 408.0,y: height - 86.0,width: 380.0,height: 58.0}) or >>
-    << 0
-}
-fn (m &mut Model) text(frame &mut draw.Frame,x f64,y f64,size f64,muted bool,text string) int {
-    mut color := m.styles.input.palette.foreground
-    if muted { color = m.styles.input.palette.muted }
-    << frame.text(x,y,size * m.styles.text_scale,color,&text) or >>
-}
-fn (m &mut Model) faded_text(frame &mut draw.Frame,x f64,y f64,size f64,muted bool,text string,opacity f64) int {
-    style := m.styles.input.with_opacity(opacity) or >>
-    mut ink := style.palette.foreground
-    if muted { ink = style.palette.muted }
-    << frame.text(x,y,size * m.styles.text_scale,ink,&text) or >>
-}
-fn (m &mut Model) paint(frame &mut draw.Frame) int {
-    m.place() or >>
-    styles := m.styles.clone()
-    frame.begin() or >>
-    frame.set_bg(styles.background) or >>
-    m.text(frame,28.0,26.0,12.0,true,"XUUI / COMPONENT CATALOG") or >>
-    m.text(frame,28.0,61.0,26.0,false,"Native components, working together.") or >>
-    m.text(frame,28.0,108.0,13.0,true,"Keyboard, pointer, themes, typography and density — with shared state.") or >>
-    a := mut &m.nav_data
-    a.paint(frame,&styles) or >>
-    b := mut &m.nav_inputs
-    b.paint(frame,&styles) or >>
-    c := mut &m.nav_overlays
-    c.paint(frame,&styles) or >>
-    theme := mut &m.theme_button
-    theme.paint(frame,&styles) or >>
-    text := mut &m.text_button
-    text.paint(frame,&styles) or >>
-    density := mut &m.density_button
-    density.paint(frame,&styles) or >>
-    crumbs := mut &m.crumbs
-    crumbs.paint_styled(frame,&styles) or >>
-    if m.page == 0 {
-        m.text(frame,28.0,253.0,13.0,true,"TABLE / sort columns · select rows · scroll") or >>
-        m.text(frame,m.width * 0.62 + 12.0,253.0,13.0,true,"TREE / expand · navigate") or >>
-        table := mut &m.table
-        table.paint_styled(frame,&styles) or >>
-        tree := mut &m.tree
-        tree.paint_styled(frame,&styles) or >>
-        pager := mut &m.pager
-        pager.paint_styled(frame,&styles) or >>
-    } else if m.page == 1 {
-        m.text(frame,28.0,253.0,13.0,true,"COMBO BOX / type to filter · native IME") or >>
-        m.text(frame,28.0,363.0,13.0,true,"MULTI SELECT / independent choices") or >>
-        m.text(frame,450.0,253.0,13.0,true,"COLOR PICKER / red · green · blue · alpha") or >>
-        origin := m.combo.bounds()
-        frame.push() or >>
-        frame.translate(origin.x,origin.y) or >>
-        combo := mut &m.combo
-        combo.paint_styled(frame,&styles) or >>
-        frame.pop() or >>
-        multi := mut &m.multi
-        multi.paint_styled(frame,&styles) or >>
-        color := mut &m.color
-        color.paint_styled(frame,&styles) or >>
-        spinner := mut &m.spinner
-        spinner.paint_styled(frame,&styles) or >>
-        m.text(frame,70.0,568.0,13.0,true,"Loading indicator · respects reduced motion") or >>
-        m.text(frame,28.0,620.0,14.0,false,"Value: " + m.combo.value() + "    Selected tags: " + str(m.multi.values().len)) or >>
-        // Both panels are overlays and receive input before underlying fields.
-        combo := mut &m.combo
-        combo.paint_popup_styled(frame,&styles) or >>
-        multi := mut &m.multi
-        multi.paint_popup_styled(frame,&styles) or >>
-    } else {
-        m.text(frame,28.0,253.0,13.0,true,"OVERLAYS / anchor placement · focus ownership · timed feedback") or >>
-        pop := mut &m.pop_button
-        pop.paint(frame,&styles) or >>
-        modal := mut &m.modal_button
-        modal.paint(frame,&styles) or >>
-        toast := mut &m.toast_button
-        toast.paint(frame,&styles) or >>
-        hint := mut &m.hint_button
-        hint.paint(frame,&styles) or >>
-        m.text(frame,28.0,365.0,15.0,false,"Popover: anchored to its trigger and constrained to the canvas.") or >>
-        m.text(frame,28.0,405.0,15.0,false,"Modal: Tab stays inside; Escape closes; focus returns to the trigger.") or >>
-        m.text(frame,28.0,445.0,15.0,false,"Toast: closes automatically; hover or focus pauses its lifetime.") or >>
-        m.text(frame,28.0,485.0,15.0,false,"Tooltip: hover or keyboard focus reveals a delayed explanation.") or >>
-        if m.pop.is_visible() {
-            m.pop.paint_styled(frame,&styles) or >>
-            bounds := m.pop.bounds()
-            c := styles.input.with_opacity(m.pop.opacity()) or >>
-            label := mut &m.pop_label
-            label.paint_text_styled(frame,&bounds,&styles,&c,0) or >>
-        }
-        tip := m.tooltip
-        label := mut &m.tip_label
-        tip.paint_styled(frame,label,&styles) or >>
-    }
-    m.text(frame,28.0,m.height - 48.0,13.0,true,m.note + "  ·  Tab / Shift+Tab  ·  Escape") or >>
-    if m.toast.is_visible() { toast := m.toast
-        label := mut &m.toast_label
-        toast.paint_styled(frame,label,&styles) or >> }
-    if m.modal.is_visible() {
-        m.modal.paint_styled(frame,&styles) or >>
-        p := m.modal.bounds()
-        opacity := m.modal.opacity()
-        mut content := styles.clone()
-        content.button = styles.button.with_opacity(opacity) or >>
-        m.faded_text(frame,p.x + 24.0,p.y + 30.0,21.0,false,"Keep focus where it belongs",opacity) or >>
-        m.faded_text(frame,p.x + 24.0,p.y + 86.0,14.0,true,"The background cannot receive input.",opacity) or >>
-        m.faded_text(frame,p.x + 24.0,p.y + 120.0,14.0,true,"Tab cycles the two actions below.",opacity) or >>
-        m.faded_text(frame,p.x + 24.0,p.y + 154.0,14.0,true,"Closing restores the trigger's focus.",opacity) or >>
-        save := mut &m.modal_save
-        save.paint(frame,&content) or >>
-        close := mut &m.modal_close
-        close.paint(frame,&content) or >>
-    }
-    frame.present() or >>
-    m.acknowledge()
-    << 0
-}
-fn (m &mut Model) acknowledge() {
-    c0 := mut &m.nav_data
-    c0.acknowledge()
-    c1 := mut &m.nav_inputs
-    c1.acknowledge()
-    c2 := mut &m.nav_overlays
-    c2.acknowledge()
-    c3 := mut &m.theme_button
-    c3.acknowledge()
-    c4 := mut &m.text_button
-    c4.acknowledge()
-    c5 := mut &m.density_button
-    c5.acknowledge()
-    c6 := mut &m.pop_button
-    c6.acknowledge()
-    c7 := mut &m.modal_button
-    c7.acknowledge()
-    c8 := mut &m.toast_button
-    c8.acknowledge()
-    c9 := mut &m.hint_button
-    c9.acknowledge()
-    c10 := mut &m.modal_save
-    c10.acknowledge()
-    c11 := mut &m.modal_close
-    c11.acknowledge()
-    w0 := mut &m.table
-    w0.painted()
-    w1 := mut &m.tree
-    w1.painted()
-    w2 := mut &m.pager
-    w2.painted()
-    w3 := mut &m.pop
-    w3.painted()
-    w4 := mut &m.modal
-    w4.painted()
-    w5 := mut &m.tooltip
-    w5.painted()
-    w6 := mut &m.toast
-    w6.painted()
-}
-fn (m &mut Model) cancel_inputs() int {
-    event := ui.InputEvent{kind: ui.ev_pointer_cancel,window_id: m.identity.window_id,canvas_id: m.identity.canvas_id,
-        generation: m.identity.generation,x: 0.0,y: 0.0,dx: 0.0,dy: 0.0,button: 0,buttons: 0,
-        modifiers: 0,key: 0,scan: 0,repeat: 0,click_count: 0,time_ns: m.now.nanoseconds()}
-    c0 := mut &m.nav_data
-    c0.cancel()
-    c1 := mut &m.nav_inputs
-    c1.cancel()
-    c2 := mut &m.nav_overlays
-    c2.cancel()
-    c3 := mut &m.theme_button
-    c3.cancel()
-    c4 := mut &m.text_button
-    c4.cancel()
-    c5 := mut &m.density_button
-    c5.cancel()
-    c6 := mut &m.pop_button
-    c6.cancel()
-    c7 := mut &m.modal_button
-    c7.cancel()
-    c8 := mut &m.toast_button
-    c8.cancel()
-    c9 := mut &m.hint_button
-    c9.cancel()
-    c10 := mut &m.modal_save
-    c10.cancel()
-    c11 := mut &m.modal_close
-    c11.cancel()
-    w0 := mut &m.table
-    _ := w0.input(&event) or >>
-    w1 := mut &m.tree
-    _ := w1.input(&event) or >>
-    w2 := mut &m.pager
-    _ := w2.input(&event) or >>
-    w3 := mut &m.crumbs
-    _ := w3.input(&event) or >>
-    w4 := mut &m.combo
-    _ := w4.input(&event) or >>
-    w5 := mut &m.multi
-    _ := w5.input(&event) or >>
-    w6 := mut &m.color
-    _ := w6.input(&event) or >>
-    w7 := mut &m.pop
-    _ := w7.input(&event) or >>
-    w8 := mut &m.tooltip
-    _ := w8.input(&event) or >>
-    w9 := mut &m.toast
-    _ := w9.input(&event) or >>
-    w10 := mut &m.modal
-    _ := w10.input(&event) or >>
-    m.focus(0) or >>
-    << 0
-}
-fn (m &mut Model) tick(now time.Instant) bool {
-    m.now = now
-    reduced := m.reduced
-    mut changed := false
-    if m.page == 1 { spinner := mut &m.spinner
-        changed = spinner.tick(now,reduced) or >>
-        combo := mut &m.combo
-        if combo.tick(now,reduced) or >> { changed = true } }
-    pop := mut &m.pop
-    if pop.tick(now,reduced) or >> { changed = true }
-    tip := mut &m.tooltip
-    if tip.tick(now,reduced) or >> { changed = true }
-    toast := mut &m.toast
-    if toast.tick(now,reduced) or >> { changed = true }
-    modal := mut &m.modal
-    if modal.tick(now,reduced) or >> { changed = true }
-    restore := modal.take_restore_focus()
-    m.modal_focus()
-    if m.focus_id == 63 && !m.toast.is_open() { m.focus(0) or >>
-        changed = true }
-    if restore > 0 { m.focus(restore) or >>
-        changed = true }
-    << changed
-}
-fn earlier(a time.Instant,b time.Instant) time.Instant {
-    if a.is_zero() || (!b.is_zero() && b.before(a)) { << b }
-    << a
-}
-fn (m &Model) next_tick(now time.Instant) time.Instant {
-    mut next := time.zero_instant()
-    if m.page == 1 {
-        next = m.spinner.next_tick(now,m.reduced) or >>
-        next = earlier(next,m.combo.next_caret_tick(now,m.reduced) or >>)
-    }
-    next = earlier(next,m.pop.next_tick(now) or >>)
-    next = earlier(next,m.tooltip.next_tick(now) or >>)
-    next = earlier(next,m.toast.next_tick(now) or >>)
-    modal := m.modal.next_tick(now) or >>
-    << earlier(next,modal)
-}
-fn (m &Model) next_event(ech chan ui.Event) ui.Event {
-    deadline := m.next_tick(time.instant()) or >>
-    pause := time.milliseconds(8) or >>
-    while true {
-        event := ui.poll_chan(ech)
-        if event.kind != ui.ev_none || (!deadline.is_zero() && !time.instant().before(deadline)) { << event }
-        pause.sleep()
-    }
-    << ui.Event{kind: ui.ev_none,window_id: 0,menu_id: "",width: 0,height: 0}
-}
-fn (m &mut Model) show_toast(text string) int {
-    label := mut &m.toast_label
-    label.set_text(&text)
-    now := m.now
-    reduced := m.reduced
-    toast := mut &m.toast
-    << toast.show(now,time.seconds(3) or >>,reduced) or >>
-}
-fn (m &mut Model) activate(id int) int {
-    now := m.now
-    reduced := m.reduced
-    if id >= 1 && id <= 3 {
-        m.focus(id) or >>
-        m.page = id - 1
-        combo := mut &m.combo
-        combo.set_open(false)
-        multi := mut &m.multi
-        multi.set_open(false)
-        pop := mut &m.pop
-        pop.close(now,true) or >>
-        tip := mut &m.tooltip
-        tip.dismiss(now,true) or >>
-        m.note = "Page changed"
-    } else if id == 4 {
-        scale := m.styles.text_scale
-        density := m.styles.density
-        m.theme = (m.theme + 1) % 3
-        m.styles = widgets.preset_styles(m.theme) or >>
-        m.styles.text_scale = scale
-        m.styles.density = density
-    } else if id == 5 { if m.styles.text_scale == 1.0 { m.styles.text_scale = 1.4 }
-        else { m.styles.text_scale = 1.0 } }
-    else if id == 6 { if m.styles.density == 1.0 { m.styles.density = 0.8 }
-        else { m.styles.density = 1.0 } }
-    else if id == 40 { pop := mut &m.pop
-        if pop.is_open() { pop.close(now,reduced) or >> }
-        else { pop.open(now,reduced) or >> } }
-    else if id == 41 {
-        restore := m.focus_id
-        m.cancel_inputs() or >>
-        modal := mut &m.modal
-        modal.open(now,reduced,restore) or >>
-        m.modal_focus()
-    } else if id == 42 { m.show_toast("All components share the same theme.") or >> }
-    else if id == 50 || id == 51 { modal := mut &m.modal
-        modal.close(now,reduced) or >>
-        m.modal_focus()
-        if id == 50 { m.show_toast("Action completed. Focus returns after closing.") or >> } }
-    << 0
-}
-fn (m &mut Model) action(action widgets.Action) bool {
-    if action.request_focus { m.focus(action.id) or >> }
+fn (m &mut Model) update(screen &mut widgets.Screen,action widgets.Action) int {
+    if action.kind == widgets.action_key && int(action.value) == ui.key_escape { screen.close() or >> }
     if action.kind == widgets.action_activate {
-        if action.id == 20 { m.fill_table() or >>
-            m.note = "Table sorted by column " + str(m.table.sort_column() + 1) }
-        else if action.id == 23 { m.note = "Breadcrumb activated: " + str(int(action.value) + 1) }
-        else { m.activate(action.id) or >> }
-    } else if action.kind == widgets.action_change {
-        if action.id == 22 { m.fill_table() or >> }
-        m.note = "Value changed: control " + str(action.id)
-    }
-    << action.needs_paint || action.consumed || action.kind != widgets.action_none
-}
-fn (m &mut Model) input(event &ui.InputEvent) bool {
-    if event.window_id != m.identity.window_id || event.canvas_id != m.identity.canvas_id || event.generation != m.identity.generation { << false }
-    if event.kind == ui.ev_pointer_cancel { m.cancel_inputs() or >>
-        << true }
-    if m.modal.blocks_input() {
-        modal := mut &m.modal
-        action := modal.input(event) or >>
-        m.modal_focus()
-        mut changed := action.needs_paint || action.consumed
-        if !action.consumed && m.modal.allows_content(event) && !(event.kind == ui.ev_key_down && event.key == ui.key_tab) {
-            save := mut &m.modal_save
-            a := save.input(event)
-            if a.needs_paint || a.consumed { changed = true }
-            if a.request_focus { modal := mut &m.modal
-                modal.set_content_focus(50) or >>
-                m.modal_focus() }
-            if a.kind == widgets.action_activate { m.activate(50) or >>
-                << true }
-            close := mut &m.modal_close
-            b := close.input(event)
-            if b.needs_paint || b.consumed { changed = true }
-            if b.request_focus { modal := mut &m.modal
-                modal.set_content_focus(51) or >>
-                m.modal_focus() }
-            if b.kind == widgets.action_activate { m.activate(51) or >>
-                << true }
+        for i in 0:3 { if action.id == m.nav[i] { m.page = i } }
+        if action.id == m.settings[0] { m.theme = (m.theme + 1) % 3
+            current := screen.styles()
+            mut next := widgets.preset_styles(m.theme) or >>
+            next.text_scale = current.text_scale
+            next.density = current.density
+            screen.set_styles(&next) or >> }
+        if action.id == m.settings[1] || action.id == m.settings[2] {
+            mut styles := screen.styles()
+            if action.id == m.settings[1] { if styles.text_scale == 1.0 { styles.text_scale = 1.4 }
+                else { styles.text_scale = 1.0 } }
+            else { if styles.density == 1.0 { styles.density = 0.8 }
+                else { styles.density = 1.0 } }
+            screen.set_styles(&styles) or >>
         }
-        << changed
+        if action.id == m.table { m.fill_table(screen) or >> }
+        if action.id == m.overlay_buttons[0] { screen.open(m.popover) or >> }
+        if action.id == m.overlay_buttons[1] { screen.open(m.modal) or >> }
+        if action.id == m.overlay_buttons[2] { _ := screen.notify("All components share the same theme.") or >> }
+        if action.id == m.modal_actions[0] || action.id == m.modal_actions[1] { screen.close_overlay(m.modal) or >>
+            if action.id == m.modal_actions[0] { _ := screen.notify("Action completed.") or >> } }
     }
-    if event.kind == ui.ev_key_down && event.key == ui.key_tab {
-        mut order := [1,2,3,4,5,6,23,20,21,22]
-        if m.page == 1 { order = [1,2,3,4,5,6,23,30,31,32] }
-        if m.page == 2 { order = [1,2,3,4,5,6,23,40,41,42,43] }
-        if m.toast.is_open() { order.push(63) }
-        mut pos := -1
-        for i in 0:order.len { if order[i] == m.focus_id { pos = i } }
-        if (event.modifiers & ui.mod_shift) != 0 { pos = pos - 1
-            if pos < 0 { pos = order.len - 1 } }
-        else { pos = pos + 1
-            if pos >= order.len { pos = 0 } }
-        m.focus(order[pos]) or >>
-        << true
-    }
-    mut changed := false
-    mut combo_routed := false
-    mut multi_routed := false
-    if m.page == 2 { tip := mut &m.tooltip
-        a := tip.input(event) or >>
-        if m.action(a) or >> { changed = true }
-        if a.consumed { << true } }
-    toast := mut &m.toast
-    ta := toast.input(event) or >>
-    if m.action(ta) or >> { changed = true }
-    if ta.consumed { << true }
-    if m.page == 1 {
-        // Open panels have priority over controls painted underneath them.
-        if m.combo.is_open() {
-            combo_routed = true
-            combo := mut &m.combo
-            a := combo.input(event) or >>
-            if m.action(a) or >> { changed = true }
-            if a.consumed { << true }
+    if action.kind == widgets.action_change {
+        if action.id == m.pager { m.fill_table(screen) or >> }
+        if action.id == m.combo || action.id == m.multi {
+            value := screen.text_value(m.combo) or >>
+            count := (screen.values(m.multi) or >>).len
+            screen.set_text(m.value_label,"Value: " + value + "    Selected tags: " + str(count)) or >>
         }
-        if m.multi.is_open() {
-            multi_routed = true
-            multi := mut &m.multi
-            a := multi.input(event) or >>
-            if m.action(a) or >> { changed = true }
-            if a.consumed { << true }
-        }
+        screen.set_text(m.note,"Value changed · Tab / Shift+Tab · Escape") or >>
     }
-    if m.page == 2 {
-        pop := mut &m.pop
-        a := pop.input(event) or >>
-        if m.action(a) or >> { changed = true }
-        if a.consumed { << true }
-    }
-    if event.kind == ui.ev_pointer_down && event.button == ui.button_left {
-        mut id := 0
-        for candidate in [1,2,3,4,5,6] {
-            if m.command_bounds(candidate).contains(event.x,event.y) { id = candidate }
-        }
-        if m.page == 0 {
-            if m.table.bounds().contains(event.x,event.y) { id = 20 }
-            if m.tree.bounds().contains(event.x,event.y) { id = 21 }
-            if m.pager.bounds().contains(event.x,event.y) { id = 22 }
-        } else if m.page == 1 {
-            if m.combo.bounds().contains(event.x,event.y) { id = 30 }
-            if m.multi.bounds().contains(event.x,event.y) { id = 31 }
-            if m.color.bounds().contains(event.x,event.y) { id = 32 }
-        } else { for candidate in [40,41,42,43] { if m.command_bounds(candidate).contains(event.x,event.y) { id = candidate } } }
-        if m.crumbs.bounds().contains(event.x,event.y) { id = 23 }
-        if id != m.focus_id { changed = true }
-        m.focus(id) or >>
-    }
-    for id in [1,2,3,4,5,6] { a := m.command_input(id,event)
-        if m.action(a) or >> { changed = true
-            if a.consumed { << true } } }
-    crumbs := mut &m.crumbs
-    a := crumbs.input(event) or >>
-    if m.action(a) or >> { changed = true
-            if a.consumed { << true } }
-    if m.page == 0 {
-        table := mut &m.table
-        a := table.input(event) or >>
-        if m.action(a) or >> { changed = true
-            if a.consumed { << true } }
-        tree := mut &m.tree
-        a := tree.input(event) or >>
-        if m.action(a) or >> { changed = true
-            if a.consumed { << true } }
-        pager := mut &m.pager
-        a := pager.input(event) or >>
-        if m.action(a) or >> { changed = true
-            if a.consumed { << true } }
-    } else if m.page == 1 {
-        if !combo_routed { combo := mut &m.combo
-            a := combo.input(event) or >>
-            if m.action(a) or >> { changed = true
-                if a.consumed { << true } } }
-        if !multi_routed { multi := mut &m.multi
-            a := multi.input(event) or >>
-            if m.action(a) or >> { changed = true
-                if a.consumed { << true } } }
-        color := mut &m.color
-        a := color.input(event) or >>
-        if m.action(a) or >> { changed = true
-            if a.consumed { << true } }
-    } else {
-        for id in [40,41,42,43] { a := m.command_input(id,event)
-            if m.action(a) or >> { changed = true
-            if a.consumed { << true } } }
-    }
-    if event.kind == ui.ev_key_down && event.key == ui.key_escape { demo.quit() or >> }
-    << changed
-}
-fn (m &Model) command_bounds(id int) layout.Rect {
-    if id == 1 { << m.nav_data.control.bounds() }
-    if id == 2 { << m.nav_inputs.control.bounds() }
-    if id == 3 { << m.nav_overlays.control.bounds() }
-    if id == 4 { << m.theme_button.control.bounds() }
-    if id == 5 { << m.text_button.control.bounds() }
-    if id == 6 { << m.density_button.control.bounds() }
-    if id == 40 { << m.pop_button.control.bounds() }
-    if id == 41 { << m.modal_button.control.bounds() }
-    if id == 42 { << m.toast_button.control.bounds() }
-    << m.hint_button.control.bounds()
-}
-fn (m &mut Model) command_input(id int,event &ui.InputEvent) widgets.Action {
-    if id == 1 { c := mut &m.nav_data
-        << c.input(event) }
-    if id == 2 { c := mut &m.nav_inputs
-        << c.input(event) }
-    if id == 3 { c := mut &m.nav_overlays
-        << c.input(event) }
-    if id == 4 { c := mut &m.theme_button
-        << c.input(event) }
-    if id == 5 { c := mut &m.text_button
-        << c.input(event) }
-    if id == 6 { c := mut &m.density_button
-        << c.input(event) }
-    if id == 40 { c := mut &m.pop_button
-        << c.input(event) }
-    if id == 41 { c := mut &m.modal_button
-        << c.input(event) }
-    if id == 42 { c := mut &m.toast_button
-        << c.input(event) }
-    c := mut &m.hint_button
-    << c.input(event)
-}
-fn (m &mut Model) update_cursor(event &ui.InputEvent) int {
-    mut cursor := ui.cursor_default
-    if event.kind != ui.ev_pointer_leave {
-        if m.modal.blocks_input() {
-            if m.modal.close_bounds().contains(event.x,event.y) || m.modal_save.control.bounds().contains(event.x,event.y) || m.modal_close.control.bounds().contains(event.x,event.y) { cursor = ui.cursor_hand }
-        } else if m.toast.is_visible() && m.toast.bounds().contains(event.x,event.y) {
-            if m.toast.close_bounds().contains(event.x,event.y) { cursor = ui.cursor_hand }
-        } else {
-            for id in [1,2,3,4,5,6] { if m.command_bounds(id).contains(event.x,event.y) { cursor = ui.cursor_hand } }
-            if m.page == 0 && (m.table.bounds().contains(event.x,event.y) || m.tree.bounds().contains(event.x,event.y) || m.pager.bounds().contains(event.x,event.y)) { cursor = ui.cursor_hand }
-            if m.page == 1 {
-                if m.combo.bounds().contains(event.x,event.y) { cursor = ui.cursor_text }
-                if m.combo.toggle_bounds().contains(event.x,event.y) || m.multi.bounds().contains(event.x,event.y) { cursor = ui.cursor_hand }
-                if m.color.bounds().contains(event.x,event.y) { cursor = ui.cursor_resize_horizontal }
-                if m.combo.is_open() && m.combo.popup_bounds().contains(event.x,event.y) { cursor = ui.cursor_hand }
-                if m.multi.is_open() && m.multi.popup_bounds().contains(event.x,event.y) { cursor = ui.cursor_hand }
-            }
-            if m.page == 2 { for id in [40,41,42,43] { if m.command_bounds(id).contains(event.x,event.y) { cursor = ui.cursor_hand } } }
-            crumb_cursor := m.crumbs.cursor_at(event.x,event.y) or >>
-            if crumb_cursor != ui.cursor_default { cursor = crumb_cursor }
-        }
-    }
-    if cursor != m.pointer { m.window.content_command("cursor\t" + str(cursor)) or >>
-        m.pointer = cursor }
     << 0
 }
-fn new_model(context &draw.Context,identity &ui.CanvasEvent) Model {
-    empty := layout.Rect{x: 0.0,y: 0.0,width: 0.0,height: 0.0}
-    viewport := layout.Rect{x: 0.0,y: 0.0,width: 1040.0,height: 820.0}
-    panel := layout.Rect{x: 290.0,y: 270.0,width: 460.0,height: 280.0}
-    size := layout.Size{width: 310.0,height: 146.0}
-    headers := ["Module","State","Updated"]
-    path := ["Workspace","UI","Component catalog"]
-    options := ["Compiler","Widgets","Runtime","Desktop","Examples","工具链"]
-    tags := ["Native","Keyboard","IME","Theming","Motion"]
-    data := command(context,identity,1,"Data") or >>
-    inputs := command(context,identity,2,"Inputs") or >>
-    overlays := command(context,identity,3,"Overlays") or >>
-    theme := command(context,identity,4,"Theme") or >>
-    text := command(context,identity,5,"Text size") or >>
-    density := command(context,identity,6,"Density") or >>
-    pop_button := command(context,identity,40,"Open popover") or >>
-    modal_button := command(context,identity,41,"Open modal") or >>
-    toast_button := command(context,identity,42,"Show toast") or >>
-    hint_button := command(context,identity,43,"Hover / focus me") or >>
-    save := command(context,identity,50,"Complete action") or >>
-    close := command(context,identity,51,"Close") or >>
-    mut table := widgets.table(context,identity,20,&empty,&headers,6,0) or >>
-    mut tree := widgets.tree_view(context,identity,21,&empty) or >>
-    pager := widgets.pagination(context,identity,22,&empty,3,0) or >>
-    crumbs := widgets.breadcrumbs(context,identity,23,&empty,&path) or >>
-    combo := widgets.combo_box(context,identity,30,&empty,&options,&"") or >>
-    mut multi := widgets.multi_select(context,identity,31,&empty,&tags) or >>
-    color := widgets.color_picker(context,identity,32,&empty,draw.rgba(59,130,246,220)) or >>
-    spinner := widgets.spinner(&empty) or >>
-    pop := widgets.popover(identity,60,&empty,&size,&viewport) or >>
-    mut modal := widgets.modal(identity,61,&panel,&viewport) or >>
-    tip := widgets.tooltip(identity,62,&empty,&size,&viewport) or >>
-    toast := widgets.toast(identity,63,&empty) or >>
-    pop_label := widgets.styled_label(context,&"An anchored panel for related actions.")
-    tip_label := widgets.styled_label(context,&"Pointer and keyboard share this hint.")
-    toast_label := widgets.styled_label(context,&"Action completed.")
-    window := ui.Window{id: identity.window_id,generation: identity.generation,title: "",width: 0,height: 0,
-        content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
-    canvas := ui.CanvasEvent{window_id: identity.window_id,canvas_id: identity.canvas_id,generation: identity.generation}
-    names := ["Compiler / 1","Widgets / 1","Runtime / 1","Desktop / 1","Examples / 1","Tooling / 1"]
-    states := ["Ready","Review","Ready","Draft","Ready","Review"]
-    clocks := ["10:30","11:15","09:40","12:00","10:05","08:50"]
-    for row in 0:6 { table.set_cell(row,0,&names[row]) or >>
-        table.set_cell(row,1,&states[row]) or >>
-        table.set_cell(row,2,&clocks[row]) or >> }
-    root := tree.add(-1,&"XU Workspace") or >>
-    compiler := tree.add(root,&"Compiler") or >>
-    _ := tree.add(compiler,&"Frontend") or >>
-    _ := tree.add(compiler,&"Native backend") or >>
-    ui_root := tree.add(root,&"UI") or >>
-    _ := tree.add(ui_root,&"Widgets") or >>
-    _ := tree.add(ui_root,&"Drawing") or >>
-    _ := tree.add(root,&"Examples") or >>
-    tree.set_expanded(root,true) or >>
-    tree.set_expanded(compiler,true) or >>
-    tree.set_expanded(ui_root,true) or >>
-    multi.set_selected(0,true) or >>
-    ids := [50,51]
-    modal.set_focus_order(&ids) or >>
-    m := Model{identity: canvas,context: context.clone(),window: window,styles: widgets.light_styles(),theme: 1,page: 0,focus_id: 0,pointer: ui.cursor_default,
-        reduced: false,now: time.instant(),width: 1040.0,height: 820.0,note: "Choose a category and try the controls",
-        nav_data: data,nav_inputs: inputs,nav_overlays: overlays,theme_button: theme,text_button: text,density_button: density,
-        pop_button: pop_button,modal_button: modal_button,toast_button: toast_button,hint_button: hint_button,modal_save: save,modal_close: close,
+fn new_model(screen &mut widgets.Screen) Model {
+    mut nav := []int{}
+    for text in ["Data","Inputs","Overlays"] { nav.push(screen.button(text) or >>) }
+    mut settings := []int{}
+    for text in ["Theme","Text size","Density"] { settings.push(screen.button(text) or >>) }
+    mut pages := []int{}
+    for i in 0:3 { pages.push(screen.group() or >>) }
+    headings := [screen.label("XUUI / COMPONENT CATALOG",12.0,true) or >>,
+        screen.label("Native components, working together.",26.0,false) or >>,
+        screen.label("Keyboard, pointer, themes, typography and density — managed by Screen.",13.0,true) or >>]
+    crumbs := screen.breadcrumbs(&["Workspace","UI","Component catalog"]) or >>
+    note := screen.label("Choose a category · Tab / Shift+Tab · Escape",13.0,true) or >>
+    table := screen.table(&["Module","State","Updated"],6,0) or >>
+    tree := screen.tree() or >>
+    pager := screen.pagination(3,0) or >>
+    combo := screen.combo_box(&["Compiler","Widgets","Runtime","Desktop","Examples","工具链"],"") or >>
+    multi := screen.multi_select(&["Native","Keyboard","IME","Theming","Motion"]) or >>
+    screen.set_checked(multi,0,true) or >>
+    color := screen.color_picker(draw.rgba(59,130,246,220)) or >>
+    spinner := screen.spinner() or >>
+    value_label := screen.label("Value:    Selected tags: 1",14.0,false) or >>
+    mut overlay_buttons := []int{}
+    for text in ["Open popover","Open modal","Show toast","Hover / focus me"] { overlay_buttons.push(screen.button(text) or >>) }
+    popover := screen.popover(overlay_buttons[0],"An anchored panel for related actions.") or >>
+    modal := screen.modal("Keep focus where it belongs","Screen owns focus, input isolation and restoration.") or >>
+    _ := screen.tooltip(overlay_buttons[3],"Pointer and keyboard share this hint.") or >>
+    modal_actions := [screen.button("Complete action") or >>,screen.button("Close") or >>]
+    for id in modal_actions { screen.set_parent(id,modal) or >> }
+    mut captions := []int{}
+    for text in ["TABLE / sort columns · select rows · scroll","TREE / expand · navigate",
+        "COMBO BOX / type to filter · native IME","MULTI SELECT / independent choices",
+        "COLOR PICKER / red · green · blue · alpha","Loading indicator · respects reduced motion",
+        "OVERLAYS / anchor placement · focus ownership · timed feedback",
+        "Popover: anchored to its trigger and constrained to the canvas.",
+        "Modal: Tab stays inside; Escape closes; focus returns to the trigger.",
+        "Toast: closes automatically; hover or focus pauses its lifetime.",
+        "Tooltip: hover or keyboard focus reveals a delayed explanation."] { captions.push(screen.label(text,13.0,true) or >>) }
+    for id in [table,tree,pager,captions[0],captions[1]] { screen.set_parent(id,pages[0]) or >> }
+    for id in [combo,multi,color,spinner,value_label,captions[2],captions[3],captions[4],captions[5]] { screen.set_parent(id,pages[1]) or >> }
+    for id in overlay_buttons { screen.set_parent(id,pages[2]) or >> }
+    screen.set_parent(popover,pages[2]) or >>
+    for i in 6:11 { screen.set_parent(captions[i],pages[2]) or >> }
+    root := screen.tree_add(tree,-1,"XU Workspace") or >>
+    compiler := screen.tree_add(tree,root,"Compiler") or >>
+    _ := screen.tree_add(tree,compiler,"Frontend") or >>
+    _ := screen.tree_add(tree,compiler,"Native backend") or >>
+    ui_root := screen.tree_add(tree,root,"UI") or >>
+    _ := screen.tree_add(tree,ui_root,"Widgets") or >>
+    _ := screen.tree_add(tree,ui_root,"Drawing") or >>
+    _ := screen.tree_add(tree,root,"Examples") or >>
+    for node in [root,compiler,ui_root] { screen.set_expanded(tree,node,true) or >> }
+    m := Model{page: 0,theme: 1,nav: nav,settings: settings,pages: pages,headings: headings,captions: captions,
         table: table,tree: tree,pager: pager,crumbs: crumbs,combo: combo,multi: multi,color: color,spinner: spinner,
-        pop: pop,modal: modal,tooltip: tip,toast: toast,pop_label: pop_label,tip_label: tip_label,toast_label: toast_label}
+        overlay_buttons: overlay_buttons,popover: popover,modal: modal,modal_actions: modal_actions,value_label: value_label,note: note}
+    m.fill_table(screen) or >>
     << m
 }
-fn (m &mut Model) dispose() {
-    combo := mut &m.combo
-    combo.dispose()
-    multi := mut &m.multi
-    multi.dispose()
-    color := mut &m.color
-    color.dispose()
-    table := mut &m.table
-    table.dispose()
-    tree := mut &m.tree
-    tree.dispose()
-    pager := mut &m.pager
-    pager.dispose()
-    crumbs := mut &m.crumbs
-    crumbs.dispose()
-    a := mut &m.nav_data
-    a.dispose()
-    b := mut &m.nav_inputs
-    b.dispose()
-    c := mut &m.nav_overlays
-    c.dispose()
-    d := mut &m.theme_button
-    d.dispose()
-    e := mut &m.text_button
-    e.dispose()
-    f := mut &m.density_button
-    f.dispose()
-    g := mut &m.pop_button
-    g.dispose()
-    h := mut &m.modal_button
-    h.dispose()
-    i := mut &m.toast_button
-    i.dispose()
-    j := mut &m.hint_button
-    j.dispose()
-    k := mut &m.modal_save
-    k.dispose()
-    l := mut &m.modal_close
-    l.dispose()
-    pop := mut &m.pop_label
-    pop.dispose()
-    tip := mut &m.tip_label
-    tip.dispose()
-    toast := mut &m.toast_label
-    toast.dispose()
-}
-fn scene(ech chan ui.Event) int {
-    ready := demo.ready(ech) or >>
+fn scene(events chan ui.Event) int {
+    ready := demo.ready(events) or >>
     if ready.kind == ui.ev_exit { << 0 }
-    identity := ui.canvas_of(&ready) or >>
-    context := draw.context_of(&ready) or >>
-    mut m := new_model(&context,&identity) or >>
-    m.window.command("minsize\t1040\t760") or >>
-    ui.request_canvas_preferences(&identity) or >>
-    mut frame := context.new_frame(32768)
-    mut dirty := true
-    while true {
-        if m.tick(time.instant()) or >> { dirty = true }
-        if dirty { m.paint(mut &frame) or >>
-            dirty = false }
-        event := m.next_event(ech) or >>
-        m.now = time.instant()
-        if event.kind == ui.ev_none { -> }
-        if event.kind == ui.ev_exit { <- }
-        if event.window_id != identity.window_id { -> }
-        if event.kind == ui.ev_canvas_closed { closed := ui.canvas_of(&event) or >>
-            if closed.canvas_id == identity.canvas_id && closed.generation == identity.generation { <- }
-            -> }
-        if event.kind == ui.ev_canvas_metrics {
-            metrics := ui.metrics_of(&event) or >>
-            if metrics.canvas_id == identity.canvas_id && metrics.generation == identity.generation && metrics.width > 0.0 && metrics.height > 0.0 { m.width = metrics.width
-                m.height = metrics.height
-                dirty = true }
-        } else if event.kind == ui.ev_canvas_preferences {
-            prefs := ui.canvas_preferences_of(&event) or >>
-            if prefs.identity.canvas_id == identity.canvas_id && prefs.identity.generation == identity.generation { m.reduced = prefs.reduced_motion
-                dirty = true }
-        } else if event.kind == ui.ev_focused { ui.request_canvas_preferences(&identity) or >> }
-        else if event.kind == ui.ev_blurred { m.cancel_inputs() or >>
-            dirty = true }
-        else if ui.is_input_event(event.kind) {
-            input := ui.input_of(&event) or >>
-            if input.canvas_id == identity.canvas_id && input.generation == identity.generation {
-                m.update_cursor(&input) or >>
-                if m.input(&input) or >> { dirty = true }
-            }
-        } else { combo := mut &m.combo
-            action := combo.event(&event) or >>
-            if m.action(action) or >> { dirty = true } }
-    }
-    m.dispose()
-    frame.dispose()
-    << 0
+    mut screen := widgets.screen(&ready) or >>
+    screen.resize(1040.0,820.0) or >>
+    screen.set_min_size(1040,760) or >>
+    mut model := new_model(mut &screen) or (err) { screen.dispose()
+        >> err }
+    << widgets.run_screen(mut &screen,events,mut &model) or >>
 }
-fn worker(ech chan ui.Event) { scene(ech) or (err) { demo.fail(err.msg())
+fn worker(events chan ui.Event) { scene(events) or (err) { demo.fail(err.msg())
     << } }
-fn launch() int {
-    mut app := demo.app("Xu UI / Component Catalog",1040,820) or >>
+fn launch() int { mut app := demo.app("Xu UI / Component Catalog",1040,820) or >>
     xu worker(app.event_ch)
-    << app.run() or >>
-}
+    << app.run() or >> }
 fn main() int { << launch() or (err) { eprintln(err.msg())
     << 1 } }
