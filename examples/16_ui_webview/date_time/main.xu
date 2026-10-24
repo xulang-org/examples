@@ -1,0 +1,198 @@
+@main
+#ui
+#ui/draw
+#ui/widgets
+#ui/layout
+#time
+#math
+demo #"github.com/xulang-org/examples/ui_demo"
+
+struct Model {
+    date widgets.DatePicker
+    clock widgets.TimePicker
+    value time.Time
+    styles widgets.Styles
+    theme int
+    focus int
+    cursor int
+}
+fn (m &mut Model) label(index int,frame &mut draw.Frame,rect layout.Rect,text string,size f64,muted bool) int {
+    mut color := m.styles.input.palette.foreground
+    if muted { color = m.styles.input.palette.muted }
+    << frame.text(rect.x,rect.y,size * m.styles.text_scale,color,&text) or >>
+}
+fn (m &mut Model) place(width f64,height f64) int {
+    available := math.max(200.0,width - 56.0)
+    field_w := math.min(260.0,available)
+    mut row_h := 40.0 * m.styles.density
+    row_h = math.max(row_h,30.0 * m.styles.text_scale)
+    styles := m.styles.clone()
+    date := mut &m.date
+    date.set_bounds(&layout.Rect{x: 28.0,y: 192.0,width: field_w,height: row_h}) or >>
+    date.apply_styles(&styles) or >>
+    mut x := 320.0
+    mut y := 192.0
+    if width < 600.0 { x = 28.0
+        y = 270.0 }
+    clock := mut &m.clock
+    clock.set_bounds(&layout.Rect{x: x,y: y,width: field_w,height: row_h}) or >>
+    << 0
+}
+fn (m &mut Model) paint(frame &mut draw.Frame,width f64,height f64) int {
+    m.place(width,height) or >>
+    frame.begin() or >>
+    frame.set_bg(m.styles.background) or >>
+    m.label(0,frame,layout.Rect{x: 28.0,y: 26.0,width: width - 56.0,height: 30.0},"DATE / TIME",13.0,true) or >>
+    m.label(1,frame,layout.Rect{x: 28.0,y: 66.0,width: width - 56.0,height: 46.0},"Calendar values. Precise durations.",24.0,false) or >>
+    m.label(2,frame,layout.Rect{x: 28.0,y: 120.0,width: width - 56.0,height: 30.0},"T: theme   F: text size   D: density   Tab: focus",13.0,true) or >>
+    db := m.date.bounds()
+    tb := m.clock.bounds()
+    m.label(3,frame,layout.Rect{x: db.x,y: db.y - 30.0,width: db.width,height: 24.0},"Date",14.0,true) or >>
+    m.label(4,frame,layout.Rect{x: tb.x,y: tb.y - 30.0,width: tb.width,height: 24.0},"Time · 24 hour",14.0,true) or >>
+    styles := m.styles.clone()
+    date := mut &m.date
+    date.paint_styled(frame,&styles) or >>
+    clock := mut &m.clock
+    clock.paint_styled(frame,&styles) or >>
+    mut baseline := 282.0
+    if width < 600.0 { baseline = 350.0 }
+    m.label(5,frame,layout.Rect{x: 28.0,y: baseline,width: width - 56.0,height: 28.0},m.value.format_rfc3339(),18.0,false) or >>
+    m.label(6,frame,layout.Rect{x: 28.0,y: baseline + 42.0,width: width - 56.0,height: 28.0},"time.Time · UTC · date and nanoseconds preserved",13.0,true) or >>
+    m.label(7,frame,layout.Rect{x: 28.0,y: height - 82.0,width: width - 56.0,height: 24.0},"Calendar: arrows / Page Up / Page Down / Enter / Escape",12.0,true) or >>
+    m.label(8,frame,layout.Rect{x: 28.0,y: height - 52.0,width: width - 56.0,height: 24.0},"Time: select a segment, type digits or use Up / Down",12.0,true) or >>
+    // Calendar is an overlay, painted after every field and label.
+    date := mut &m.date
+    date.paint_popup_styled(frame,&styles) or >>
+    frame.present() or >>
+    << 0
+}
+fn (m &mut Model) set_focus(focus int) {
+    if m.focus == focus { << }
+    m.focus = focus
+    date := mut &m.date
+    date.set_focus(focus == 1)
+    clock := mut &m.clock
+    clock.set_focus(focus == 2)
+}
+fn (m &mut Model) set_cursor(window &ui.Window,cursor int) int {
+    if m.cursor != cursor { window.content_command("cursor\t" + str(cursor)) or >>
+        m.cursor = cursor }
+    << 0
+}
+fn (m &mut Model) input(window &ui.Window,event &ui.InputEvent) bool {
+    if event.kind == ui.ev_key_down && event.key == ui.key_tab {
+        mut next := m.focus + 1
+        if (event.modifiers & ui.mod_shift) != 0 { next = m.focus - 1 }
+        if next > 2 { next = 1 }
+        if next < 1 { next = 2 }
+        m.set_focus(next)
+        << true
+    }
+    if event.kind == ui.ev_key_down && (event.key == 84 || event.key == 116) {
+        m.theme = (m.theme + 1) % 3
+        m.styles = widgets.preset_styles(m.theme)
+        << true
+    }
+    if event.kind == ui.ev_key_down && (event.key == 70 || event.key == 102) {
+        if m.styles.text_scale == 1.0 { m.styles.text_scale = 1.4 }
+        else { m.styles.text_scale = 1.0 }
+        << true
+    }
+    if event.kind == ui.ev_key_down && (event.key == 68 || event.key == 100) {
+        if m.styles.density == 1.0 { m.styles.density = 0.8 }
+        else { m.styles.density = 1.0 }
+        << true
+    }
+    mut inside_date := m.date.bounds().contains(event.x,event.y)
+    if m.date.is_open() && m.date.popup_bounds().contains(event.x,event.y) { inside_date = true }
+    inside_clock := m.clock.bounds().contains(event.x,event.y)
+    if event.kind == ui.ev_pointer_move || event.kind == ui.ev_pointer_leave {
+        mut cursor := ui.cursor_default
+        if inside_clock { cursor = ui.cursor_text }
+        if inside_date { cursor = ui.cursor_hand }
+        if event.kind == ui.ev_pointer_leave { cursor = ui.cursor_default }
+        m.set_cursor(window,cursor) or >>
+    }
+    if event.kind == ui.ev_pointer_down && event.button == ui.button_left {
+        mut focus := 0
+        if inside_date { focus = 1 }
+        else if inside_clock { focus = 2 }
+        m.set_focus(focus)
+    }
+    was_open := m.date.is_open()
+    date := mut &m.date
+    da := date.input(event) or >>
+    if da.kind == widgets.action_change {
+        m.value = m.date.value()
+        value := m.value
+        clock := mut &m.clock
+        clock.set_value(value) or >>
+    }
+    if da.consumed { << true }
+    clock := mut &m.clock
+    ta := clock.input(event) or >>
+    if ta.kind == widgets.action_change {
+        m.value = m.clock.value()
+        value := m.value
+        date := mut &m.date
+        date.set_value(value) or >>
+    }
+    if event.kind == ui.ev_key_down && event.key == ui.key_escape && !was_open { demo.quit() or >> }
+    << da.needs_paint || ta.needs_paint || was_open != m.date.is_open()
+}
+fn scene(ech chan ui.Event) int {
+    ready := demo.ready(ech) or >>
+    if ready.kind == ui.ev_exit { << 0 }
+    identity := ui.canvas_of(&ready) or >>
+    context := draw.context_of(&ready) or >>
+    window := ui.Window{id: identity.window_id,generation: identity.generation,title: "",width: 0,height: 0,
+        content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
+    // Deterministic initial value makes leap-day and month-end checks repeatable.
+    value := time.date(2024,2,29,14,35,20,123000000)
+    empty := layout.Rect{x: 0.0,y: 0.0,width: 0.0,height: 0.0}
+    mut m := Model{date: widgets.date_picker(&context,&identity,1,&empty,value) or >>,
+        clock: widgets.time_picker(&context,&identity,2,&empty,value) or >>,
+        value: value,styles: widgets.light_styles(),theme: 1,focus: 0,cursor: ui.cursor_default}
+    mut frame := context.new_frame(16384)
+    mut width := 720.0
+    mut height := 660.0
+    mut dirty := true
+    while true {
+        if dirty { m.paint(mut &frame,width,height) or >>
+            dirty = false }
+        event := demo.next(ech)
+        if event.kind == ui.ev_exit { <- }
+        if event.window_id != identity.window_id { -> }
+        if event.kind == ui.ev_canvas_closed { <- }
+        if event.kind == ui.ev_canvas_metrics {
+            metrics := ui.metrics_of(&event) or >>
+            if metrics.width > 0.0 && metrics.height > 0.0 { width = metrics.width
+                height = metrics.height
+                dirty = true }
+        } else if event.kind == ui.ev_blurred {
+            m.set_focus(0)
+            m.set_cursor(&window,ui.cursor_default) or >>
+            dirty = true
+        } else if ui.is_input_event(event.kind) {
+            input := ui.input_of(&event) or >>
+            if input.canvas_id == identity.canvas_id && input.generation == identity.generation {
+                dirty = m.input(&window,&input) or >>
+            }
+        }
+    }
+    date := mut &m.date
+    date.dispose()
+    clock := mut &m.clock
+    clock.dispose()
+    frame.dispose()
+    << 0
+}
+fn worker(ech chan ui.Event) { scene(ech) or (err) { demo.fail(err.msg())
+    << } }
+fn launch() int {
+    mut app := demo.app("Xu UI / Date & Time",720,660) or >>
+    xu worker(app.event_ch)
+    << app.run() or >>
+}
+fn main() int { << launch() or (err) { eprintln(err.msg())
+    << 1 } }

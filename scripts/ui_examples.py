@@ -22,6 +22,8 @@ SAMPLES = {
     "multiwindow": "Dynamic windows, independent canvases and one event channel",
     "workbench": "Image browser combining layout, controls, file requests and preview windows",
     "editor_workbench": "Input, TextArea, structured menus and actual screen queries",
+    "component_catalog": "Tables, trees, inputs, anchored overlays, modal focus and feedback",
+    "date_time": "Calendar date picker, segmented time picker and typed time values",
     "style_gallery": "Control themes, typography, density, local overrides and styled scrollbars",
     "controls_gallery": "Extended controls, focus, and StyleSwitcher presets, text scale and density",
     "webview_requests": "Concurrent WebView invokes, cancellation, deadlines and native queries",
@@ -71,9 +73,12 @@ def main() -> int:
     identity = subprocess.run([str(compiler), "--version"], check=True, text=True, capture_output=True).stdout
     version = re.search(r"(\d+)\.(\d+)\.(\d+)(?:-dev\.(\d+))?", identity)
     if not version or tuple(map(int, version.groups()[:3])) < (0, 10, 1):
-        parser.error("these examples require the Xu 0.10.1 release SDK or newer")
-    if tuple(map(int, version.groups()[:3])) == (0, 10, 1) and version.group(4) is not None:
-        parser.error("these examples require the final Xu 0.10.1 SDK, not its development previews")
+        parser.error("these examples require Xu 0.10.1 or newer")
+    selected = list(SAMPLES) if args.sample == "all" else [args.sample]
+    if any(name in ("style_gallery", "date_time", "component_catalog") for name in selected):
+        release = tuple(map(int, version.groups()[:3]))
+        if release < (0, 10, 1):
+            parser.error("style_gallery, date_time and component_catalog require Xu 0.10.1 or newer")
     output = ROOT / "build" / "ui" / target
     output.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, XU_ROOT=str(compiler_root), XU_STDLIB_ROOT=str(compiler_root / "src"),
