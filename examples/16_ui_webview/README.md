@@ -1,6 +1,6 @@
 # 16 — 原生 UI 与 WebView 示例
 
-这组示例覆盖 Xu 0.10.0 至 0.10.2-dev.1 新增的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
+这组示例覆盖 Xu 0.10.1 正式版及 0.10.2-dev 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
@@ -22,7 +22,7 @@
 
 ## 统一入口
 
-基础示例需要 **Xu 0.10.0+**，`editor_workbench` 与 `webview_requests` 需要 **Xu 0.10.1-dev.2+**，当前 `style_gallery`、`date_time` 和 `component_catalog` 需要 **Xu 0.10.2-dev.1+**。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
+整组示例需要 **Xu 0.10.1+**（新增组件与样式画廊支持 **0.10.2-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
 
 ```sh
 python3 scripts/ui_examples.py list
@@ -46,12 +46,12 @@ make ui-run UI=workbench
 ```sh
 cd /path/to/xu
 bin/xu doctor --desktop --target macos-arm64
-bin/xu build /path/to/examples/examples/16_ui_webview/workbench \
+XU_UI_PACK=1 bin/xu build /path/to/examples/examples/16_ui_webview/workbench \
   --target macos-arm64 --desktop -o /tmp/XuWorkbench
 open /tmp/XuWorkbench.app
 ```
 
-统一启动器会代为设置该工作目录。`--desktop` 接收含 `xu.xun` 的应用目录。每个应用自带 `brand/` PNG 图标；资源图库另有内嵌 `www/sample.png`，其余原生示例不需要 HTML。共享模块通过本地 `file:` 依赖导入，不需联网。
+统一启动器会代为设置该工作目录与 `XU_UI_PACK=1` 编译配置，使桌面 worker 使用 1 MiB 栈；直接打包时也设置该变量，避免复杂 UI 超出普通任务的 128 KiB 栈。`--desktop` 接收含 `xu.xun` 的应用目录。每个应用自带 `brand/` PNG 图标；资源图库另有内嵌 `www/sample.png`，其余原生示例不需要 HTML。共享模块通过本地 `file:` 依赖导入，不需联网。
 
 ## 读代码时关注
 

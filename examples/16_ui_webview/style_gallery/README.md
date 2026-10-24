@@ -1,10 +1,10 @@
 # 控件样式图库
 
-需要 **Xu 0.10.2-dev.1**。使用 UI 开发分支构建的编译器：
+需要 **Xu 0.10.1+**（开发分支建议 **0.10.2-dev.1+**）。使用对应的 SDK 或开发编译器：
 
 ```sh
-XU_ROOT=/path/to/xu-ui python3 scripts/ui_examples.py check style_gallery
-XU_ROOT=/path/to/xu-ui python3 scripts/ui_examples.py run style_gallery
+XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py check style_gallery
+XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py run style_gallery
 ```
 
 切换深色、浅色、高对比度主题；把文字放大到 140%；切换紧凑密度。局部绿色按钮保留独立主题，并演示图片图标。检查悬停、按下、键盘焦点、勾选、禁用、错误和只读状态；输入框和多行编辑器支持原生 IME、选区、光标与预编辑下划线。滚动条支持拖动、轨道翻页、滚轮与键盘。
