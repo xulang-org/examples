@@ -7,26 +7,26 @@
 pub fn next(ech chan ui.Event) ui.Event {
     while true {
         event := ui.poll_chan(ech)
-        if event.kind != ui.ev_none { << event }
+        if event.kind != ui.EV_NONE { << event }
         sleep_ns(8000000)
     }
-    << ui.Event{kind: ui.ev_exit,window_id: 0,menu_id: "",width: 0,height: 0}
+    << ui.Event{kind: ui.EV_EXIT,window_id: 0,menu_id: "",width: 0,height: 0}
 }
 pub fn ready(ech chan ui.Event) ui.Event {
     while true {
         event := next(ech)
-        if event.kind == ui.ev_canvas_ready {
+        if event.kind == ui.EV_CANVAS_READY {
             // Commands sent before canvas_ready can precede native attachment.
             identity := ui.canvas_of(&event) or >>
             window := ui.Window{id: identity.window_id,generation: identity.generation,
-                title: "",width: 0,height: 0,content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
+                title: "",width: 0,height: 0,content_kind: ui.CONTENT_DRAW,content_backend_id: identity.canvas_id,closed: 0}
             window.content_command("input_enabled\t1") or >>
             window.content_command("pan_enabled\t0") or >>
             << event
         }
-        if event.kind == ui.ev_exit { << event }
+        if event.kind == ui.EV_EXIT { << event }
     }
-    << ui.Event{kind: ui.ev_exit,window_id: 0,menu_id: "",width: 0,height: 0}
+    << ui.Event{kind: ui.EV_EXIT,window_id: 0,menu_id: "",width: 0,height: 0}
 }
 pub fn app(title string,width int,height int) ui.App {
     mut app := ui.new_app()
@@ -43,7 +43,7 @@ pub fn windows(ech chan ui.Event) ui.App {
 }
 pub fn alive(identity &ui.CanvasEvent) bool {
     window := ui.Window{id: identity.window_id,generation: identity.generation,
-        title: "",width: 0,height: 0,content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
+        title: "",width: 0,height: 0,content_kind: ui.CONTENT_DRAW,content_backend_id: identity.canvas_id,closed: 0}
     << window.is_open()
 }
 pub fn background() draw.Color { << draw.rgb(17,24,34) }
