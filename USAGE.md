@@ -74,7 +74,7 @@ name := "Xu"
 mut age := 20
 age += 1
 
-const Max = 100
+const MAX = 100
 ```
 
 - `:=` 推导类型；函数参数与返回类型须写明。
