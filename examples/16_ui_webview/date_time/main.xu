@@ -80,25 +80,25 @@ fn (m &mut Model) set_cursor(window &ui.Window,cursor int) int {
     << 0
 }
 fn (m &mut Model) input(window &ui.Window,event &ui.InputEvent) bool {
-    if event.kind == ui.ev_key_down && event.key == ui.key_tab {
+    if event.kind == ui.EV_KEY_DOWN && event.key == ui.KEY_TAB {
         mut next := m.focus + 1
-        if (event.modifiers & ui.mod_shift) != 0 { next = m.focus - 1 }
+        if (event.modifiers & ui.MOD_SHIFT) != 0 { next = m.focus - 1 }
         if next > 2 { next = 1 }
         if next < 1 { next = 2 }
         m.set_focus(next)
         << true
     }
-    if event.kind == ui.ev_key_down && (event.key == 84 || event.key == 116) {
+    if event.kind == ui.EV_KEY_DOWN && (event.key == 84 || event.key == 116) {
         m.theme = (m.theme + 1) % 3
         m.styles = widgets.preset_styles(m.theme)
         << true
     }
-    if event.kind == ui.ev_key_down && (event.key == 70 || event.key == 102) {
+    if event.kind == ui.EV_KEY_DOWN && (event.key == 70 || event.key == 102) {
         if m.styles.text_scale == 1.0 { m.styles.text_scale = 1.4 }
         else { m.styles.text_scale = 1.0 }
         << true
     }
-    if event.kind == ui.ev_key_down && (event.key == 68 || event.key == 100) {
+    if event.kind == ui.EV_KEY_DOWN && (event.key == 68 || event.key == 100) {
         if m.styles.density == 1.0 { m.styles.density = 0.8 }
         else { m.styles.density = 1.0 }
         << true
@@ -106,14 +106,14 @@ fn (m &mut Model) input(window &ui.Window,event &ui.InputEvent) bool {
     mut inside_date := m.date.bounds().contains(event.x,event.y)
     if m.date.is_open() && m.date.popup_bounds().contains(event.x,event.y) { inside_date = true }
     inside_clock := m.clock.bounds().contains(event.x,event.y)
-    if event.kind == ui.ev_pointer_move || event.kind == ui.ev_pointer_leave {
-        mut cursor := ui.cursor_default
-        if inside_clock { cursor = ui.cursor_text }
-        if inside_date { cursor = ui.cursor_hand }
-        if event.kind == ui.ev_pointer_leave { cursor = ui.cursor_default }
+    if event.kind == ui.EV_POINTER_MOVE || event.kind == ui.EV_POINTER_LEAVE {
+        mut cursor := ui.CURSOR_DEFAULT
+        if inside_clock { cursor = ui.CURSOR_TEXT }
+        if inside_date { cursor = ui.CURSOR_HAND }
+        if event.kind == ui.EV_POINTER_LEAVE { cursor = ui.CURSOR_DEFAULT }
         m.set_cursor(window,cursor) or >>
     }
-    if event.kind == ui.ev_pointer_down && event.button == ui.button_left {
+    if event.kind == ui.EV_POINTER_DOWN && event.button == ui.BUTTON_LEFT {
         mut focus := 0
         if inside_date { focus = 1 }
         else if inside_clock { focus = 2 }
@@ -122,7 +122,7 @@ fn (m &mut Model) input(window &ui.Window,event &ui.InputEvent) bool {
     was_open := m.date.is_open()
     date := mut &m.date
     da := date.input(event) or >>
-    if da.kind == widgets.action_change {
+    if da.kind == widgets.ACTION_CHANGE {
         m.value = m.date.value()
         value := m.value
         clock := mut &m.clock
@@ -131,28 +131,28 @@ fn (m &mut Model) input(window &ui.Window,event &ui.InputEvent) bool {
     if da.consumed { << true }
     clock := mut &m.clock
     ta := clock.input(event) or >>
-    if ta.kind == widgets.action_change {
+    if ta.kind == widgets.ACTION_CHANGE {
         m.value = m.clock.value()
         value := m.value
         date := mut &m.date
         date.set_value(value) or >>
     }
-    if event.kind == ui.ev_key_down && event.key == ui.key_escape && !was_open { demo.quit() or >> }
+    if event.kind == ui.EV_KEY_DOWN && event.key == ui.KEY_ESCAPE && !was_open { demo.quit() or >> }
     << da.needs_paint || ta.needs_paint || was_open != m.date.is_open()
 }
 fn scene(ech chan ui.Event) int {
     ready := demo.ready(ech) or >>
-    if ready.kind == ui.ev_exit { << 0 }
+    if ready.kind == ui.EV_EXIT { << 0 }
     identity := ui.canvas_of(&ready) or >>
     context := draw.context_of(&ready) or >>
     window := ui.Window{id: identity.window_id,generation: identity.generation,title: "",width: 0,height: 0,
-        content_kind: ui.content_draw,content_backend_id: identity.canvas_id,closed: 0}
+        content_kind: ui.CONTENT_DRAW,content_backend_id: identity.canvas_id,closed: 0}
     // Deterministic initial value makes leap-day and month-end checks repeatable.
     value := time.date(2024,2,29,14,35,20,123000000)
     empty := layout.Rect{x: 0.0,y: 0.0,width: 0.0,height: 0.0}
     mut m := Model{date: widgets.date_picker(&context,&identity,1,&empty,value) or >>,
         clock: widgets.time_picker(&context,&identity,2,&empty,value) or >>,
-        value: value,styles: widgets.light_styles(),theme: 1,focus: 0,cursor: ui.cursor_default}
+        value: value,styles: widgets.light_styles(),theme: 1,focus: 0,cursor: ui.CURSOR_DEFAULT}
     mut frame := context.new_frame(16384)
     mut width := 720.0
     mut height := 660.0
@@ -161,17 +161,17 @@ fn scene(ech chan ui.Event) int {
         if dirty { m.paint(mut &frame,width,height) or >>
             dirty = false }
         event := demo.next(ech)
-        if event.kind == ui.ev_exit { <- }
+        if event.kind == ui.EV_EXIT { <- }
         if event.window_id != identity.window_id { -> }
-        if event.kind == ui.ev_canvas_closed { <- }
-        if event.kind == ui.ev_canvas_metrics {
+        if event.kind == ui.EV_CANVAS_CLOSED { <- }
+        if event.kind == ui.EV_CANVAS_METRICS {
             metrics := ui.metrics_of(&event) or >>
             if metrics.width > 0.0 && metrics.height > 0.0 { width = metrics.width
                 height = metrics.height
                 dirty = true }
-        } else if event.kind == ui.ev_blurred {
+        } else if event.kind == ui.EV_BLURRED {
             m.set_focus(0)
-            m.set_cursor(&window,ui.cursor_default) or >>
+            m.set_cursor(&window,ui.CURSOR_DEFAULT) or >>
             dirty = true
         } else if ui.is_input_event(event.kind) {
             input := ui.input_of(&event) or >>
