@@ -193,6 +193,8 @@ fn main() int {
 在 `examples` 仓库根目录下执行：
 
 ```bash
+make build EXAMPLE=19_native_c
+# 可选：编译并运行
 ./scripts/example.sh run 19_native_c
 ```
 
