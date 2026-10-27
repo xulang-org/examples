@@ -78,10 +78,10 @@ fn new_page(s &mut widgets.Screen,index int) Page {
         anchor := ids[0]
         ids.push(s.tooltip(anchor,"Open XU workspace · Enter") or >>) }
     if index == 3 { ids.push(s.input("中文 / English / 🙂") or >>) }
-    if index == 4 { ids.push(s.text_area("Native text editing\n选择文字、粘贴、撤销，保留输入法会话。\n👩🏽‍💻 family 👨‍👩‍👧‍👦") or >>) }
+    if index == 4 { ids.push(s.text_area("Native text editing\n选择文字、复制、粘贴，保留输入法会话。\n👩🏽‍💻 family 👨‍👩‍👧‍👦") or >>) }
     if index == 5 || index == 6 {
         mut decoration := widgets.field_decoration(&"Project name 项目名称")
-        decoration.helper = "Enter a name · Native IME / selection / undo"
+        decoration.helper = "Enter a name · Native IME / selection / clipboard"
         decoration.error = "名称不能为空。Please enter a project name."
         decoration.clearable = true
         if index == 5 { decoration.prefix = "xu /"
@@ -555,7 +555,7 @@ fn description(index int) string {
     descriptions := ["正文、标题与辅助文字分层；原生换行与字体覆盖。",
         "六种语义变体，共用焦点、按下、选中及只读规则。",
         "独立点击目标与动作名称；键盘焦点也能查看提示。",
-        "原生单行编辑：选区、撤销、粘贴与 IME。",
+        "原生单行编辑：选区、复制、粘贴与 IME。",
         "原生多行编辑：段落、内部滚动与输入法候选定位。",
         "浮动标签 / 固定标签 / 三种边框；软计数不截断输入。",
         "多行 Field：最小 3 行、最大 6 行；计数与稳定辅助区。",

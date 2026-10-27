@@ -226,7 +226,7 @@ fn extra_controls(screen &mut widgets.Screen) []int {
     ids.push(screen.divider(widgets.AXIS_HORIZONTAL) or >>)
     ids.push(screen.radio_group(&["Use local build","Use cached build","Build dependencies"],0) or >>)
     ids.push(screen.input("Native input · 中文") or >>)
-    ids.push(screen.text_area("A multi-line editor.\nSelection, undo and native IME remain available.") or >>)
+    ids.push(screen.text_area("A multi-line editor.\nSelection, clipboard and native IME remain available.") or >>)
     ids.push(screen.date_picker(time.date(2026,10,25,10,30,0,0)) or >>)
     ids.push(screen.time_picker(time.date(2026,10,25,10,30,0,0)) or >>)
     ids.push(screen.button("Queue notification") or >>)
