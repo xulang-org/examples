@@ -1,9 +1,11 @@
 # 16 — 原生 UI 与 WebView 示例
 
-这组示例覆盖 Xu 0.10.1 正式版及 0.10.2-dev 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
+这组示例覆盖 Xu 0.10.8-dev.1 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
+| [interaction_gallery](interaction_gallery/) | 精细控件交互、Tree 层级与筛选、浮动标签、真实任务进度、通知队列 | 主题、密度、减少动效、All controls |
+| [webview_component](webview_component/) | 同一 Canvas 窗口内嵌多个原生 WebView、独立 IPC、布局与焦点 | 隐藏、重载、释放、模态弹层、Ctrl+Tab |
 | [draw](draw/) | Frame、逻辑坐标、变换栈、裁剪、指针 | 点击圆、调整窗口 |
 | [draw_gallery](draw_gallery/) | 路径、渐变、PNG、排版、图层、DisplayList、SurfaceCache | Space 切换缓存、R 失效 |
 | [widgets](widgets/) | 约束布局、控件、焦点、捕获、滚动、重绘边界 | Tab、Enter、勾选、滚动 |
@@ -22,7 +24,7 @@
 
 ## 统一入口
 
-整组示例需要 **Xu 0.10.1+**（新增组件与样式画廊支持 **0.10.2-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
+整组示例需要 **Xu 0.10.1+**（精细交互与内嵌 WebView 组件需要 **0.10.8-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
 
 ```sh
 python3 scripts/ui_examples.py list
