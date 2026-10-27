@@ -1,6 +1,6 @@
 # XU VIS & Design System HTTP Server
 
-本目录包含 XU 设计系统的静态资源和一个最小 HTTP/1.1 文件服务。服务默认只监听回环地址，适合本地预览；公网部署请使用 [服务部署指南](../../../../../xu/docs/server-deployment.md) 中的 systemd + Nginx/Caddy 模式。
+本目录包含 XU 设计系统的静态资源和一个最小 HTTP/1.1 文件服务。服务默认只监听回环地址，适合本地预览；部署时用 systemd 等进程管理器运行服务，使用绝对 `--root` 路径，保持回环监听，再由 Nginx/Caddy 反向代理到 `127.0.0.1:8088` 并终止 TLS。下方提供本地构建和启动命令。
 
 ## 内容入口与维护约定
 
@@ -8,7 +8,7 @@
 - `www/brand/VI_MANUAL.md`：v2.7 法定视觉规范源文件；
 - `www/office_merch.html`：22 项实体物料与生产参数展厅；
 - `www/vi-ui-design-system.css` / `www/app.js`：主展厅样式与交互；
-- HTTP 服务只发布 `www/`。目录根部的同名静态文件作为便携预览镜像保留；修改以 `www/` 为准，交付时同步镜像。
+- HTTP 服务只发布 `www/`，这是完整的预览与交付入口；修改与部署均以该目录为准。目录根部的旧静态副本缺少字体和页面资源，不作为独立预览入口。
 
 ## 构建和运行
 
@@ -23,11 +23,11 @@ xu build examples/16_ui_webview/xu_design_system/server.xu -o build/xu_design_se
 
 本目录的 `server.xu` 是 HTTP 服务入口，`main.xu` 是另一个桌面 WebView 入口。上面的命令显式选择 `server.xu`，避免将两个 `fn main()` 一起按目录构建；静态资源目录无需单独编译。本例未注册到 `scripts/ui_examples.py`。
 
-也可以直接使用统一部署脚本：
+也可以从仓库根使用统一部署脚本；它在 Xu 仓库内执行编译，因此传入源文件的绝对路径：
 
 ```bash
 ../xu/scripts/deploy_xu_server.sh build-local \
- --source examples/16_ui_webview/xu_design_system/server.xu \
+ --source "$PWD/examples/16_ui_webview/xu_design_system/server.xu" \
  --output /tmp/xu_design_server
 ```
 

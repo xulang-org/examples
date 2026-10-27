@@ -42,4 +42,4 @@ chmod +x /tmp/xu_17_postgres && /tmp/xu_17_postgres
 host=127.0.0.1 port=5432 user=postgres password=postgres dbname=xu_demo sslmode=disable
 ```
 
-当前版本支持 trust、明文、MD5、SCRAM-SHA-256 认证及 PostgreSQL 扩展查询协议；参数不会插值进 SQL。当前 `database/sql` 单次调用最多传 3 个参数。首版尚未启用 TLS，只应在本机或受保护网络中显式使用 `sslmode=disable`。
+当前版本支持 trust、明文、MD5、SCRAM-SHA-256 认证及 PostgreSQL 扩展查询协议；参数不会插值进 SQL。当前 `database/sql` 单次调用最多传 3 个参数。本示例显式使用 `sslmode=disable`，仅适合本地演示。驱动已支持 `sslmode=require`、`verify-ca` 和 `verify-full`，通过 SSLRequest 在同一连接上升级到 TLS，并校验证书链与主机名；自签名根证书用 `sslrootcert=/absolute/path/ca.pem` 指定。升级或校验失败时不会回退到明文。
