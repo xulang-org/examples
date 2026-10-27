@@ -1,5 +1,5 @@
 module: example/native_c
-version: !ver 1.0.0
+version: !ver 1.0.1
 xu: !ver 0.8.3
 native:
   native_add: file:./native/native_add.xulib

@@ -1,5 +1,5 @@
 module: example/standalone_qdrant
-version: !ver 1.0.1
+version: !ver 1.0.2
 xu: !ver 0.8.3
 require:
   "github.com/xulang-org/packages": file:../../../packages

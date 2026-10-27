@@ -12,15 +12,16 @@
 
 ## 构建和运行
 
-在仓库根目录执行：
+在仓库根目录执行，需已将 Xu 编译器 `xu` 加入 `PATH`：
 
 ```bash
-make xu
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$(pwd)/../xu/bin/xu" build examples/16_ui_webview/xu_design_system/server.xu \
- -o /tmp/xu_design_server
-/tmp/xu_design_server --addr 127.0.0.1:8088 \
+mkdir -p build
+xu build examples/16_ui_webview/xu_design_system/server.xu -o build/xu_design_server
+./build/xu_design_server --addr 127.0.0.1:8088 \
  --root examples/16_ui_webview/xu_design_system/www
 ```
+
+本目录的 `server.xu` 是 HTTP 服务入口，`main.xu` 是另一个桌面 WebView 入口。上面的命令显式选择 `server.xu`，避免将两个 `fn main()` 一起按目录构建；静态资源目录无需单独编译。本例未注册到 `scripts/ui_examples.py`。
 
 也可以直接使用统一部署脚本：
 

@@ -15,10 +15,17 @@
 | [component_catalog](component_catalog/) | Table、TreeView、Pagination、ComboBox、多选、颜色、面包屑、加载与浮层 | 三个分类页、排序、筛选、Tab 焦点约束、主题切换 |
 | [date_time](date_time/) | DatePicker 月历、TimePicker 分段输入、Time / Instant / Duration | 翻月、选闰日、编辑时分秒、T/F/D 切换样式 |
 | [style_gallery](style_gallery/) | 统一主题、字体缩放、密度、局部覆盖、状态与滚动条 | 点击 Theme/Text/Density、编辑、拖动滑块 |
+| [controls_gallery](controls_gallery/) | 扩展控件、主题、文字缩放与密度 | T/S/D、Tab、方向键 |
 | [webview_requests](webview_requests/) | WebView 并发、取消、超时、大文本、原生查询 | Run all checks、请求中关闭窗口 |
 | [open](open/) | 原有 WebView、菜单、托盘示例 | 网页与原生壳交互 |
 | [shaped](shaped/) | 原有透明异形窗口 | 拖动窗口 |
+| [shaped_webview](shaped_webview/) | macOS 异形窗口与 WebView | 见子目录 README 单独打包 |
 | [remote](remote/) | 原有远程 WebView + Xu IPC | 先启动 remote_http 服务 |
+
+`shaped_webview` 未注册到统一启动器，使用其 README 中的直接打包命令。
+`shared` 是通过 `file:../shared` 参与应用构建的库，没有独立可执行入口，见[依赖构建说明](shared/README.md#依赖构建)。
+`xu_design_system` 包含静态资源、HTTP 服务和桌面入口，使用[专用构建说明](xu_design_system/README.md#构建和运行)，不要把两个入口一起按目录构建。
+`remote_http` 是下文的 Python 网页服务，无 Xu 源码，无需 Xu 编译。
 
 ## 统一入口
 
