@@ -4,6 +4,7 @@
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
+| [component_workshop](component_workshop/) | 45 个原生组件入口，覆盖主题、字号、密度、状态与交互；需要 Xu 0.10.10 | 左侧选择组件，调整顶部配置，使用真实鼠标与键盘验证状态 |
 | [draw](draw/) | Frame、逻辑坐标、变换栈、裁剪、指针 | 点击圆、调整窗口 |
 | [draw_gallery](draw_gallery/) | 路径、渐变、PNG、排版、图层、DisplayList、SurfaceCache | Space 切换缓存、R 失效 |
 | [widgets](widgets/) | 约束布局、控件、焦点、捕获、滚动、重绘边界 | Tab、Enter、勾选、滚动 |

@@ -14,6 +14,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 APPLICATIONS = ROOT / "examples" / "16_ui_webview"
 SAMPLES = {
+    "component_workshop": "45 native component entries with themes, scale, states and keyboard interaction",
     "draw": "Frame recording, transforms, clipping and pointer input",
     "draw_gallery": "Paths, gradients, images, text, layers and display-list caches",
     "widgets": "Retained layout, controls, scrolling, capture and keyboard focus",
@@ -72,10 +73,14 @@ def main() -> int:
     if not compiler.is_file():
         parser.error(f"compiler not found: {compiler}; build Xu or set XU_ROOT/XU")
     identity = subprocess.run([str(compiler), "--version"], check=True, text=True, capture_output=True).stdout
-    version = re.search(r"(\d+)\.(\d+)\.(\d+)(?:-dev\.(\d+))?", identity)
+    version = re.search(r"(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?", identity)
     if not version or tuple(map(int, version.groups()[:3])) < (0, 10, 1):
         parser.error("these examples require Xu 0.10.1 or newer")
     selected = list(SAMPLES) if args.sample == "all" else [args.sample]
+    if "component_workshop" in selected:
+        release = tuple(map(int, version.groups()[:3]))
+        if release < (0, 10, 10) or (release == (0, 10, 10) and version.group(4)):
+            parser.error("component_workshop requires Xu 0.10.10 or newer; older SDKs lack its widget APIs")
     if any(name in ("style_gallery", "date_time", "component_catalog") for name in selected):
         release = tuple(map(int, version.groups()[:3]))
         if release < (0, 10, 1):
@@ -103,7 +108,7 @@ def main() -> int:
             continue
         artifact = output / (name + (".exe" if target.startswith("windows") else ""))
         if not args.no_build:
-            pack_options = [] if name in ("open", "remote", "webview_requests") else ["--no-webview"]
+            pack_options = [] if name in ("open", "remote", "webview_requests", "component_workshop") else ["--no-webview"]
             if (project / "www").is_dir():
                 pack_options += ["--www", str(project / "www")]
             invoke([str(compiler), "build", str(project), "--target", target, "--desktop", *pack_options, "-o", str(artifact)], cwd=compiler_root, env=env)
