@@ -1,0 +1,13 @@
+@main
+#os
+
+// From the examples repository root: mkdir -p build
+// xu build --xacp examples/xacp/main.xu -o build/xacp-example
+fn main() int {
+    println("business-main")
+    args := os.args()
+    for i in 1:args.len {
+        println("arg: " + args[i])
+    }
+    << 0
+}
