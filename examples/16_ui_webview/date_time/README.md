@@ -4,8 +4,6 @@
 
 从仓库根执行，默认使用同级 `../xu`；可用 `XU_ROOT` 指定匹配的 Xu 源码目录：
 
-从仓库根执行，默认使用同级 `../xu`；可用 `XU_ROOT` 指定匹配的 Xu 源码目录：
-
 ```sh
 python3 scripts/ui_examples.py check date_time
 python3 scripts/ui_examples.py build date_time

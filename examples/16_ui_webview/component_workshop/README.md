@@ -1,6 +1,6 @@
 # 原生组件工作坊
 
-需要 Xu **0.10.10**。46 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。旧正式 SDK 0.10.7 缺少本示例所需的图表、菜单等 API，不能用于构建本示例。
+需要 Xu **0.10.11**。46 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。旧正式 SDK 0.10.7 缺少本示例所需的图表、菜单等 API，不能用于构建本示例。
 
 ```sh
 XU_ROOT=/path/to/xu python3 scripts/ui_examples.py check component_workshop

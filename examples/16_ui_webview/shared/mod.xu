@@ -28,10 +28,15 @@ pub fn ready(ech chan ui.Event) ui.Event {
     }
     << ui.Event{kind: ui.EV_EXIT,window_id: 0,menu_id: "",width: 0,height: 0}
 }
+
 pub fn app(title string,width int,height int) ui.App {
+    eprintln("demo.app: enter")
     mut app := ui.new_app()
-    mut window := app.new_window(ui.WindowOpts{title: title,width: width,height: height})
+    eprintln("demo.app: new_app ok")
+    mut window := app.open_window(ui.WindowOpts{title: title,width: width,height: height}) or >>
+    eprintln("demo.app: new_window ok id=" + str(window.id))
     if draw.attach(mut &window) < 0 { >> errors.new("demo: failed to attach draw content") }
+    eprintln("demo.app: draw attach ok")
     << app
 }
 // Window commands share the main App's channel without starting another pump.

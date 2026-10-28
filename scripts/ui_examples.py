@@ -14,6 +14,8 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 APPLICATIONS = ROOT / "examples" / "16_ui_webview"
 SAMPLES = {
+    "webview_component": "Embedded native WebViews in a Canvas Screen with independent requests and focus",
+    "interaction_gallery": "Refined trees, floating-label fields, real task progress and scrollable data",
     "component_workshop": "46 native component entries with themes, scale, states and keyboard interaction",
     "draw": "Frame recording, transforms, clipping and pointer input",
     "draw_gallery": "Paths, gradients, images, text, layers and display-list caches",
@@ -108,7 +110,7 @@ def main() -> int:
             continue
         artifact = output / (name + (".exe" if target.startswith("windows") else ""))
         if not args.no_build:
-            pack_options = [] if name in ("open", "remote", "webview_requests", "component_workshop") else ["--no-webview"]
+            pack_options = [] if name in ("open", "remote", "webview_requests", "webview_component", "component_workshop") else ["--no-webview"]
             if (project / "www").is_dir():
                 pack_options += ["--www", str(project / "www")]
             invoke([str(compiler), "build", str(project), "--target", target, "--desktop", *pack_options, "-o", str(artifact)], cwd=compiler_root, env=env)

@@ -4,7 +4,9 @@
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
-| [component_workshop](component_workshop/) | 45 个原生组件入口，覆盖主题、字号、密度、状态与交互；需要 Xu 0.10.10 | 左侧选择组件，调整顶部配置，使用真实鼠标与键盘验证状态 |
+| [component_workshop](component_workshop/) | 46 个原生组件入口，覆盖主题、字号、密度、状态与交互；需要 Xu 0.10.11 | 左侧选择组件，调整顶部配置，使用真实鼠标与键盘验证状态 |
+| [interaction_gallery](interaction_gallery/) | 精细控件交互、Tree 层级与筛选、浮动标签、任务进度和通知队列 | 主题、密度、减少动效 |
+| [webview_component](webview_component/) | 同一 Canvas 窗口内嵌多个原生 WebView | 独立 IPC、布局与焦点 |
 | [draw](draw/) | Frame、逻辑坐标、变换栈、裁剪、指针 | 点击圆、调整窗口 |
 | [draw_gallery](draw_gallery/) | 路径、渐变、PNG、排版、图层、DisplayList、SurfaceCache | Space 切换缓存、R 失效 |
 | [widgets](widgets/) | 约束布局、控件、焦点、捕获、滚动、重绘边界 | Tab、Enter、勾选、滚动 |
