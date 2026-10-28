@@ -1,6 +1,6 @@
 # 原生组件目录
 
-需要 **Xu 0.10.4-dev.1+**。本示例把 12 种新增组件放在同一应用中，演示数据、输入与浮层如何共享主题、文字缩放、密度和事件状态。全部使用 Xu 原生 Canvas 绘制；日期与时间控件另见 [date_time](../date_time/)。
+需要满足本目录 `xu.xun` 中 `xu:` 要求的 SDK。本示例把 12 种新增组件放在同一应用中，演示数据、输入与浮层如何共享主题、文字缩放、密度和事件状态。全部使用 Xu 原生 Canvas 绘制；日期与时间控件另见 [date_time](../date_time/)。
 
 从 examples 仓库根运行，`XU_ROOT` 指向包含本批 API 的 Xu 源码目录：
 
@@ -51,13 +51,13 @@ mut crumbs := widgets.breadcrumbs(&context,&identity,id,&bounds,&path) or >>
 mut spinner := widgets.spinner(&bounds) or >>
 ```
 
-所有索引从 0 起，分页标签显示从 1 起。Table 最多 16 列、512 行，总单元格不超过 768；无选中行使用 `-1`。`set_cell` 更新文字，`sort_column` / `sort_descending` 表示排序请求，应用自行按数据类型重排记录。组件选中值是行索引，业务 ID 由应用维护。滚动条支持拖动与轨道点击，也可通过滚轮和键盘滚动。
+所有索引从 0 起，分页标签显示从 1 起。Table 最多 16 列、512 行，总单元格不超过 768；无选中行使用 `-1`。`set_cell` 更新文字，`sort_column` / `sort_descending` 表示排序请求，应用自行按数据类型重排记录。组件选中值是行索引，业务 ID 由应用维护。滚动条当前用于指示位置，滚动通过滚轮和键盘完成。
 
 TreeView 最多 512 个节点，深度 0–32。`add(parent,&text)` 的根父级为 `-1`，返回稳定节点索引，直到 `clear`。`selected` 是节点索引；`visible_node(row)` 将可见行映射回节点。`set_selected` 会展开祖先；收起祖先导致选中节点隐藏时，选择移到该祖先。
 
-Pagination 支持 0–1,000,000,000 页，空页集合使用 `current=-1`；提供首页、末页、省略项及前后按钮；Home/End 可定位首尾。`set_selected`、`set_page_count` 管理页码，`action_change.value` 是从 0 起的页码。
+Pagination 支持 0–1,000,000,000 页，空页集合使用 `current=-1`；最多显示 7 个连续页码及前后按钮。`set_selected`、`set_page_count` 管理页码，`action_change.value` 是从 0 起的页码。
 
-ComboBox 的 `value()` 是文本，`selected()` 是匹配选项的原索引，自由输入未匹配时为 `-1`。过滤基于已提交文本；原生 IME 预编辑期间继续把文字会话事件交给 `event()`，不能只派发 key 事件。显式展开显示全部选项，编辑后再过滤。MultiSelect 的 `values()` 返回选中选项的原索引数组，`set_selected(index,bool)` 控制各项。两个候选面板最多显示 8 行并支持滚轮；`set_popup_above` 由宿主决定向上展示，直接控件可用 `set_popup_above` 指定方向，Screen 会依据窗口空间选择上下方向。
+ComboBox 的 `value()` 是文本，`selected()` 是匹配选项的原索引，自由输入未匹配时为 `-1`。过滤基于已提交文本；原生 IME 预编辑期间继续把文字会话事件交给 `event()`，不能只派发 key 事件。显式展开显示全部选项，编辑后再过滤。MultiSelect 的 `values()` 返回选中选项的原索引数组，`set_selected(index,bool)` 控制各项。两个候选面板最多显示 8 行并支持滚轮；`set_popup_above` 由宿主决定向上展示，尚未自动适配任意视口。
 
 ColorPicker 的 `value()` 返回 `draw.Color`，`set_channel(index,value)` 对应 R/G/B/A。Up/Down 切换通道，Left/Right、Home/End、Page Up/Page Down 调整当前通道。Breadcrumbs 激活时返回 `action_activate`，`value` 是祖先索引；应用据此执行跳转。
 
@@ -97,6 +97,3 @@ Modal 默认外点消费但不关闭；`set_dismiss_on_outside(true)` 可改为�
 Table、TreeView、Pagination、ComboBox、MultiSelect、ColorPicker、Breadcrumbs 持有原生文字资源，用完调用 `dispose()`。Popover、Modal、Tooltip、Toast 不拥有传入的标签；`StyledLabel` 仍由调用方释放。Frame 接受绘制前不要释放其中引用的资源。`needs_paint`、`painted`、`Action.needs_paint` 和各组件的绘制方法共同支持按需重绘，不需要空闲时持续绘制整个窗口。
 
 这些组件覆盖常用基础交互。高级数据表、富文本编辑、拖拽工作区、完整本地化与辅助技术桥接仍需后续独立设计，示例也没有连接真实服务或后台任务。
-
-
-完整主题、状态与自定义验收入口见 [component_workshop](../component_workshop/)。该画廊包含 Field 软计数/多行范围、Slider 刻度/吸附、分组选项、富列表行、Card 三段槽、真实 Scroll 容器和内嵌 WebView。

@@ -1,11 +1,14 @@
 # 扩展控件与 StyleSwitcher
 
-使用 **Xu 0.10.1 正式 SDK**，从 examples 仓库根执行：
+使用满足本目录 `xu.xun` 中 `xu:` 要求的 SDK，从 examples 仓库根执行：
 
 ```sh
-XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py check controls_gallery
-XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py run controls_gallery
+python3 scripts/ui_examples.py check controls_gallery
+python3 scripts/ui_examples.py build controls_gallery
+python3 scripts/ui_examples.py run controls_gallery
 ```
+
+默认使用同级 `../xu`，可用 `XU_ROOT` 指定匹配的 Xu 源码目录。
 
 展示 Switch、Radio、Slider、Stepper、Tabs、Select、ListBox、Badge、Divider 和 Card。点击或拖动控件；Tab 切换焦点，再用方向键、Space 或 Enter 操作。单个 Radio 演示选择状态，多选项的互斥关系由应用管理。Select 的基础样式绘制器重复同一个标签，当前选项序号显示在底部。
 

@@ -12,7 +12,16 @@ demo #"github.com/xulang-org/examples/ui_demo"
 
 struct Page { group int
     ids []int }
+// A state transition may reconfigure Workshop while these control IDs are in
+// use. Copy the IDs; Screen keeps ownership of the actual controls.
+fn (m &Workshop) page_snapshot(index int) Page {
+    group := m.pages[index].group
+    mut ids := []int{}
+    for id in m.pages[index].ids { ids.push(id) }
+    << Page{group: group,ids: ids}
+}
 struct Workshop {
+    tooltip_side int
     range_push bool
     range_vertical bool
     range_commit bool
@@ -60,7 +69,7 @@ struct Workshop {
     checksum int
     deadline time.Instant
 }
-fn names() []string { << ["StyledLabel","Button","IconButton","Input","TextArea","Field","FieldArea","TreeView","TaskButton","Checkbox","Switch","Radio","RadioGroup","Slider","Stepper","Select","ComboBox","MultiSelect","DatePicker","TimePicker","ColorPicker","Tabs","Segmented","ListBox","Table","Pagination","Breadcrumbs","Progress","Spinner","Divider","Badge","Card","Scroll","Popover","Tooltip","ToastHost","Modal","WebView","ButtonGroup","Chart","RangeSlider","SplitView","Menu","ContextMenu","SplitButton"] }
+fn names() []string { << ["StyledLabel","Button","IconButton","Input","TextArea","Field","FieldArea","TreeView","TaskButton","Checkbox","Switch","Radio","RadioGroup","Slider","Stepper","Select","ComboBox","MultiSelect","DatePicker","TimePicker","ColorPicker","Tabs","Segmented","ListBox","Table","Pagination","Breadcrumbs","Progress","Spinner","Divider","Badge","Card","Scroll","Popover","Tooltip","ToastHost","Modal","WebView","ButtonGroup","Chart","RangeSlider","SplitView","Menu","ContextMenu","SplitButton","PasswordInput"] }
 fn new_page(s &mut widgets.Screen,index int) Page {
     group := s.group() or >>
     mut ids := []int{}
@@ -71,9 +80,21 @@ fn new_page(s &mut widgets.Screen,index int) Page {
         s.set_label_ellipsis(ids[1],true) or >>
         anchor := ids[1]
         ids.push(s.tooltip(anchor,"很长的完整内容：Cluster-safe truncation · 👨‍👩‍👧‍👦 family · workspace / widgets / component.xu") or >>) }
-    if index == 1 { ids.push(s.button("Build project") or >>)
+    if index == 1 {
+        mut sizes := []int{}
+        mut labels := []int{}
+        for text in ["Build project","Open workspace · trailing","Save changes · above","Download SDK · below"] {
+            // Each inspector precedes its own button in both layout and Tab order.
+            inspector := s.stepper(12.0,64.0,4.0,24.0) or >>
+            sizes.push(inspector)
+            _ := s.tooltip(inspector,text + " · Icon size 图标尺寸 (px)") or >>
+            labels.push(s.label("Icon 图标 · 24 px",14.0,true) or >>)
+            ids.push(s.button_with_icon("logo.png",text) or >>) }
         for text in ["Secondary","Outline","Ghost","Danger","Subtle"] { ids.push(s.button(text) or >>) }
-        for variant in 0:6 { s.set_button_variant(ids[variant],variant) or >> } }
+        s.set_button_variant(ids[0],widgets.BUTTON_PRIMARY) or >>
+        for variant in 1:6 { s.set_button_variant(ids[variant + 3],variant) or >> }
+        for id in sizes { ids.push(id) }
+        for id in labels { ids.push(id) } }
     if index == 2 { ids.push(s.icon_button("logo.png","Open XU workspace") or >>)
         anchor := ids[0]
         ids.push(s.tooltip(anchor,"Open XU workspace · Enter") or >>) }
@@ -246,7 +267,7 @@ fn new_page(s &mut widgets.Screen,index int) Page {
             ids.push(s.label("Current: XU workspace · history on",14.0,true) or >>)
             for i in 2:8 { s.set_parent(ids[i],ids[1]) or >> }
         }
-        if index == 34 { ids.push(s.tooltip(anchor,"Keyboard focus shows help immediately.\n按 Escape 隐藏提示。") or >>) }
+        if index == 34 { ids.push(s.tooltip(anchor,"Hover waits 500 ms; keyboard focus shows help immediately.\n鼠标离开或点击收起；Escape 抑制重复提示。") or >>) }
         if index == 36 { ids.push(s.modal("Apply configuration?","Focus stays inside this confirmation. Escape returns to the trigger.") or >>)
             ids.push(s.button("Cancel") or >>)
             ids.push(s.button("Apply changes") or >>)
@@ -292,7 +313,7 @@ fn new_page(s &mut widgets.Screen,index int) Page {
             s.set_parent(ids[3+i],ids[1+i]) or >>
             s.set_parent(ids[5+i],ids[1+i]) or >> }
     }
-    if index >= 42 {
+    if index >= 42 && index <= 44 {
         mode := [widgets.MENU_DROPDOWN,widgets.MENU_CONTEXT,widgets.MENU_SPLIT][index-42]
         label := ["Actions","Right click here · 右键打开菜单","Save"][index-42]
         ids.push(s.menu(label,&workshop_menu_items(true),mode,100) or >>)
@@ -300,6 +321,13 @@ fn new_page(s &mut widgets.Screen,index int) Page {
         ids.push(s.label("Check and radio items preserve their state. Navigate submenus with arrows; Escape returns one level.\n操作文案与快捷键由应用配置。",14.0,true) or >>)
         s.set_label_wrapped(ids[1],true) or >>
         s.set_label_wrapped(ids[2],true) or >>
+    }
+    if index == 45 {
+        ids.push(s.password_input("Xu-密码🙂") or >>)
+        ids.push(s.checkbox("Show password 显示密码",false) or >>)
+        ids.push(s.label("Password 密码",15.0,false) or >>)
+        ids.push(s.label("Paste is supported. Copy and cut are blocked even when revealed.\n支持粘贴、选择和中英文输入；显隐切换保留内容与光标。",14.0,true) or >>)
+        s.set_label_wrapped(ids[3],true) or >>
     }
     for i in 0:ids.len {
         // Card slots and scroll children retain their content parent.
@@ -329,14 +357,16 @@ fn create(s &mut widgets.Screen) Workshop {
     navigation := s.list_box(&labels,5) or >>
     language := s.select_box(&["中文","English","Custom"],1) or >>
     _ := s.tooltip(language,"Component language · 组件默认文案与格式") or >>
-    << Workshop{range_push: false,range_vertical: false,range_commit: false,split_vertical: false,split_collapsed: false,menu_stays_open: false,menu_export_disabled: false,chart_kind: 0,chart_paused: false,group_vertical: false,group_joined: true,group_disabled: false,language: language,pages: pages,names: labels,navigation: navigation,preview: preview,title: title,caption: caption,status: status,
+    tools := [s.button("Option 1") or >>,s.button("Option 2") or >>,s.button("Option 3") or >>]
+    for tool in tools { s.set_parent(tool,preview) or >> }
+    << Workshop{tooltip_side: widgets.OVERLAY_TOP,range_push: false,range_vertical: false,range_commit: false,split_vertical: false,split_collapsed: false,menu_stays_open: false,menu_export_disabled: false,chart_kind: 0,chart_paused: false,group_vertical: false,group_joined: true,group_disabled: false,language: language,pages: pages,names: labels,navigation: navigation,preview: preview,title: title,caption: caption,status: status,
         theme: s.select_box(&["Light 亮色","Dark 暗色","Contrast 对比"],1) or >>,
         density: s.select_box(&["Normal 常规","Compact 紧凑","Touch 触控"],0) or >>,
         scale: s.select_box(&["Text 100%","Text 140%","Text 200%"],0) or >>,
         state: s.select_box(&["Normal 普通","Disabled 禁用","Read only 只读","Invalid 错误"],0) or >>,
         custom: s.button("Default 默认") or >>,reduced: s.checkbox("Reduce 减少动效",false) or >>,
         motion: s.button("Motion 160ms") or >>,focus: s.button("Focus sample") or >>,
-        tools: [s.button("Option 1") or >>,s.button("Option 2") or >>,s.button("Option 3") or >>],selected: 5,customized: false,guided: true,slow: false,
+        tools: tools,selected: 5,customized: false,guided: true,slow: false,
         variant: 0,revision: 0,completed: 0,running: false,failure: false,pending_before: false,pagination_error: false,preferences_name: "XU workspace",preferences_history: true,unread: 12,online: true,checksum: 0,deadline: time.zero_instant()}
 }
 fn (m &mut Workshop) apply_locale(s &mut widgets.Screen) int {
@@ -379,7 +409,7 @@ fn (m &mut Workshop) apply_locale(s &mut widgets.Screen) int {
 }
 fn read_only(index int) bool { << index >= 38 || (index >= 1 && index <= 26 && index != 8 && index != 25 && index != 26) }
 fn invalid(index int) bool { << index >= 40 || index >= 1 && index <= 30 && index != 7 && index != 8 && index != 12 && index != 24 && index != 25 && index != 26 && index != 28 }
-fn animated(index int) bool { << index >= 38 || index == 1 || index == 2 || index == 5 || index == 6 || index == 7 || index == 8 || index == 9 || index == 10 || index == 11 || index == 25 }
+fn animated(index int) bool { << (index >= 38 && index <= 44) || index == 1 || index == 2 || index == 5 || index == 6 || index == 7 || index == 8 || index == 9 || index == 10 || index == 11 || index == 25 }
 fn appearance(styles &widgets.Styles,index int) widgets.ControlStyle {
     if index == 0 { mut c := styles.input.clone()
         c.padding = layout.Insets{left: 0.0,top: 0.0,right: 0.0,bottom: 0.0}
@@ -389,7 +419,7 @@ fn appearance(styles &widgets.Styles,index int) widgets.ControlStyle {
     if index == 7 { << styles.tree_style() }
     if index == 24 { << styles.table_style() }
     if index == 9 || index == 10 || index == 11 || index == 12 { << styles.checkbox.clone() }
-    if index == 3 || index == 5 { << styles.input.clone() }
+    if index == 3 || index == 5 || index == 45 { << styles.input.clone() }
     if index == 4 || index == 6 { << styles.text_area.clone() }
     if index == 13 || index == 40 { << styles.slider_style() }
     if index == 41 { << styles.card_style() }
@@ -404,7 +434,7 @@ fn appearance(styles &widgets.Styles,index int) widgets.ControlStyle {
     if index == 32 { << styles.scroll.clone() }
     << styles.button.clone()
 }
-fn (m &Workshop) configure(s &mut widgets.Screen) int {
+fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
     theme := s.selected(m.theme) or >>
     density := s.selected(m.density) or >>
     scale := s.selected(m.scale) or >>
@@ -422,6 +452,7 @@ fn (m &Workshop) configure(s &mut widgets.Screen) int {
     id := page.ids[0]
     state := s.selected(m.state) or >>
     s.set_enabled(id,state != 1) or >>
+    if position == 45 { s.set_enabled(page.ids[1],state != 1) or >> }
     if position == 25 { s.set_enabled(page.group,state != 1) or >> }
     if read_only(m.selected) { s.set_read_only(id,state == 2) or >> }
     if invalid(m.selected) || m.selected == 31 || m.selected == 32 { s.set_invalid(id,state == 3) or >> }
@@ -444,11 +475,34 @@ fn (m &Workshop) configure(s &mut widgets.Screen) int {
         spec.exit = time.milliseconds(240) or >>
         spec.curve = widgets.EASE_OUT_QUINT }
     if animated(m.selected) { s.set_motion(id,&spec) or >> }
+    if m.selected == 1 {
+        for i in 0:9 { s.set_enabled(page.ids[i],state != 1) or >> }
+        handles := [page.ids[0],page.ids[1],page.ids[2],page.ids[3]]
+        placements := [widgets.ICON_LEADING,widgets.ICON_TRAILING,widgets.ICON_ABOVE,widgets.ICON_BELOW]
+        for i in 0:4 {
+            icon_size := s.number_value(page.ids[9 + i]) or >>
+            s.set_text(page.ids[13 + i],"Icon 图标 · " + str(int(icon_size)) + " px") or >>
+            mut c := styles.button_variant(widgets.BUTTON_OUTLINE) or >>
+            if i == 0 { c = styles.button_variant(widgets.BUTTON_PRIMARY) or >> }
+            c.icon_placement = placements[i]
+            c.icon_size = icon_size * styles.text_scale
+            if m.customized { c.radius = 14.0
+                c.border_width = 1.5 }
+            s.set_control_style(handles[i],&c) or >>
+            s.set_motion(handles[i],&spec) or >>
+        }
+    }
     if m.selected == 33 || m.selected == 34 || m.selected == 36 { s.set_motion(page.ids[1],&spec) or >>
         mut c := styles.overlay_style()
         if m.customized { c.radius = 18.0
             c.border_width = 2.0 }
         s.set_control_style(page.ids[1],&c) or >> }
+    if m.selected == 34 {
+        mut placement := widgets.overlay_placement()
+        placement.side = m.tooltip_side
+        placement.align = widgets.OVERLAY_CENTER
+        s.set_tooltip_placement(page.ids[1],&placement) or >>
+    }
     if m.selected == 35 {
         s.set_notice_motion(&spec) or >>
         if m.customized { mut c := styles.overlay_style()
@@ -515,7 +569,7 @@ fn (m &Workshop) configure(s &mut widgets.Screen) int {
         options.minimum_second = 140.0*styles.text_scale
         s.set_split_options(id,&options) or >>
     }
-    if m.selected >= 42 {
+    if m.selected >= 42 && m.selected <= 44 {
         mut appearance := widgets.menu_appearance()
         appearance.close_on_select = !m.menu_stays_open
         s.set_menu_appearance(id,&appearance) or >>
@@ -547,13 +601,14 @@ fn (m &Workshop) configure(s &mut widgets.Screen) int {
 }
 fn focusable_sample(index int) bool { << index != 0 && index != 27 && index != 28 && index != 29 && index != 30 }
 fn description(index int) string {
+    if index == 45 { << "按 Unicode 字素掩码；显隐切换、原生编辑、只读与禁用，禁止复制或剪切密码。" }
     if index == 40 { << "双端区间：步进、最小间距、端点推挤、整段拖动；独立焦点与提交。" }
     if index == 41 { << "可调整分栏：尺寸约束、折叠恢复、键盘调整；内容保持在各自面板内。" }
-    if index >= 42 { << "动作 / 勾选 / 单选 / 子菜单；键盘、边缘翻转、快捷键与可定制的逐项反馈。" }
+    if index >= 42 && index <= 44 { << "动作 / 勾选 / 单选 / 子菜单；键盘、边缘翻转、快捷键与可定制的逐项反馈。" }
     if index == 38 { << "独立操作 / 单选 / 多选；逐项禁用，方向键导航，Enter 或空格激活。" }
     if index == 39 { << "原生交互图表：稳定 ID 数据过渡、悬停/选中、图例；Ctrl/⌘ + 滚轮缩放，拖动平移，双击复位。" }
     descriptions := ["正文、标题与辅助文字分层；原生换行与字体覆盖。",
-        "六种语义变体，共用焦点、按下、选中及只读规则。",
+        "图标左 / 右 / 上 / 下；各自调节尺寸，按钮按内容宽度自动换行。",
         "独立点击目标与动作名称；键盘焦点也能查看提示。",
         "原生单行编辑：选区、复制、粘贴与 IME。",
         "原生多行编辑：段落、内部滚动与输入法候选定位。",
@@ -593,9 +648,10 @@ fn description(index int) string {
     << descriptions[index]
 }
 fn tool_labels(index int) []string {
+    if index == 45 { << ["Clear 清空","Reset 示例","Focus 输入"] }
     if index == 40 { << ["Clamp / push 端点","Commit mode 提交","Orientation 方向"] }
     if index == 41 { << ["Orientation 方向","Collapse / restore 折叠","Reset 复位"] }
-    if index >= 42 { << ["Open 打开","Keep open 保持展开","Disable export 禁用导出"] }
+    if index >= 42 && index <= 44 { << ["Open 打开","Keep open 保持展开","Disable export 禁用导出"] }
     if index == 38 { << ["Disable middle 逐项禁用","Orientation 方向","Joined / gap 拼接"] }
     if index == 39 { << ["Update data 更新数据","Reset zoom 复位","Pause / resume 暂停"] }
     if index == 0 { << ["Long text 长文","Short text 短文",""] }
@@ -621,7 +677,7 @@ fn tool_labels(index int) []string {
     if index == 30 { << ["+1 未读","Clear 清零","99+ 溢出"] }
     if index == 32 { << ["Top 顶部","Bottom 底部","Focus last"] }
     if index == 33 { << ["Open 打开","Close 关闭","Position 方位"] }
-    if index == 34 { << ["Focus 提示","Blur 隐藏",""] }
+    if index == 34 { << ["Focus 提示","Blur 隐藏","Position 方位"] }
     if index == 35 { << ["Enqueue 通知","Undo","Burst 三条"] }
     if index == 36 { << ["Open 打开","Close 关闭",""] }
     if index == 37 { << ["Reload 重载","Hide 隐藏","Show 恢复"] }
@@ -651,12 +707,21 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     s.place(m.navigation,24.0,top,rail,height - top - row - 36.0) or >>
     s.place(m.language,24.0,height - row - 24.0,rail,row) or >>
     s.place(m.caption,x,top,right,58.0 * scale) or >>
-    mut control_top := top + 66.0 * scale
-    column := (right - 24.0) / 3.0
-    for i in 0:3 { s.place(m.tools[i],x + f64(i) * (column + 12.0),control_top,column,row) or >> }
+    control_top := top + 66.0 * scale + 16.0
+    content := math.max(100.0,right - 48.0)
+    // Keep complete action labels at large text sizes. The toolbar shares the
+    // preview's scroll area so wrapping never pushes the sample off the window.
+    mut columns := 3
+    if content < 780.0 * scale { columns = 2 }
+    if content < 520.0 * scale { columns = 1 }
+    column := (content - f64(columns - 1) * 12.0) / f64(columns)
     tool_names := tool_labels(m.selected)
-    if tool_names[0].len > 0 { control_top += row + 12.0 }
-    control_top += 16.0
+    mut tool_count := 0
+    for i in 0:3 { if tool_names[i].len > 0 {
+        s.place(m.tools[i],24.0 + f64(tool_count % columns) * (column + 12.0),24.0 + f64(tool_count / columns) * (row + 12.0),column,row) or >>
+        tool_count += 1 } }
+    mut tool_extent := 0.0
+    if tool_count > 0 { tool_extent = f64((tool_count + columns - 1) / columns) * (row + 12.0) + 16.0 }
     bottom := height - 56.0 * scale - 24.0
     s.place(m.preview,x,control_top,right,math.max(100.0,bottom - control_top)) or >>
     s.place(m.status,x,math.max(bottom + 12.0,control_top + 112.0),right,52.0 * scale) or >>
@@ -664,8 +729,7 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     position := m.selected
     pages := &m.pages
     page := &pages[position]
-    content := math.max(100.0,right - 48.0)
-    s.place(page.group,0.0,0.0,right,1000.0 * scale) or >>
+    s.place(page.group,0.0,tool_extent,right,1000.0 * scale) or >>
     id := page.ids[0]
     mut h := row
     if m.selected == 0 { h = 180.0 * scale }
@@ -687,9 +751,17 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     mut sample_width := content
     if m.selected == 2 { sample_width = row
         h = row }
-    if m.selected != 30 { s.place(id,24.0,y,sample_width,h) or >> }
-    if m.selected == 1 { for i in 1:6 { s.place(page.ids[i],24.0,y + f64(i) * (row + 12.0),content,row) or >> }
-        h = 6.0 * (row + 12.0) }
+    if m.selected != 30 && m.selected != 1 { s.place(id,24.0,y,sample_width,h) or >> }
+    if m.selected == 1 {
+        buttons := m.page_snapshot(1)
+        h = layout_buttons(s,&buttons,content,row,scale) or >>
+    }
+    if m.selected == 34 {
+        size := s.measure_button(id) or >>
+        width := math.min(content,math.ceil(size.width))
+        s.place(id,24.0 + (content - width) * 0.5,y + 100.0 * scale,width,math.max(row,size.height)) or >>
+        h = math.max(row,size.height) + 200.0 * scale
+    }
     if m.selected == 0 { s.place(page.ids[1],24.0,y + h + 16.0,content,48.0 * scale) or >>
         h += 80.0 * scale }
     if m.selected == 13 { s.place(page.ids[1],24.0,y + h + 24.0,content,100.0 * scale) or >>
@@ -784,19 +856,58 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     if m.selected >= 40 { h = m.interaction_layout(s,row,scale,content) or >> }
     if m.selected == 36 { s.place(page.ids[2],24.0 * scale,190.0 * scale,170.0 * scale,row) or >>
         s.place(page.ids[3],210.0 * scale,190.0 * scale,170.0 * scale,row) or >> }
-    s.set_scroll_extent(m.preview,y + h + 32.0) or >>
+    s.set_scroll_extent(m.preview,tool_extent + y + h + 32.0) or >>
     << 0
 }
-// Event handlers mutate the model; retain only owned control IDs across those changes.
-fn (m &Workshop) page_handles(index int) Page {
-    pages := &m.pages
-    page := &pages[index]
-    mut ids := []int{}
-    for id in page.ids { ids.push(id) }
-    << Page{group:page.group,ids:ids}
+fn layout_buttons(s &mut widgets.Screen,page &Page,content f64,row f64,scale f64) f64 {
+    stepper_width := math.min(content,160.0 * scale)
+    label_height := 24.0 * scale
+    inspector_height := label_height + 8.0 + row + 12.0
+    mut cy := 24.0
+    // Keep each direction pair together when it fits, then wrap by the native
+    // measured size rather than stretching every example across the preview.
+    for group in 0:2 {
+        mut x := 24.0
+        mut line_height := 0.0
+        for i in (group * 2):(group * 2 + 2) {
+            size := s.measure_button(page.ids[i]) or >>
+            width := math.min(content,math.ceil(size.width))
+            height := math.max(row,math.ceil(size.height))
+            column := math.max(width,stepper_width)
+            if x > 24.0 && x + column > 24.0 + content {
+                x = 24.0
+                cy += line_height + 12.0
+                line_height = 0.0
+            }
+            s.place(page.ids[13 + i],x,cy,column,label_height) or >>
+            s.place(page.ids[9 + i],x,cy + label_height + 8.0,stepper_width,row) or >>
+            s.place(page.ids[i],x,cy + inspector_height,width,height) or >>
+            x += column + 16.0
+            line_height = math.max(line_height,inspector_height + height)
+        }
+        cy += line_height + 20.0
+    }
+    mut x := 24.0
+    mut line_height := 0.0
+    for i in 4:9 {
+        size := s.measure_button(page.ids[i]) or >>
+        width := math.min(content,math.ceil(size.width))
+        height := math.max(row,math.ceil(size.height))
+        if x > 24.0 && x + width > 24.0 + content {
+            x = 24.0
+            cy += line_height + 12.0
+            line_height = 0.0
+        }
+        s.place(page.ids[i],x,cy,width,height) or >>
+        x += width + 12.0
+        line_height = math.max(line_height,height)
+    }
+    cy += line_height + 20.0
+    << cy - 24.0
 }
 fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
-    page := m.page_handles(m.selected)
+    position := m.selected
+    page := m.page_snapshot(position)
     id := page.ids[0]
     index := m.selected
     if index == 40 {
@@ -814,13 +925,18 @@ fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
         if option == 2 { m.split_collapsed = false
             s.set_split_ratio(id,0.4) or >> }
     }
-    if index >= 42 {
+    if index >= 42 && index <= 44 {
         if option == 0 { s.focus(id) or >>
             s.set_menu_open(id,true) or >> }
         if option == 1 { m.menu_stays_open = !m.menu_stays_open
             m.configure(s) or >> }
         if option == 2 { m.menu_export_disabled = !m.menu_export_disabled
             s.set_menu_item_enabled(id,30,!m.menu_export_disabled) or >> }
+    }
+    if index == 45 {
+        if option == 0 { s.set_value(id,"") or >> }
+        if option == 1 { s.set_value(id,"Xu-密码🙂") or >> }
+        if option == 2 { s.focus(id) or >> }
     }
     if index == 0 { mut text := "精密 · 清晰 · 可靠。"
         if option == 0 { text = "长中文：输入、选择、复制与原生排版保持一致。Long English text wraps inside its content width. Family 👨‍👩‍👧‍👦 and developer 👩🏽‍💻 remain intact." }
@@ -931,8 +1047,13 @@ fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
         s.set_popover_placement(page.ids[1],&placement) or >> }
     if index == 33 || index == 36 { if option == 0 { if index == 33 { m.open_preferences(s) or >> } else { s.open(page.ids[1]) or >> } }
         else if option == 1 { s.close_overlay(page.ids[1]) or >> } }
+    if index == 34 && option == 2 { m.tooltip_side = (m.tooltip_side + 1) % 4
+        m.configure(s) or >>
+        s.focus(id) or >>
+        s.set_text(m.status,"Tooltip · " + ["Bottom 下","Top 上","Left 左","Right 右"][m.tooltip_side] + " · flips at the viewport edge") or >>
+    }
     if index == 34 { if option == 0 { s.focus(id) or >> }
-        else { s.focus(0) or >> } }
+        else if option == 1 { s.focus(0) or >> } }
     if index == 35 { mut notice := widgets.notice(&"Workspace saved · 工作区已保存")
         notice.action = "Undo"
         notice.key = "workspace-save"
@@ -966,7 +1087,8 @@ fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
     << 0
 }
 fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
-    page := m.page_handles(m.selected)
+    position := m.selected
+    page := m.page_snapshot(position)
     if action.kind == widgets.ACTION_CHANGE {
         if action.id == m.language { m.apply_locale(s) or >> }
         else if action.id == m.navigation {
@@ -978,6 +1100,12 @@ fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
             // This navigation event belongs to the old page; do not dispatch it to new-page IDs.
             << 0
         } else if action.id == m.theme || action.id == m.density || action.id == m.scale || action.id == m.state || action.id == m.reduced { m.configure(s) or >> }
+        else if m.selected == 1 {
+            for i in 0:4 { if action.id == page.ids[9 + i] { m.configure(s) or >> } }
+        }
+        else if m.selected == 45 && action.id == page.ids[1] {
+            s.set_password_visible(page.ids[0],s.toggle_value(page.ids[1]) or >>) or >>
+        }
         else if m.selected == 7 && action.id == page.ids[1] { query := s.text_value(page.ids[1]) or >>
             s.set_tree_filter(page.ids[0],query) or >> }
         else if m.selected == 17 && action.id == page.ids[1] { query := s.text_value(page.ids[1]) or >>
@@ -1012,7 +1140,7 @@ fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
         if action.kind == widgets.ACTION_CHART_VIEWPORT { s.set_text(m.status,"Viewport updated · Double click / Home to reset") or >> }
     }
     if m.selected == 40 && action.id == page.ids[0] && (action.kind == widgets.ACTION_CHANGE || action.kind == widgets.ACTION_COMMIT) { m.range_summary(s,action.kind == widgets.ACTION_COMMIT) or >> }
-    if m.selected >= 42 && action.id == page.ids[0] && (action.kind == widgets.ACTION_CHANGE || action.kind == widgets.ACTION_ACTIVATE) { s.set_text(page.ids[1],"Action / 操作 · "+str(int(action.value))) or >> }
+    if m.selected >= 42 && m.selected <= 44 && action.id == page.ids[0] && (action.kind == widgets.ACTION_CHANGE || action.kind == widgets.ACTION_ACTIVATE) { s.set_text(page.ids[1],"Action / 操作 · "+str(int(action.value))) or >> }
     if m.selected == 24 && action.id == page.ids[0] && action.kind == widgets.ACTION_ACTIVATE {
         descending := s.sort_descending(page.ids[0]) or >>
         mut direction := "ascending / 升序"
@@ -1078,7 +1206,7 @@ fn max_int_local(a int,b int) int { if a > b { << a }
     << b }
 fn (m &mut Workshop) pagination_invalid(s &mut widgets.Screen) int {
     m.pagination_error = true
-    page := m.page_handles(25)
+    page := m.page_snapshot(25)
     data := s.pagination_data(page.ids[0]) or >>
     s.set_field_invalid(page.ids[1],true) or >>
     mut message := "Enter a page from 1 to " + str(data.pages) + "."
@@ -1088,7 +1216,7 @@ fn (m &mut Workshop) pagination_invalid(s &mut widgets.Screen) int {
     << 0
 }
 fn (m &mut Workshop) update_pagination(s &mut widgets.Screen,sync_input bool) int {
-    page := m.page_handles(25)
+    page := m.page_snapshot(25)
     data := s.pagination_data(page.ids[0]) or >>
     s.set_text(page.ids[3],s.pagination_summary(page.ids[0]) or >>) or >>
     s.set_enabled(page.ids[1],data.pages > 0) or >>
@@ -1205,6 +1333,17 @@ fn (m &Workshop) interaction_layout(s &mut widgets.Screen,row f64,scale f64,cont
     pages := &m.pages
     page := &pages[position]
     id := page.ids[0]
+    if m.selected == 45 {
+        width := math.min(content,380.0 * scale)
+        label_height := 28.0 * scale
+        input_height := math.max(row,48.0 * s.styles().density)
+        input_y := 24.0 + label_height + 8.0
+        s.place(page.ids[2],24.0,24.0,width,label_height) or >>
+        s.place(id,24.0,input_y,width,input_height) or >>
+        s.place(page.ids[1],24.0,input_y + input_height + 16.0,content,row) or >>
+        s.place(page.ids[3],24.0,input_y + input_height + row + 36.0,content,100.0 * scale) or >>
+        << label_height + input_height + row + 160.0 * scale
+    }
     if m.selected == 40 {
         mut width := content
         mut height := 104.0*scale
@@ -1232,7 +1371,7 @@ fn (m &Workshop) interaction_layout(s &mut widgets.Screen,row f64,scale f64,cont
         }
         << height
     }
-    if m.selected >= 42 {
+    if m.selected >= 42 && m.selected <= 44 {
         mut width := math.min(content,240.0*scale)
         mut height := row
         if m.selected == 43 { width = content

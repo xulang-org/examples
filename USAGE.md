@@ -1,8 +1,8 @@
 # Xu 语言使用帮助
 
-<p align="center"><img src="../brand/xu_classic.svg" alt="Xu" width="72" height="72"></p>
+<p align="center"><img src="brand/xu_classic.svg" alt="Xu" width="72" height="72"></p>
 
-本文按「怎么写日常代码」组织。先读 [`FEATURES.md`](FEATURES.md) 了解定位与特色记号；更细的规则见 [`docs/LANGUAGE.md`](../docs/LANGUAGE.md)。每节末尾链到 [`examples/`](examples/) 里对应可运行程序。
+本文按「怎么写日常代码」组织。先读 [`FEATURES.md`](FEATURES.md) 了解定位与特色记号；更细的规则见 [公开语言参考](https://xulang.org/docs/lang/syntax/)。每节末尾链到 [`examples/`](examples/) 里对应可运行程序。
 
 ## 构建、运行与调试
 
@@ -38,7 +38,7 @@ xu test --debug-build .
 - 可执行包第一行写包声明：`@main`（库包写 `@包名`，常与目录同名）。
 - 入口：`fn main() int`（返回值作进程退出码）或 `fn main()`。
 - **无分号**；条件 / 循环**无括号**。
-- 依赖用行首 `#路径`，例如 `#errors`、`#strings`。包名是路径最后一段：`#encoding/json` → `json.Parse(...)`。
+- 依赖用行首 `#路径`，例如 `#errors`、`#strings`。包名是路径最后一段：`#encoding/json` → `json.parse(&text)`，返回 `json.Doc`；用 `doc.ok()` 判断是否成功，失败时读取 `doc.error()`，不使用 `or` 接解析错误。
 
 ```xu
 @main
@@ -74,7 +74,7 @@ name := "Xu"
 mut age := 20
 age += 1
 
-const Max = 100
+const MAX = 100
 ```
 
 - `:=` 推导类型；函数参数与返回类型须写明。
@@ -98,7 +98,7 @@ const Max = 100
 | `struct` / `enum` | 组合与标签联合 |
 | `&T` / `&mut T` | 共享 / 独占借用 |
 | `any` | 动态盒（写一次；`is` / `as`） |
-| `map[string]int` 等 | 目前 intern 子集；见 LANGUAGE §4.7 |
+| `map[string]int` 等 | 键为 `int` 或 `string`；值不可为引用，owning 值须遵守所有权规则 |
 
 字面量：`42`、`0xFF`、`0b1010`、`1_000_000`、`3.14`、`"hi"`、`` `多行` ``、`[1, 2, 3]`。
 
@@ -249,7 +249,7 @@ println("hi $name") // 插值
 ```
 
 - 索引越界、除零：运行时 fail-loud。
-- `[]string` 的 for-in 会隐式克隆元素；其它 owning 元素规则见 LANGUAGE §5.4。
+- `[]string` 的 for-in 会隐式克隆元素；其它 owning 元素规则见[所有权参考](https://xulang.org/docs/lang/memory/)。
 
 示例：[`examples/07_arrays_strings`](examples/07_arrays_strings)
 
@@ -273,7 +273,7 @@ match c {
 
 - 构造：`Color.Red`、`Color.Rgb(1, 2, 3)`。
 - match 须穷尽或带 `else`。
-- 泛型：`enum Opt#T { None, Some(T) }`（见 LANGUAGE §4.6）。
+- 泛型：`enum Opt#T { None, Some(T) }`（见[类型参考](https://xulang.org/docs/lang/types/)）。
 - owning 载荷的 match 会**消费**主体。
 
 示例：[`examples/08_enum_match`](examples/08_enum_match)
@@ -327,9 +327,9 @@ fn main() int {
 }
 ```
 
-- `xu f(args)` 启动协程（**不是** 的 `go f(args)`）；`xu.pkg.f` 是包路径调用，不是 spawn。
+- `xu f(args)` 启动协程（对应 Go 的 `go f(args)`）；`xu.pkg.f` 是包路径调用，不是 spawn。
 - Channel 转移所有权；不要把借用送进协程。
-- `select`、无缓冲会合、`close` 见 LANGUAGE §7 与 fixtures。
+- `select`、无缓冲会合、`close` 见[并发参考](https://xulang.org/docs/lang/concurrency/)。
 
 示例：[`examples/10_concurrency`](examples/10_concurrency)
 
@@ -337,28 +337,23 @@ fn main() int {
 
 ## 12. 模块与工具链速查
 
-预编译各平台 gen3 见 [`bin/`](bin/)：`xu.<os>.<arch>`（Windows 为 `xu.windows.<arch>.exe`，如 `xu.macos.arm64`、`xu.linux.x64`、`xu.windows.x64.exe`）。
+各平台 SDK 见[下载页](https://xulang.org/download/)。安装后将 `xu` 加入 `PATH`；下列命令在示例仓库根执行。若使用同级源码构建的编译器，可用 `../xu/scripts/run_product_compiler.sh --cwd "$PWD" /absolute/path/to/xu <命令>` 显式选择。
 
-```bash
-XU="$(pwd)/../xu/bin/xu" # 当前产品编译器
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build file.xu # 编单个文件，默认 -O1 写到 cwd/<stem>（Windows 加 .exe）
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build file.xu -o out # 指定产物路径
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build file.xu -O0 # 调试档：关 MIR 形变与 RA（比 检查器 -Copt-level=0 更贴源码）
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build file.xu -O1 # 默认档：折叠/叶内联/倒置/BCE + ALU 块 CSE + 块内 RA
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build file.xu -O2 # 发布档：再开 SimplifyCFG / 无环内联 / load-LICM；RA 为 greedy + CSR
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build file.xu -O3 # 与 O2 同一套 MIR/RA 算法，只抬 unroll/内联门槛与环 pin
-# --no-regcache 只关寄存器缓存，不影响 MIR 档（默认仍是 -O1）
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build <dir> # 目录必须有 xu.xun；编其中全部 *.xu（不递归），默认 cwd/<dirname>
-$XU run <dir|file.xu> [-- args...] # 类似 xu run：编译后直接执行（仅本机 target）
-../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" check main.xu # 仅解析+类型+借用；末尾列死循环风险与退出位点
-$XU fmt file.xu [-w] # 格式化
-$XU map [path...] # 源码流程图（默认 Mermaid；--graph 给画布）；亦可 xu-map
-$XU doc [path...] [-o file] # 声明文档 Markdown；亦可 xu-doc
-$XU test file.xu... # 只跑 test.<名>.xu 里的 fn test_*()
-# 测试组件：test.<方法名>.xu（≥3 节）；普通源码禁止命名 fn test_*
-# 目录 build/check：跳过 test.*.xu（同 go build 跳过 *_test.go）；显式文件路径照编；仅 xu test 目录模式纳入测试组件
-# 旗标：-run REGEXP -v -count N -failfast -list -short -bench REGEXP
-# bootstrap：xu --test file.xu …（同一套旗标）
+```sh
+mkdir -p build
+xu build examples/01_hello/main.xu -o build/hello
+xu run examples/01_hello/main.xu
+xu build examples/01_hello # 目录须有 xu.xun；不递归构建子目录
+xu check examples/01_hello
+xu build --debug-build examples/01_hello/main.xu -o build/hello_debug
+xu fmt examples/01_hello/main.xu -w
+xu map examples/01_hello/main.xu
+xu doc examples/01_hello/main.xu -o build/hello.md
+xu test test.example.xu -v # 替换成自己的测试组件文件
+# 测试文件须命名为 test.<名称>.xu，包为 @main
+# test_* 函数无参数、无返回类型；普通源码禁止声明 test_* / bench_*
+# 目录 build/check 跳过测试组件；xu test 目录模式纳入测试组件
+# 测试选项：-run REGEXP -v -count N -failfast -list -short -bench REGEXP
 ```
 
 默认编本机（`--target` 未写时看 `XUOS`/`XUARCH`，再看正在运行的编译器二进制）。交叉编译：`--target linux-arm64` 或 `XUOS` / `XUARCH`。
@@ -377,4 +372,4 @@ $XU test file.xu... # 只跑 test.<名>.xu 里的 fn test_*()
 6. **`or` 只接错误**；布尔或用 `||`。
 7. **import 写 `#errors`**，不是 `import "errors"`。
 
-规范全文与诚实实现清单：[`docs/LANGUAGE.md`](../docs/LANGUAGE.md) §0.1、§12。
+进一步阅读：[语言参考](https://xulang.org/docs/lang/syntax/)与[当前实现状态](https://xulang.org/docs/status/)。
