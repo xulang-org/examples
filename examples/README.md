@@ -45,6 +45,12 @@ XU=/absolute/path/to/xu XU_ROOT=/absolute/path/to/xu-source make run EXAMPLE=01_
 | [14_tcp_echo](14_tcp_echo/README.md) | TCP echo |
 | [15_udp_echo](15_udp_echo/README.md) | UDP echo |
 
+## XACP 控制协议
+
+| 目录 | 内容与运行提示 |
+|---|---|
+| [xacp](xacp/README.md) | 启动发现、安全启动、stdio 控制及本机 TCP 会话；使用已安装的 Xu SDK 或同级 Xu checkout，特殊构建选项见 README。 |
+
 ## UI 与设计系统
 
 | 目录 | 内容与运行提示 |
