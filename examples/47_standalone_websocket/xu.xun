@@ -1,5 +1,5 @@
 module: example/standalone_websocket
-version: !ver 1.0.3
+version: !ver 1.0.4
 xu: !ver 0.10.5
 require:
   "github.com/xulang-org/packages": file:../../../packages

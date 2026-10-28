@@ -2,7 +2,10 @@
 
 使用 Xu 0.10.2 正式版 的本地 WebView 示例，无 HTTP 服务器。
 
+从仓库根编译与运行（工具链要求见[父目录说明](../README.md#统一入口)）：
+
 ```sh
+python3 scripts/ui_examples.py build webview_requests
 python3 scripts/ui_examples.py run webview_requests
 ```
 
