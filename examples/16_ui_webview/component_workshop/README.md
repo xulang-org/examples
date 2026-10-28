@@ -137,3 +137,15 @@ screen.place(id, 24.0, 24.0, size.width, size.height) or >>
 ```
 
 图片随 `www/logo.png` 嵌入，Screen 持有并在销毁时释放；打包时保留 `--www` 资源目录。
+
+
+## Tooltip 定位与触发
+
+`Tooltip` 页可切换上、下、左、右定位，并在窗口边缘自动翻转。提示默认在锚点上方居中；滚动时只对可见的锚点部分定位，完全滚出裁剪区域时隐藏。鼠标悬停 500 ms 显示，键盘 Tab 或显式 `focus()` 立即显示；鼠标点击不会被当作键盘焦点。点击或滚轮操作收起提示，移出后可再次触发；Escape 抑制当前这一轮提示，离开并重新进入或重新获得焦点后恢复。
+
+```xu
+mut placement := widgets.overlay_placement()
+placement.side = widgets.OVERLAY_RIGHT
+placement.align = widgets.OVERLAY_CENTER
+screen.set_tooltip_placement(tooltip_id, &placement) or >>
+```

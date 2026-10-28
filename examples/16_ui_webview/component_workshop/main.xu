@@ -21,6 +21,7 @@ fn (m &Workshop) page_snapshot(index int) Page {
     << Page{group: group,ids: ids}
 }
 struct Workshop {
+    tooltip_side int
     range_push bool
     range_vertical bool
     range_commit bool
@@ -266,7 +267,7 @@ fn new_page(s &mut widgets.Screen,index int) Page {
             ids.push(s.label("Current: XU workspace · history on",14.0,true) or >>)
             for i in 2:8 { s.set_parent(ids[i],ids[1]) or >> }
         }
-        if index == 34 { ids.push(s.tooltip(anchor,"Keyboard focus shows help immediately.\n按 Escape 隐藏提示。") or >>) }
+        if index == 34 { ids.push(s.tooltip(anchor,"Hover waits 500 ms; keyboard focus shows help immediately.\n鼠标离开或点击收起；Escape 抑制重复提示。") or >>) }
         if index == 36 { ids.push(s.modal("Apply configuration?","Focus stays inside this confirmation. Escape returns to the trigger.") or >>)
             ids.push(s.button("Cancel") or >>)
             ids.push(s.button("Apply changes") or >>)
@@ -351,7 +352,7 @@ fn create(s &mut widgets.Screen) Workshop {
     _ := s.tooltip(language,"Component language · 组件默认文案与格式") or >>
     tools := [s.button("Option 1") or >>,s.button("Option 2") or >>,s.button("Option 3") or >>]
     for tool in tools { s.set_parent(tool,preview) or >> }
-    << Workshop{range_push: false,range_vertical: false,range_commit: false,split_vertical: false,split_collapsed: false,menu_stays_open: false,menu_export_disabled: false,chart_kind: 0,chart_paused: false,group_vertical: false,group_joined: true,group_disabled: false,language: language,pages: pages,names: labels,navigation: navigation,preview: preview,title: title,caption: caption,status: status,
+    << Workshop{tooltip_side: widgets.OVERLAY_TOP,range_push: false,range_vertical: false,range_commit: false,split_vertical: false,split_collapsed: false,menu_stays_open: false,menu_export_disabled: false,chart_kind: 0,chart_paused: false,group_vertical: false,group_joined: true,group_disabled: false,language: language,pages: pages,names: labels,navigation: navigation,preview: preview,title: title,caption: caption,status: status,
         theme: s.select_box(&["Light 亮色","Dark 暗色","Contrast 对比"],1) or >>,
         density: s.select_box(&["Normal 常规","Compact 紧凑","Touch 触控"],0) or >>,
         scale: s.select_box(&["Text 100%","Text 140%","Text 200%"],0) or >>,
@@ -488,6 +489,12 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
         if m.customized { c.radius = 18.0
             c.border_width = 2.0 }
         s.set_control_style(page.ids[1],&c) or >> }
+    if m.selected == 34 {
+        mut placement := widgets.overlay_placement()
+        placement.side = m.tooltip_side
+        placement.align = widgets.OVERLAY_CENTER
+        s.set_tooltip_placement(page.ids[1],&placement) or >>
+    }
     if m.selected == 35 {
         s.set_notice_motion(&spec) or >>
         if m.customized { mut c := styles.overlay_style()
@@ -660,7 +667,7 @@ fn tool_labels(index int) []string {
     if index == 30 { << ["+1 未读","Clear 清零","99+ 溢出"] }
     if index == 32 { << ["Top 顶部","Bottom 底部","Focus last"] }
     if index == 33 { << ["Open 打开","Close 关闭","Position 方位"] }
-    if index == 34 { << ["Focus 提示","Blur 隐藏",""] }
+    if index == 34 { << ["Focus 提示","Blur 隐藏","Position 方位"] }
     if index == 35 { << ["Enqueue 通知","Undo","Burst 三条"] }
     if index == 36 { << ["Open 打开","Close 关闭",""] }
     if index == 37 { << ["Reload 重载","Hide 隐藏","Show 恢复"] }
@@ -738,6 +745,12 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     if m.selected == 1 {
         buttons := m.page_snapshot(1)
         h = layout_buttons(s,&buttons,content,row,scale) or >>
+    }
+    if m.selected == 34 {
+        size := s.measure_button(id) or >>
+        width := math.min(content,math.ceil(size.width))
+        s.place(id,24.0 + (content - width) * 0.5,y + 100.0 * scale,width,math.max(row,size.height)) or >>
+        h = math.max(row,size.height) + 200.0 * scale
     }
     if m.selected == 0 { s.place(page.ids[1],24.0,y + h + 16.0,content,48.0 * scale) or >>
         h += 80.0 * scale }
@@ -1019,8 +1032,13 @@ fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
         s.set_popover_placement(page.ids[1],&placement) or >> }
     if index == 33 || index == 36 { if option == 0 { if index == 33 { m.open_preferences(s) or >> } else { s.open(page.ids[1]) or >> } }
         else if option == 1 { s.close_overlay(page.ids[1]) or >> } }
+    if index == 34 && option == 2 { m.tooltip_side = (m.tooltip_side + 1) % 4
+        m.configure(s) or >>
+        s.focus(id) or >>
+        s.set_text(m.status,"Tooltip · " + ["Bottom 下","Top 上","Left 左","Right 右"][m.tooltip_side] + " · flips at the viewport edge") or >>
+    }
     if index == 34 { if option == 0 { s.focus(id) or >> }
-        else { s.focus(0) or >> } }
+        else if option == 1 { s.focus(0) or >> } }
     if index == 35 { mut notice := widgets.notice(&"Workspace saved · 工作区已保存")
         notice.action = "Undo"
         notice.key = "workspace-save"
