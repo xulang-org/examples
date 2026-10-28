@@ -80,10 +80,11 @@ fn new_page(s &mut widgets.Screen,index int) Page {
         anchor := ids[1]
         ids.push(s.tooltip(anchor,"很长的完整内容：Cluster-safe truncation · 👨‍👩‍👧‍👦 family · workspace / widgets / component.xu") or >>) }
     if index == 1 { ids.push(s.button_with_icon("logo.png","Build project") or >>)
-        for text in ["Secondary","Outline","Ghost","Danger","Subtle"] { ids.push(s.button(text) or >>) }
-        for variant in 0:6 { s.set_button_variant(ids[variant],variant) or >> }
         for text in ["Open workspace · trailing","Save changes · above","Download SDK · below"] {
-            ids.push(s.button_with_icon("logo.png",text) or >>) } }
+            ids.push(s.button_with_icon("logo.png",text) or >>) }
+        for text in ["Secondary","Outline","Ghost","Danger","Subtle"] { ids.push(s.button(text) or >>) }
+        s.set_button_variant(ids[0],widgets.BUTTON_PRIMARY) or >>
+        for variant in 1:6 { s.set_button_variant(ids[variant + 3],variant) or >> } }
     if index == 2 { ids.push(s.icon_button("logo.png","Open XU workspace") or >>)
         anchor := ids[0]
         ids.push(s.tooltip(anchor,"Open XU workspace · Enter") or >>) }
@@ -457,7 +458,7 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
         spec.curve = widgets.EASE_OUT_QUINT }
     if animated(m.selected) { s.set_motion(id,&spec) or >> }
     if m.selected == 1 {
-        handles := [page.ids[0],page.ids[6],page.ids[7],page.ids[8]]
+        handles := [page.ids[0],page.ids[1],page.ids[2],page.ids[3]]
         placements := [widgets.ICON_LEADING,widgets.ICON_TRAILING,widgets.ICON_ABOVE,widgets.ICON_BELOW]
         for i in 0:4 {
             mut c := styles.button_variant(widgets.BUTTON_OUTLINE) or >>
@@ -724,12 +725,10 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     if m.selected != 30 { s.place(id,24.0,y,sample_width,h) or >> }
     if m.selected == 1 {
         mut cy := y + row + 12.0
-        for i in 6:9 { mut height := row
-            if i >= 7 { height = row * 2.0 }
+        for i in 1:9 { mut height := row
+            if i == 2 || i == 3 { height = row * 2.0 }
             s.place(page.ids[i],24.0,cy,content,height) or >>
             cy += height + 12.0 }
-        for i in 1:6 { s.place(page.ids[i],24.0,cy,content,row) or >>
-            cy += row + 12.0 }
         h = cy - y
     }
     if m.selected == 0 { s.place(page.ids[1],24.0,y + h + 16.0,content,48.0 * scale) or >>
