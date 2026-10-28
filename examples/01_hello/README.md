@@ -1,6 +1,6 @@
 # 01_hello
 
-<p align="center"><img src="../../../brand/xu_classic.svg" alt="Xu" width="64" height="64"></p>
+<p align="center"><img src="../../brand/xu_classic.svg" alt="Xu" width="64" height="64"></p>
 
 最小程序：打印一行并退出。
 

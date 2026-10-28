@@ -1,10 +1,10 @@
 # Xu 语言特色
 
-<p align="center"><img src="../brand/xu_classic.svg" alt="Xu" width="88" height="88"></p>
+<p align="center"><img src="brand/xu_classic.svg" alt="Xu" width="88" height="88"></p>
 
-Xu 把 一键静态编译部署与无 GC 内存安全**合成在一门系统语言里：写起来轻，跑起来可控，安全尽量在编译期过滤掉。
+Xu 把静态编译部署与无 GC 内存安全合成在一门系统语言里：写起来轻，跑起来可控，安全尽量在编译期过滤掉。
 
-语法定稿见 [`docs/LANGUAGE.md`](../docs/LANGUAGE.md)；下面是给开发者看的「这门语言长什么样」。
+语法定稿见 [公开语言参考](https://xulang.org/docs/lang/syntax/)；下面是给开发者看的「这门语言长什么样」。
 
 ---
 
@@ -124,7 +124,7 @@ xu worker(1, ch) // ✅ 启动协程
 - 扩展名 `.xu`；入口 `fn main() int`（退出码）或 `fn main()`。
 - 标准库使用顶层包名（`strings`、`os`、`net`…），实现走所有权，不暴露裸指针。
 - 工具链：`build` / `check` / `fmt` / `test` / `install`；交叉 `--target macos-arm64|linux-x64|windows-x64|windows-arm64|…`。
-- 自举：hosted gen3 即产品 `xu`；开发者目录提供各平台预编译 [`bin/xu.<os>.<arch>`](bin/)。
+- 自举：产品编译器由 Xu 实现，使用自有 AOT 后端；各平台 SDK 见[下载页](https://xulang.org/download/)。
 
 ---
 
@@ -151,5 +151,6 @@ xu worker(1, ch) // ✅ 启动协程
 | enum + match | [`examples/08_enum_match`](examples/08_enum_match) |
 | `struct@`、`#T`、`any` | [`examples/09_generics_temp`](examples/09_generics_temp) |
 | `xu` + `chan` | [`examples/10_concurrency`](examples/10_concurrency) |
+| XACP 启动发现、stdio / TCP 控制 | [`examples/xacp`](examples/xacp/README.md) |
 
 使用细则见 [`USAGE.md`](USAGE.md)。

@@ -4,6 +4,8 @@
 
 ## 编译
 
+本例也导入 SQLite。清洁检出须先从仓库根运行 `make -C ../packages native`；工具链要求与当前 macOS 链接限制见 [SQLite 示例的原生桥准备](../22_standalone_sqlite/README.md#准备原生桥)。
+
 在仓库根目录执行，需已将 Xu 编译器 `xu` 加入 `PATH`：
 
 ```sh

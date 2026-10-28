@@ -1,6 +1,6 @@
 # 16 — 原生 UI 与 WebView 示例
 
-这组示例覆盖 Xu 0.10.2 正式版及 0.10.2-dev 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
+这组示例覆盖绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。使用满足各示例 `xu.xun` 中 `xu:` 要求的 SDK，并保持编译器与 UI 宿主源码配套。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
@@ -13,6 +13,7 @@
 | [workbench](workbench/) | 图片浏览与独立预览的综合应用 | 选择图片、缩放窗口 |
 | [editor_workbench](editor_workbench/) | Input、TextArea、结构化菜单、屏幕查询 | 文字编辑、Tab、快捷键、Document 菜单 |
 | [component_catalog](component_catalog/) | Table、TreeView、Pagination、ComboBox、多选、颜色、面包屑、加载与浮层 | 三个分类页、排序、筛选、Tab 焦点约束、主题切换 |
+| [xacp_screen](xacp_screen/) | XACP Screen 树查询、截图资源和权限化 UI 操作 | 启动时检查屏幕节点并生成截图 |
 | [date_time](date_time/) | DatePicker 月历、TimePicker 分段输入、Time / Instant / Duration | 翻月、选闰日、编辑时分秒、T/F/D 切换样式 |
 | [style_gallery](style_gallery/) | 统一主题、字体缩放、密度、局部覆盖、状态与滚动条 | 点击 Theme/Text/Density、编辑、拖动滑块 |
 | [controls_gallery](controls_gallery/) | 扩展控件、主题、文字缩放与密度 | T/S/D、Tab、方向键 |
@@ -29,7 +30,7 @@
 
 ## 统一入口
 
-整组示例需要 **Xu 0.10.2+**（新增组件与样式画廊支持 **0.10.2-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
+以各应用 `xu.xun` 中的 `xu:` 字段为 SDK 要求，不要只依赖启动器的最低版本检查。XACP Screen adapter 示例需要 **Xu 0.10.10-dev.1+**。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
 
 ```sh
 python3 scripts/ui_examples.py list

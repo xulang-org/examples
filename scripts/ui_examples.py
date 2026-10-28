@@ -26,6 +26,7 @@ SAMPLES = {
     "date_time": "Calendar date picker, segmented time picker and typed time values",
     "style_gallery": "Control themes, typography, density, local overrides and styled scrollbars",
     "controls_gallery": "Extended controls, focus, and StyleSwitcher presets, text scale and density",
+    "xacp_screen": "XACP Screen tree inspection, screenshots and permissioned UI actions",
     "webview_requests": "Concurrent WebView invokes, cancellation, deadlines and native queries",
     "open": "Existing WebView, menu and tray example",
     "shaped": "Existing transparent shaped window",
@@ -79,6 +80,11 @@ def main() -> int:
         release = tuple(map(int, version.groups()[:3]))
         if release < (0, 10, 1):
             parser.error("style_gallery, date_time and component_catalog require Xu 0.10.1 or newer")
+    if "xacp_screen" in selected:
+        release = tuple(map(int, version.groups()[:3]))
+        dev_iteration = int(version.group(4)) if version.group(4) else None
+        if release < (0, 10, 10) or (release == (0, 10, 10) and dev_iteration is not None and dev_iteration < 1):
+            parser.error("xacp_screen requires Xu 0.10.10-dev.1 or newer")
     output = ROOT / "build" / "ui" / target
     output.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, XU_ROOT=str(compiler_root), XU_STDLIB_ROOT=str(compiler_root / "src"),
