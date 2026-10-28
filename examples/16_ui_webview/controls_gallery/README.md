@@ -1,6 +1,6 @@
 # 扩展控件与 StyleSwitcher
 
-使用 **Xu 0.10.2 正式 SDK**，从 examples 仓库根执行：
+使用满足本目录 `xu.xun` 中 `xu:` 要求的 SDK，从 examples 仓库根执行：
 
 ```sh
 python3 scripts/ui_examples.py check controls_gallery

@@ -25,6 +25,20 @@
 
 ## 2. 原生模块完整的 7 个开发动作
 
+### 执行目录与平台
+
+以下动作一至六使用本示例目录中的文件。先从 `examples` 仓库根进入：
+
+```sh
+cd examples/19_native_c
+mkdir -p native
+```
+
+需将配套 SDK 的 `xu` 与 `xu-native` 加入 `PATH`，并安装 Clang、`llvm-ar`（或 `ar`）和 macOS SDK（Xcode 或 Command Line Tools）。
+下列命令准备 `macos-arm64`、`macos-x64` 两个切片；完整构建和运行流程面向 macOS。
+`.xulib` 可以容纳其他目标的切片，但当前 Xu 的一步原生静态链接只支持这两个 macOS 目标。
+Linux/Windows 需要另外准备对应切片，使用 `--emit-obj` 并自行完成目标对象转换与系统链接；下面的最终构建命令不覆盖该流程。
+
 ### 动作一：编写 C 桥接源文件 (`bridge.c`)
 定义 C 函数时，使用 `XU_NATIVE_SYMBOL(xu_<module>_<function>)` 统一符号命名：
 
@@ -136,7 +150,7 @@ xu native pack \
 
 ```xun
 module: example/native_c
-version: !ver 1.0.0
+version: !ver 1.0.1
 xu: !ver 0.8.3
 
 native:
@@ -189,13 +203,20 @@ fn main() int {
 }
 ```
 
-### 动作七：一键编译与运行验证
-在 `examples` 仓库根目录下执行：
+### 动作七：编译与运行验证
+
+先完成前六步，尤其是动作三、四生成的 `native/native_add.xulib`；`make build` 和 `make run` 只编译 Xu 程序，不会生成此归档。从上述示例目录返回仓库根：
+
+```sh
+cd ../..
+```
+
+然后执行：
 
 ```bash
 make build EXAMPLE=19_native_c
 # 可选：编译并运行
-./scripts/example.sh run 19_native_c
+make run EXAMPLE=19_native_c
 ```
 
 运行输出：
@@ -210,4 +231,4 @@ make build EXAMPLE=19_native_c
 7. void state counter = 125
 === All Native Type Assertions Passed ===
 ```
-所有类型校验无缝通过，无任何运行时停顿或性能损失。
+输出用于核对示例结果；本例不测量调用开销或运行性能。

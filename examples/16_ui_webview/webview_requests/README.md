@@ -1,6 +1,6 @@
 # WebView request lifecycle
 
-使用 Xu 0.10.2 正式版 的本地 WebView 示例，无 HTTP 服务器。
+使用满足本目录 `xu.xun` 中 `xu:` 要求的 SDK 的本地 WebView 示例，无 HTTP 服务器。
 
 从仓库根编译与运行（工具链要求见[父目录说明](../README.md#统一入口)）：
 

@@ -1,6 +1,6 @@
 # 保留式布局与控件
 
-需要 **Xu 0.10.0 或更新版本**，使用 `#ui` / `#ui/draw` 原生宿主，无 WebView。
+需要与本目录 `xu.xun` 的 `xu:` 要求匹配的 SDK，使用 `#ui` / `#ui/draw` 原生宿主，无 WebView。
 
 演示 `View`、列布局、约束、Button、Checkbox、Progress、Scroll、重绘边界、指针捕获和键盘焦点。
 
