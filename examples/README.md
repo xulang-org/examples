@@ -41,6 +41,7 @@ chmod +x /tmp/xu_ex && /tmp/xu_ex
 | [`18_database_mysql`](18_database_mysql) | MySQL/MariaDB：连接、查询、Prepare、事务 | `../xu/scripts/run_product_compiler.sh --cwd "$PWD" "$XU" build examples/18_database_mysql/main.xu -o /tmp/xu_18_mysql && chmod +x /tmp/xu_18_mysql && /tmp/xu_18_mysql` |
 | [`19_native_c`](19_native_c) | C→XUNATIVE archive→Xu XUOBJ→系统静态链接 | 见目录 README；macOS arm64 实例输出 `42` |
 | [`20_c_export_lib`](20_c_export_lib) | Xu 代码编译为动态库 (.dylib/.so/.dll) 与静态库 (.a/.lib)，由 C/C++/Rust/Python/Go/C# 调用 | 见目录 README；全覆盖 14 种数据类型，跨平台支持 macOS/Linux/Windows |
+| [xacp](xacp/README.md) | XACP 启动发现、stdio / TCP 控制 | 已安装 SDK 或 sibling Xu checkout；从 examples 根执行，特殊构建选项见 README |
 | [`52_wasm`](52_wasm) | Xu → WASM：公开函数、整数参数、循环、递归 | `make wasm`；浏览器入口见目录 README |
 
 交叉编译示例程序（可选）：

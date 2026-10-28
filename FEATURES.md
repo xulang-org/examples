@@ -151,5 +151,6 @@ xu worker(1, ch) // ✅ 启动协程
 | enum + match | [`examples/08_enum_match`](examples/08_enum_match) |
 | `struct@`、`#T`、`any` | [`examples/09_generics_temp`](examples/09_generics_temp) |
 | `xu` + `chan` | [`examples/10_concurrency`](examples/10_concurrency) |
+| XACP 启动发现、stdio / TCP 控制 | [`examples/xacp`](examples/xacp/README.md) |
 
 使用细则见 [`USAGE.md`](USAGE.md)。

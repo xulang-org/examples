@@ -18,6 +18,7 @@ XU_ROOT=/path/to/xu make run EXAMPLE=01_hello
 输出放在忽略的 `build/`，不提交编译器或运行产物。
 
 - [UI 示例：绘图、编辑控件、菜单、屏幕查询、多窗口与 WebView 请求](examples/16_ui_webview/)
+- [XACP：启动发现、stdio 控制与本机 TCP 会话](examples/xacp/README.md)
 - [示例索引](examples/README.md)
 - [语言使用帮助](USAGE.md)
 - [语言特色](FEATURES.md)
