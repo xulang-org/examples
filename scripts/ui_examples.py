@@ -14,7 +14,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 APPLICATIONS = ROOT / "examples" / "16_ui_webview"
 SAMPLES = {
-    "component_workshop": "45 native component entries with themes, scale, states and keyboard interaction",
+    "component_workshop": "46 native component entries with themes, scale, states and keyboard interaction",
     "draw": "Frame recording, transforms, clipping and pointer input",
     "draw_gallery": "Paths, gradients, images, text, layers and display-list caches",
     "widgets": "Retained layout, controls, scrolling, capture and keyboard focus",
