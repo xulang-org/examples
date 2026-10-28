@@ -1,6 +1,6 @@
 # 原生组件工作坊
 
-需要配套源码构建的 Xu **0.10.10-dev.2** 开发工具链。45 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。
+需要配套源码构建的 Xu **0.10.11-dev.1** 开发工具链。45 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。
 
 ```sh
 XU_ROOT=/path/to/xu python3 scripts/ui_examples.py check component_workshop
