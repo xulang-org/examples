@@ -1,6 +1,6 @@
 # 原生组件工作坊
 
-需要 Xu **0.10.10**。45 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。旧正式 SDK 0.10.7 缺少本示例所需的图表、菜单等 API，不能用于构建本示例。
+需要 Xu **0.10.10**。46 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。旧正式 SDK 0.10.7 缺少本示例所需的图表、菜单等 API，不能用于构建本示例。
 
 ```sh
 XU_ROOT=/path/to/xu python3 scripts/ui_examples.py check component_workshop
@@ -149,3 +149,15 @@ placement.side = widgets.OVERLAY_RIGHT
 placement.align = widgets.OVERLAY_CENTER
 screen.set_tooltip_placement(tooltip_id, &placement) or >>
 ```
+
+## 密码输入框
+
+`PasswordInput` 页提供真实的单行密码模式、显隐切换、清空、示例重置，以及禁用、只读和错误状态。每个 Unicode 字素绘制为一个圆点，中文、组合音符和 emoji 共用原值的 UTF-8 光标、选择与删除位置。显隐切换保留值与选择；粘贴可用，复制和剪切在显示原值时仍被禁用。XACP 节点文本和原生输入法的周围文字查询不返回密码内容。
+
+```xu
+password := screen.password_input("Xu-密码🙂") or >>
+screen.set_password_visible(password, true) or >>
+value := screen.text_value(password) or >>
+```
+
+`text_value()` 为应用返回实际值；示例不会把输入的密码写入状态栏或日志。密码模式只用于单行 Input，多行 TextArea 会拒绝此模式。

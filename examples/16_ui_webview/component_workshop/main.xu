@@ -69,7 +69,7 @@ struct Workshop {
     checksum int
     deadline time.Instant
 }
-fn names() []string { << ["StyledLabel","Button","IconButton","Input","TextArea","Field","FieldArea","TreeView","TaskButton","Checkbox","Switch","Radio","RadioGroup","Slider","Stepper","Select","ComboBox","MultiSelect","DatePicker","TimePicker","ColorPicker","Tabs","Segmented","ListBox","Table","Pagination","Breadcrumbs","Progress","Spinner","Divider","Badge","Card","Scroll","Popover","Tooltip","ToastHost","Modal","WebView","ButtonGroup","Chart","RangeSlider","SplitView","Menu","ContextMenu","SplitButton"] }
+fn names() []string { << ["StyledLabel","Button","IconButton","Input","TextArea","Field","FieldArea","TreeView","TaskButton","Checkbox","Switch","Radio","RadioGroup","Slider","Stepper","Select","ComboBox","MultiSelect","DatePicker","TimePicker","ColorPicker","Tabs","Segmented","ListBox","Table","Pagination","Breadcrumbs","Progress","Spinner","Divider","Badge","Card","Scroll","Popover","Tooltip","ToastHost","Modal","WebView","ButtonGroup","Chart","RangeSlider","SplitView","Menu","ContextMenu","SplitButton","PasswordInput"] }
 fn new_page(s &mut widgets.Screen,index int) Page {
     group := s.group() or >>
     mut ids := []int{}
@@ -313,7 +313,7 @@ fn new_page(s &mut widgets.Screen,index int) Page {
             s.set_parent(ids[3+i],ids[1+i]) or >>
             s.set_parent(ids[5+i],ids[1+i]) or >> }
     }
-    if index >= 42 {
+    if index >= 42 && index <= 44 {
         mode := [widgets.MENU_DROPDOWN,widgets.MENU_CONTEXT,widgets.MENU_SPLIT][index-42]
         label := ["Actions","Right click here · 右键打开菜单","Save"][index-42]
         ids.push(s.menu(label,&workshop_menu_items(true),mode,100) or >>)
@@ -321,6 +321,13 @@ fn new_page(s &mut widgets.Screen,index int) Page {
         ids.push(s.label("Check and radio items preserve their state. Navigate submenus with arrows; Escape returns one level.\n操作文案与快捷键由应用配置。",14.0,true) or >>)
         s.set_label_wrapped(ids[1],true) or >>
         s.set_label_wrapped(ids[2],true) or >>
+    }
+    if index == 45 {
+        ids.push(s.password_input("Xu-密码🙂") or >>)
+        ids.push(s.checkbox("Show password 显示密码",false) or >>)
+        ids.push(s.label("Password 密码",15.0,false) or >>)
+        ids.push(s.label("Paste is supported. Copy and cut are blocked even when revealed.\n支持粘贴、选择和中英文输入；显隐切换保留内容与光标。",14.0,true) or >>)
+        s.set_label_wrapped(ids[3],true) or >>
     }
     for i in 0:ids.len {
         // Card slots and scroll children retain their content parent.
@@ -402,7 +409,7 @@ fn (m &mut Workshop) apply_locale(s &mut widgets.Screen) int {
 }
 fn read_only(index int) bool { << index >= 38 || (index >= 1 && index <= 26 && index != 8 && index != 25 && index != 26) }
 fn invalid(index int) bool { << index >= 40 || index >= 1 && index <= 30 && index != 7 && index != 8 && index != 12 && index != 24 && index != 25 && index != 26 && index != 28 }
-fn animated(index int) bool { << index >= 38 || index == 1 || index == 2 || index == 5 || index == 6 || index == 7 || index == 8 || index == 9 || index == 10 || index == 11 || index == 25 }
+fn animated(index int) bool { << (index >= 38 && index <= 44) || index == 1 || index == 2 || index == 5 || index == 6 || index == 7 || index == 8 || index == 9 || index == 10 || index == 11 || index == 25 }
 fn appearance(styles &widgets.Styles,index int) widgets.ControlStyle {
     if index == 0 { mut c := styles.input.clone()
         c.padding = layout.Insets{left: 0.0,top: 0.0,right: 0.0,bottom: 0.0}
@@ -412,7 +419,7 @@ fn appearance(styles &widgets.Styles,index int) widgets.ControlStyle {
     if index == 7 { << styles.tree_style() }
     if index == 24 { << styles.table_style() }
     if index == 9 || index == 10 || index == 11 || index == 12 { << styles.checkbox.clone() }
-    if index == 3 || index == 5 { << styles.input.clone() }
+    if index == 3 || index == 5 || index == 45 { << styles.input.clone() }
     if index == 4 || index == 6 { << styles.text_area.clone() }
     if index == 13 || index == 40 { << styles.slider_style() }
     if index == 41 { << styles.card_style() }
@@ -445,6 +452,7 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
     id := page.ids[0]
     state := s.selected(m.state) or >>
     s.set_enabled(id,state != 1) or >>
+    if position == 45 { s.set_enabled(page.ids[1],state != 1) or >> }
     if position == 25 { s.set_enabled(page.group,state != 1) or >> }
     if read_only(m.selected) { s.set_read_only(id,state == 2) or >> }
     if invalid(m.selected) || m.selected == 31 || m.selected == 32 { s.set_invalid(id,state == 3) or >> }
@@ -561,7 +569,7 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
         options.minimum_second = 140.0*styles.text_scale
         s.set_split_options(id,&options) or >>
     }
-    if m.selected >= 42 {
+    if m.selected >= 42 && m.selected <= 44 {
         mut appearance := widgets.menu_appearance()
         appearance.close_on_select = !m.menu_stays_open
         s.set_menu_appearance(id,&appearance) or >>
@@ -593,9 +601,10 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
 }
 fn focusable_sample(index int) bool { << index != 0 && index != 27 && index != 28 && index != 29 && index != 30 }
 fn description(index int) string {
+    if index == 45 { << "按 Unicode 字素掩码；显隐切换、原生编辑、只读与禁用，禁止复制或剪切密码。" }
     if index == 40 { << "双端区间：步进、最小间距、端点推挤、整段拖动；独立焦点与提交。" }
     if index == 41 { << "可调整分栏：尺寸约束、折叠恢复、键盘调整；内容保持在各自面板内。" }
-    if index >= 42 { << "动作 / 勾选 / 单选 / 子菜单；键盘、边缘翻转、快捷键与可定制的逐项反馈。" }
+    if index >= 42 && index <= 44 { << "动作 / 勾选 / 单选 / 子菜单；键盘、边缘翻转、快捷键与可定制的逐项反馈。" }
     if index == 38 { << "独立操作 / 单选 / 多选；逐项禁用，方向键导航，Enter 或空格激活。" }
     if index == 39 { << "原生交互图表：稳定 ID 数据过渡、悬停/选中、图例；Ctrl/⌘ + 滚轮缩放，拖动平移，双击复位。" }
     descriptions := ["正文、标题与辅助文字分层；原生换行与字体覆盖。",
@@ -639,9 +648,10 @@ fn description(index int) string {
     << descriptions[index]
 }
 fn tool_labels(index int) []string {
+    if index == 45 { << ["Clear 清空","Reset 示例","Focus 输入"] }
     if index == 40 { << ["Clamp / push 端点","Commit mode 提交","Orientation 方向"] }
     if index == 41 { << ["Orientation 方向","Collapse / restore 折叠","Reset 复位"] }
-    if index >= 42 { << ["Open 打开","Keep open 保持展开","Disable export 禁用导出"] }
+    if index >= 42 && index <= 44 { << ["Open 打开","Keep open 保持展开","Disable export 禁用导出"] }
     if index == 38 { << ["Disable middle 逐项禁用","Orientation 方向","Joined / gap 拼接"] }
     if index == 39 { << ["Update data 更新数据","Reset zoom 复位","Pause / resume 暂停"] }
     if index == 0 { << ["Long text 长文","Short text 短文",""] }
@@ -915,13 +925,18 @@ fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
         if option == 2 { m.split_collapsed = false
             s.set_split_ratio(id,0.4) or >> }
     }
-    if index >= 42 {
+    if index >= 42 && index <= 44 {
         if option == 0 { s.focus(id) or >>
             s.set_menu_open(id,true) or >> }
         if option == 1 { m.menu_stays_open = !m.menu_stays_open
             m.configure(s) or >> }
         if option == 2 { m.menu_export_disabled = !m.menu_export_disabled
             s.set_menu_item_enabled(id,30,!m.menu_export_disabled) or >> }
+    }
+    if index == 45 {
+        if option == 0 { s.set_value(id,"") or >> }
+        if option == 1 { s.set_value(id,"Xu-密码🙂") or >> }
+        if option == 2 { s.focus(id) or >> }
     }
     if index == 0 { mut text := "精密 · 清晰 · 可靠。"
         if option == 0 { text = "长中文：输入、选择、复制与原生排版保持一致。Long English text wraps inside its content width. Family 👨‍👩‍👧‍👦 and developer 👩🏽‍💻 remain intact." }
@@ -1088,6 +1103,9 @@ fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
         else if m.selected == 1 {
             for i in 0:4 { if action.id == page.ids[9 + i] { m.configure(s) or >> } }
         }
+        else if m.selected == 45 && action.id == page.ids[1] {
+            s.set_password_visible(page.ids[0],s.toggle_value(page.ids[1]) or >>) or >>
+        }
         else if m.selected == 7 && action.id == page.ids[1] { query := s.text_value(page.ids[1]) or >>
             s.set_tree_filter(page.ids[0],query) or >> }
         else if m.selected == 17 && action.id == page.ids[1] { query := s.text_value(page.ids[1]) or >>
@@ -1122,7 +1140,7 @@ fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
         if action.kind == widgets.ACTION_CHART_VIEWPORT { s.set_text(m.status,"Viewport updated · Double click / Home to reset") or >> }
     }
     if m.selected == 40 && action.id == page.ids[0] && (action.kind == widgets.ACTION_CHANGE || action.kind == widgets.ACTION_COMMIT) { m.range_summary(s,action.kind == widgets.ACTION_COMMIT) or >> }
-    if m.selected >= 42 && action.id == page.ids[0] && (action.kind == widgets.ACTION_CHANGE || action.kind == widgets.ACTION_ACTIVATE) { s.set_text(page.ids[1],"Action / 操作 · "+str(int(action.value))) or >> }
+    if m.selected >= 42 && m.selected <= 44 && action.id == page.ids[0] && (action.kind == widgets.ACTION_CHANGE || action.kind == widgets.ACTION_ACTIVATE) { s.set_text(page.ids[1],"Action / 操作 · "+str(int(action.value))) or >> }
     if m.selected == 24 && action.id == page.ids[0] && action.kind == widgets.ACTION_ACTIVATE {
         descending := s.sort_descending(page.ids[0]) or >>
         mut direction := "ascending / 升序"
@@ -1315,6 +1333,17 @@ fn (m &Workshop) interaction_layout(s &mut widgets.Screen,row f64,scale f64,cont
     pages := &m.pages
     page := &pages[position]
     id := page.ids[0]
+    if m.selected == 45 {
+        width := math.min(content,380.0 * scale)
+        label_height := 28.0 * scale
+        input_height := math.max(row,48.0 * s.styles().density)
+        input_y := 24.0 + label_height + 8.0
+        s.place(page.ids[2],24.0,24.0,width,label_height) or >>
+        s.place(id,24.0,input_y,width,input_height) or >>
+        s.place(page.ids[1],24.0,input_y + input_height + 16.0,content,row) or >>
+        s.place(page.ids[3],24.0,input_y + input_height + row + 36.0,content,100.0 * scale) or >>
+        << label_height + input_height + row + 160.0 * scale
+    }
     if m.selected == 40 {
         mut width := content
         mut height := 104.0*scale
@@ -1342,7 +1371,7 @@ fn (m &Workshop) interaction_layout(s &mut widgets.Screen,row f64,scale f64,cont
         }
         << height
     }
-    if m.selected >= 42 {
+    if m.selected >= 42 && m.selected <= 44 {
         mut width := math.min(content,240.0*scale)
         mut height := row
         if m.selected == 43 { width = content
