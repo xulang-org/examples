@@ -1,5 +1,5 @@
 module: example/style_gallery
-version: !ver 0.3.1
-xu: !ver 0.10.2-dev.1
+version: !ver 0.4.0
+xu: !ver 0.10.8-dev.1
 require:
   "github.com/xulang-org/examples/ui_demo": file:../shared

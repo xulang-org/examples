@@ -14,6 +14,9 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 APPLICATIONS = ROOT / "examples" / "16_ui_webview"
 SAMPLES = {
+    "component_workshop": "45 native component entries with themes, scale, states, appearance and motion",
+    "webview_component": "Embedded native WebViews in a Canvas Screen with independent requests and focus",
+    "interaction_gallery": "Refined trees, floating-label fields, real task progress and scrollable data",
     "draw": "Frame recording, transforms, clipping and pointer input",
     "draw_gallery": "Paths, gradients, images, text, layers and display-list caches",
     "widgets": "Retained layout, controls, scrolling, capture and keyboard focus",
@@ -75,10 +78,10 @@ def main() -> int:
     if not version or tuple(map(int, version.groups()[:3])) < (0, 10, 1):
         parser.error("these examples require Xu 0.10.1 or newer")
     selected = list(SAMPLES) if args.sample == "all" else [args.sample]
-    if any(name in ("style_gallery", "date_time", "component_catalog") for name in selected):
+    if any(name in ("component_workshop", "interaction_gallery", "webview_component") for name in selected):
         release = tuple(map(int, version.groups()[:3]))
-        if release < (0, 10, 1):
-            parser.error("style_gallery, date_time and component_catalog require Xu 0.10.1 or newer")
+        if release < (0, 10, 8):
+            parser.error("component_workshop, interaction_gallery and webview_component require Xu 0.10.8-dev.1 or newer")
     output = ROOT / "build" / "ui" / target
     output.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, XU_ROOT=str(compiler_root), XU_STDLIB_ROOT=str(compiler_root / "src"),
@@ -97,7 +100,7 @@ def main() -> int:
             continue
         artifact = output / (name + (".exe" if target.startswith("windows") else ""))
         if not args.no_build:
-            pack_options = [] if name in ("open", "remote", "webview_requests") else ["--no-webview"]
+            pack_options = [] if name in ("open", "remote", "webview_requests", "webview_component", "component_workshop") else ["--no-webview"]
             if (project / "www").is_dir():
                 pack_options += ["--www", str(project / "www")]
             invoke([str(compiler), "build", str(project), "--target", target, "--desktop", *pack_options, "-o", str(artifact)], cwd=compiler_root, env=env)
