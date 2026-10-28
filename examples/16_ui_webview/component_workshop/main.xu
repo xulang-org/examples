@@ -79,12 +79,21 @@ fn new_page(s &mut widgets.Screen,index int) Page {
         s.set_label_ellipsis(ids[1],true) or >>
         anchor := ids[1]
         ids.push(s.tooltip(anchor,"很长的完整内容：Cluster-safe truncation · 👨‍👩‍👧‍👦 family · workspace / widgets / component.xu") or >>) }
-    if index == 1 { ids.push(s.button_with_icon("logo.png","Build project") or >>)
-        for text in ["Open workspace · trailing","Save changes · above","Download SDK · below"] {
+    if index == 1 {
+        mut sizes := []int{}
+        mut labels := []int{}
+        for text in ["Build project","Open workspace · trailing","Save changes · above","Download SDK · below"] {
+            // Each inspector precedes its own button in both layout and Tab order.
+            inspector := s.stepper(12.0,64.0,4.0,24.0) or >>
+            sizes.push(inspector)
+            _ := s.tooltip(inspector,text + " · Icon size 图标尺寸 (px)") or >>
+            labels.push(s.label("Icon 图标 · 24 px",14.0,true) or >>)
             ids.push(s.button_with_icon("logo.png",text) or >>) }
         for text in ["Secondary","Outline","Ghost","Danger","Subtle"] { ids.push(s.button(text) or >>) }
         s.set_button_variant(ids[0],widgets.BUTTON_PRIMARY) or >>
-        for variant in 1:6 { s.set_button_variant(ids[variant + 3],variant) or >> } }
+        for variant in 1:6 { s.set_button_variant(ids[variant + 3],variant) or >> }
+        for id in sizes { ids.push(id) }
+        for id in labels { ids.push(id) } }
     if index == 2 { ids.push(s.icon_button("logo.png","Open XU workspace") or >>)
         anchor := ids[0]
         ids.push(s.tooltip(anchor,"Open XU workspace · Enter") or >>) }
@@ -435,7 +444,7 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
     id := page.ids[0]
     state := s.selected(m.state) or >>
     s.set_enabled(id,state != 1) or >>
-    if position == 1 || position == 25 { s.set_enabled(page.group,state != 1) or >> }
+    if position == 25 { s.set_enabled(page.group,state != 1) or >> }
     if read_only(m.selected) { s.set_read_only(id,state == 2) or >> }
     if invalid(m.selected) || m.selected == 31 || m.selected == 32 { s.set_invalid(id,state == 3) or >> }
     if m.selected == 30 { mut avatar := styles.button_variant(widgets.BUTTON_SUBTLE) or >>
@@ -458,13 +467,16 @@ fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
         spec.curve = widgets.EASE_OUT_QUINT }
     if animated(m.selected) { s.set_motion(id,&spec) or >> }
     if m.selected == 1 {
+        for i in 0:9 { s.set_enabled(page.ids[i],state != 1) or >> }
         handles := [page.ids[0],page.ids[1],page.ids[2],page.ids[3]]
         placements := [widgets.ICON_LEADING,widgets.ICON_TRAILING,widgets.ICON_ABOVE,widgets.ICON_BELOW]
         for i in 0:4 {
+            icon_size := s.number_value(page.ids[9 + i]) or >>
+            s.set_text(page.ids[13 + i],"Icon 图标 · " + str(int(icon_size)) + " px") or >>
             mut c := styles.button_variant(widgets.BUTTON_OUTLINE) or >>
             if i == 0 { c = styles.button_variant(widgets.BUTTON_PRIMARY) or >> }
             c.icon_placement = placements[i]
-            c.icon_size = 20.0 * styles.text_scale
+            c.icon_size = icon_size * styles.text_scale
             if m.customized { c.radius = 14.0
                 c.border_width = 1.5 }
             s.set_control_style(handles[i],&c) or >>
@@ -580,7 +592,7 @@ fn description(index int) string {
     if index == 38 { << "独立操作 / 单选 / 多选；逐项禁用，方向键导航，Enter 或空格激活。" }
     if index == 39 { << "原生交互图表：稳定 ID 数据过渡、悬停/选中、图例；Ctrl/⌘ + 滚轮缩放，拖动平移，双击复位。" }
     descriptions := ["正文、标题与辅助文字分层；原生换行与字体覆盖。",
-        "六种语义变体，共用焦点、按下、选中及只读规则。",
+        "图标左 / 右 / 上 / 下；各自调节尺寸，按钮按内容宽度自动换行。",
         "独立点击目标与动作名称；键盘焦点也能查看提示。",
         "原生单行编辑：选区、复制、粘贴与 IME。",
         "原生多行编辑：段落、内部滚动与输入法候选定位。",
@@ -722,14 +734,10 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     mut sample_width := content
     if m.selected == 2 { sample_width = row
         h = row }
-    if m.selected != 30 { s.place(id,24.0,y,sample_width,h) or >> }
+    if m.selected != 30 && m.selected != 1 { s.place(id,24.0,y,sample_width,h) or >> }
     if m.selected == 1 {
-        mut cy := y + row + 12.0
-        for i in 1:9 { mut height := row
-            if i == 2 || i == 3 { height = row * 2.0 }
-            s.place(page.ids[i],24.0,cy,content,height) or >>
-            cy += height + 12.0 }
-        h = cy - y
+        buttons := m.page_snapshot(1)
+        h = layout_buttons(s,&buttons,content,row,scale) or >>
     }
     if m.selected == 0 { s.place(page.ids[1],24.0,y + h + 16.0,content,48.0 * scale) or >>
         h += 80.0 * scale }
@@ -827,6 +835,52 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
         s.place(page.ids[3],210.0 * scale,190.0 * scale,170.0 * scale,row) or >> }
     s.set_scroll_extent(m.preview,tool_extent + y + h + 32.0) or >>
     << 0
+}
+fn layout_buttons(s &mut widgets.Screen,page &Page,content f64,row f64,scale f64) f64 {
+    stepper_width := math.min(content,160.0 * scale)
+    label_height := 24.0 * scale
+    inspector_height := label_height + 8.0 + row + 12.0
+    mut cy := 24.0
+    // Keep each direction pair together when it fits, then wrap by the native
+    // measured size rather than stretching every example across the preview.
+    for group in 0:2 {
+        mut x := 24.0
+        mut line_height := 0.0
+        for i in (group * 2):(group * 2 + 2) {
+            size := s.measure_button(page.ids[i]) or >>
+            width := math.min(content,math.ceil(size.width))
+            height := math.max(row,math.ceil(size.height))
+            column := math.max(width,stepper_width)
+            if x > 24.0 && x + column > 24.0 + content {
+                x = 24.0
+                cy += line_height + 12.0
+                line_height = 0.0
+            }
+            s.place(page.ids[13 + i],x,cy,column,label_height) or >>
+            s.place(page.ids[9 + i],x,cy + label_height + 8.0,stepper_width,row) or >>
+            s.place(page.ids[i],x,cy + inspector_height,width,height) or >>
+            x += column + 16.0
+            line_height = math.max(line_height,inspector_height + height)
+        }
+        cy += line_height + 20.0
+    }
+    mut x := 24.0
+    mut line_height := 0.0
+    for i in 4:9 {
+        size := s.measure_button(page.ids[i]) or >>
+        width := math.min(content,math.ceil(size.width))
+        height := math.max(row,math.ceil(size.height))
+        if x > 24.0 && x + width > 24.0 + content {
+            x = 24.0
+            cy += line_height + 12.0
+            line_height = 0.0
+        }
+        s.place(page.ids[i],x,cy,width,height) or >>
+        x += width + 12.0
+        line_height = math.max(line_height,height)
+    }
+    cy += line_height + 20.0
+    << cy - 24.0
 }
 fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
     position := m.selected
@@ -1013,6 +1067,9 @@ fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
             // This navigation event belongs to the old page; do not dispatch it to new-page IDs.
             << 0
         } else if action.id == m.theme || action.id == m.density || action.id == m.scale || action.id == m.state || action.id == m.reduced { m.configure(s) or >> }
+        else if m.selected == 1 {
+            for i in 0:4 { if action.id == page.ids[9 + i] { m.configure(s) or >> } }
+        }
         else if m.selected == 7 && action.id == page.ids[1] { query := s.text_value(page.ids[1]) or >>
             s.set_tree_filter(page.ids[0],query) or >> }
         else if m.selected == 17 && action.id == page.ids[1] { query := s.text_value(page.ids[1]) or >>

@@ -124,13 +124,16 @@ Table 默认在表头点击、Enter/空格释放时执行稳定的本地排序�
 
 ## 图标与文字按钮
 
-`Button` 页首先展示图标＋文字按钮，覆盖图标在文字左、右、上、下四种布局；`IconButton` 页单独展示纯图标按钮与动作提示。两者都支持键盘激活、禁用状态和主题/字号切换。
+`Button` 页首先展示图标＋文字按钮，覆盖图标在文字左、右、上、下四种布局。按钮按实际内容宽度排列，空间不足时换行；每个图标按钮都有独立的尺寸 Stepper，可在 12–64 px 间调节，修改一个不会影响其他按钮，上下布局的高度随自己的图标增长。尺寸会随全局字号和密度缩放。禁用状态只作用于示例按钮，仍可分别调节尺寸。`IconButton` 页单独展示纯图标按钮与动作提示。两者都支持键盘激活、禁用状态和主题/字号切换。
 
 ```xu
 id := screen.button_with_icon("logo.png", "Build project") or >>
 mut appearance := styles.button_variant(widgets.BUTTON_PRIMARY) or >>
 appearance.icon_placement = widgets.ICON_LEADING
+appearance.icon_size = 24.0 * styles.text_scale
 screen.set_control_style(id, &appearance) or >>
+size := screen.measure_button(id) or >>
+screen.place(id, 24.0, 24.0, size.width, size.height) or >>
 ```
 
 图片随 `www/logo.png` 嵌入，Screen 持有并在销毁时释放；打包时保留 `--www` 资源目录。
