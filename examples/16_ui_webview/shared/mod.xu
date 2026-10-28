@@ -32,7 +32,7 @@ pub fn app(title string,width int,height int) ui.App {
     eprintln("demo.app: enter")
     mut app := ui.new_app()
     eprintln("demo.app: new_app ok")
-    mut window := app.new_window(ui.WindowOpts{title: title,width: width,height: height})
+    mut window := app.open_window(ui.WindowOpts{title: title,width: width,height: height}) or >>
     eprintln("demo.app: new_window ok id=" + str(window.id))
     if draw.attach(mut &window) < 0 { >> errors.new("demo: failed to attach draw content") }
     eprintln("demo.app: draw attach ok")

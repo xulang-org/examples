@@ -1,6 +1,6 @@
 # 原生组件工作坊
 
-需要 Xu **0.10.8-dev.1**。45 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。
+需要配套源码构建的 Xu **0.10.11-dev.1** 开发工具链。45 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。
 
 ```sh
 XU_ROOT=/path/to/xu python3 scripts/ui_examples.py check component_workshop
@@ -24,6 +24,8 @@ Default/Custom 切换实例圆角、描边和间距，Default 恢复主题继承
 - WebView 使用真实系统子视图；隐藏恢复保留页面内容，Ctrl+Tab 回到 Canvas 焦点链。网页 CSS 由网页自身管理。
 
 WebView 需要链接对应宿主插件，构建时不能使用 `--no-webview`。可见的原生网页不参加 Canvas 离屏截图；与 Canvas 浮层重叠时临时隐藏，关闭浮层后恢复。完整多实例 IPC 演示见 [webview_component](../webview_component/)。
+
+Windows ARM64 验收需要匹配的 MinGW 工具链、Git Bash / MSYS2 的 `sh` 与 `xxd`，以及系统 WebView2 Runtime。从 Xu 源码重建 `xu`、`xu-desktop` 和 `xu-doctor` 后，运行 `xu doctor --desktop --webview --target windows-arm64`，再用上述启动器构建。打开 Popover 后应能编辑 Workspace name，并通过 Cancel 取消或 Apply 提交；输入框获得焦点不应关闭弹层。
 
 组件的 hover 和选中动画只在状态变化期间请求帧；拖动直接跟随指针。缩放与密度是控件的真实配置，不使用画布整体缩放来伪装适配。文本编辑的撤销/重做历史、高级虚拟化、拖放及系统无障碍桥接尚未实现。ButtonGroup 和 Toast 的 Undo 是应用动作示例，不代表文本编辑历史。
 

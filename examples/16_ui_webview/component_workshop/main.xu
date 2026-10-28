@@ -404,7 +404,7 @@ fn appearance(styles &widgets.Styles,index int) widgets.ControlStyle {
     if index == 32 { << styles.scroll.clone() }
     << styles.button.clone()
 }
-fn (m &mut Workshop) configure(s &mut widgets.Screen) int {
+fn (m &Workshop) configure(s &mut widgets.Screen) int {
     theme := s.selected(m.theme) or >>
     density := s.selected(m.density) or >>
     scale := s.selected(m.scale) or >>
@@ -787,10 +787,16 @@ fn (m &Workshop) layout(s &mut widgets.Screen) int {
     s.set_scroll_extent(m.preview,y + h + 32.0) or >>
     << 0
 }
-fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
-    position := m.selected
+// Event handlers mutate the model; retain only owned control IDs across those changes.
+fn (m &Workshop) page_handles(index int) Page {
     pages := &m.pages
-    page := &pages[position]
+    page := &pages[index]
+    mut ids := []int{}
+    for id in page.ids { ids.push(id) }
+    << Page{group:page.group,ids:ids}
+}
+fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
+    page := m.page_handles(m.selected)
     id := page.ids[0]
     index := m.selected
     if index == 40 {
@@ -960,9 +966,7 @@ fn (m &mut Workshop) tool(s &mut widgets.Screen,option int) int {
     << 0
 }
 fn (m &mut Workshop) update(s &mut widgets.Screen,action widgets.Action) int {
-    position := m.selected
-    pages := &m.pages
-    page := &pages[position]
+    page := m.page_handles(m.selected)
     if action.kind == widgets.ACTION_CHANGE {
         if action.id == m.language { m.apply_locale(s) or >> }
         else if action.id == m.navigation {
@@ -1074,8 +1078,7 @@ fn max_int_local(a int,b int) int { if a > b { << a }
     << b }
 fn (m &mut Workshop) pagination_invalid(s &mut widgets.Screen) int {
     m.pagination_error = true
-    pages := &m.pages
-    page := &pages[25]
+    page := m.page_handles(25)
     data := s.pagination_data(page.ids[0]) or >>
     s.set_field_invalid(page.ids[1],true) or >>
     mut message := "Enter a page from 1 to " + str(data.pages) + "."
@@ -1085,8 +1088,7 @@ fn (m &mut Workshop) pagination_invalid(s &mut widgets.Screen) int {
     << 0
 }
 fn (m &mut Workshop) update_pagination(s &mut widgets.Screen,sync_input bool) int {
-    pages := &m.pages
-    page := &pages[25]
+    page := m.page_handles(25)
     data := s.pagination_data(page.ids[0]) or >>
     s.set_text(page.ids[3],s.pagination_summary(page.ids[0]) or >>) or >>
     s.set_enabled(page.ids[1],data.pages > 0) or >>
