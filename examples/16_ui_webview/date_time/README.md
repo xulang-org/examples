@@ -1,10 +1,13 @@
 # 日期与时间控件
 
-需要 **Xu 0.10.2-dev.1**。
+需要满足本目录 `xu.xun` 中 `xu:` 要求的 SDK。
+
+从仓库根执行，默认使用同级 `../xu`；可用 `XU_ROOT` 指定匹配的 Xu 源码目录：
 
 ```sh
-XU_ROOT=/path/to/xu-ui python3 scripts/ui_examples.py check date_time
-XU_ROOT=/path/to/xu-ui python3 scripts/ui_examples.py run date_time
+python3 scripts/ui_examples.py check date_time
+python3 scripts/ui_examples.py build date_time
+python3 scripts/ui_examples.py run date_time
 ```
 
 `DatePicker` 与 `TimePicker` 的值都是 `time.Time`。日期控件提供周一为首日的月历、上/下月按钮、日期范围和键盘导航；时间控件提供 24 小时制的时、分、秒分段输入与加减按钮。日期和时间同步显示为 RFC3339。初始值固定为闰日 `2024-02-29T14:35:20.123Z`，便于检查跨月行为。

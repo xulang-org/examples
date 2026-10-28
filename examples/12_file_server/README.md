@@ -1,6 +1,6 @@
 # 12_file_server
 
-<p align="center"><img src="../../../brand/xu_classic.svg" alt="Xu" width="64" height="64"></p>
+<p align="center"><img src="../../brand/xu_classic.svg" alt="Xu" width="64" height="64"></p>
 
  的 `FileServer` 一行。自己 accept 见 [`11_http_server`](../11_http_server)；`Handler` 上下文见 [`13_http_context`](../13_http_context)。
 

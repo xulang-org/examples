@@ -2,7 +2,10 @@
 
 Xu 0.10.2 正式版 原生 Input、TextArea、结构化菜单与显示器查询示例。
 
+从仓库根编译与运行（工具链要求见[父目录说明](../README.md#统一入口)）：
+
 ```sh
+python3 scripts/ui_examples.py build editor_workbench
 python3 scripts/ui_examples.py run editor_workbench
 ```
 
