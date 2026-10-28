@@ -121,3 +121,16 @@ Table 默认在表头点击、Enter/空格释放时执行稳定的本地排序�
 `set_cell`/`table_cell` 仍按源行索引读写数据，排序只修改显示映射；`table_view_cell` 读取显示行，`table_row_at` 返回显示行对应的源行，`table_view_row` 做反向查询。选中行在排序后跟随同一源行；`table_selected_row` 返回该源行，原有 `selected` 返回显示行。`set_table_selected_row` 按源行选中。源行身份只在当前数据集及行数范围内成立，不代替业务主键。
 
 `sort_table(id, column, descending)` 供程序排序，column=-1 恢复源行顺序。排序列上的 `set_cell` 更新会刷新本地排序，源数据索引不变；删掉选中源行时清除选择。手动/远程排序的业务身份由应用维护。只读或禁用时不响应用户排序；程序仍可更新数据与排序。工作坊提供乱序组件名和 2/7/14/120/210 等数值，可直接比较文本与数值排序，并保留当前选中源行。
+
+## 图标与文字按钮
+
+`Button` 页首先展示图标＋文字按钮，覆盖图标在文字左、右、上、下四种布局；`IconButton` 页单独展示纯图标按钮与动作提示。两者都支持键盘激活、禁用状态和主题/字号切换。
+
+```xu
+id := screen.button_with_icon("logo.png", "Build project") or >>
+mut appearance := styles.button_variant(widgets.BUTTON_PRIMARY) or >>
+appearance.icon_placement = widgets.ICON_LEADING
+screen.set_control_style(id, &appearance) or >>
+```
+
+图片随 `www/logo.png` 嵌入，Screen 持有并在销毁时释放；打包时保留 `--www` 资源目录。
