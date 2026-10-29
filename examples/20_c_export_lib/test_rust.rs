@@ -268,11 +268,11 @@ fn main() {
         println!("    xu_status_code(Pending) = {} (expected 200)", code);
         assert_eq!(code, 200);
 
-        // 12. &mut
-        println!("\n[12. &mut] Testing mutable reference mutation from Rust...");
+        // 12. $&
+        println!("\n[12. $&] Testing mutable reference mutation from Rust...");
         let mut counter = XuCounter { val: 80 };
         xu_main_xu_mutate_counter(&mut counter.val, 20);
-        println!("    xu_mutate_counter(&mut {{80}}, 20) -> val = {} (expected 100)", counter.val);
+        println!("    xu_mutate_counter($& {{80}}, 20) -> val = {} (expected 100)", counter.val);
         assert_eq!(counter.val, 100);
 
         // 13. callback

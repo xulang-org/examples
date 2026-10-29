@@ -178,9 +178,9 @@ int main(void) {
     assert(code_ok == 100 && code_pending == 200 && code_failed == 300);
 
     // ------------------------------------------------------------------------
-    // 12. &mut (mutable pointer / in-place struct mutation)
+    // 12. $& (mutable pointer / in-place struct mutation)
     // ------------------------------------------------------------------------
-    printf("\n[12. &mut] Testing in-place mutable reference mutation...\n");
+    printf("\n[12. $&] Testing in-place mutable reference mutation...\n");
     XuCounter cnt = { .val = 50 };
     xu_mutate_counter(&cnt, 25);
     printf("    xu_mutate_counter(&cnt{50}, 25) -> cnt.val = %lld (expected 75)\n", (long long)cnt.val);

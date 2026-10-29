@@ -97,7 +97,7 @@ typedef enum {
 
 extern int64_t xu_status_code(int64_t *status_ptr);
 
-// 12. &mut
+// 12. $&
 typedef struct {
     int64_t val;
 } XuCounter;
@@ -290,8 +290,8 @@ int main(void) {
     printf("    xu_status_code(Pending) = %lld (expected 200)\n", (long long)code);
     assert(code == 200);
 
-    // 12. &mut
-    printf("\n[12. &mut] Testing mutable pointer in-place mutation...\n");
+    // 12. $&
+    printf("\n[12. $&] Testing mutable pointer in-place mutation...\n");
     XuCounter cnt = {50};
     xu_mutate_counter(&cnt.val, 25);
     printf("    xu_mutate_counter(&cnt{50}, 25) -> cnt.val = %lld (expected 75)\n", (long long)cnt.val);

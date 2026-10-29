@@ -195,8 +195,8 @@ func main() {
 		panic("assert failed")
 	}
 
-	// 12. &mut
-	fmt.Println("\n[12. &mut] Testing mutable struct pointer from Go...")
+	// 12. $&
+	fmt.Println("\n[12. $&] Testing mutable struct pointer from Go...")
 	var cnt C.XuCounter
 	cnt.val = C.int64_t(250)
 	C.xu_mutate_counter(&cnt, C.int64_t(50))

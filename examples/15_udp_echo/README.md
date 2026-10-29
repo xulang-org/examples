@@ -10,7 +10,7 @@ c.WriteTo(buf[:n], addr)
 ```
 
 ```xu
-mut c := net.listen_packet("udp", "127.0.0.1:19001") or (err) { << 1 }
+$c := net.listen_packet("udp", "127.0.0.1:19001") or (err) { << 1 }
 pkt := c.read_from(4096) or (err) { -> }
 c.write_to(&pkt.data, &pkt.addr)
 ```

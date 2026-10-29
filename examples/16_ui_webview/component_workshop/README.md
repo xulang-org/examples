@@ -44,7 +44,7 @@ screen.set_badge_count(unread,123,99,false) or >>
 左下角的语言菜单切换组件默认文案与格式：中文、English 或 Custom。Custom 展示自定义日期占位/星期标题/日期顺序和小数分隔符。应用传入的标题、选项和验证文案由应用自己翻译。
 
 ```xu
-mut locale := widgets.locale_zh_cn()
+$locale := widgets.locale_zh_cn()
 locale.set_text(widgets.TEXT_TODAY,"回到今天") or >>
 locale.set_first_weekday(0) or >>
 screen.set_locale(&locale) or >>
@@ -79,12 +79,12 @@ Chart 通过自己的原生 Canvas 绘制折线、面积、分组柱状、散点
 
 ```xu
 chart := screen.chart() or >>
-mut series := widgets.chart_series(1,"Build",widgets.CHART_LINE)
+$series := widgets.chart_series(1,"Build",widgets.CHART_LINE)
 series.smooth = true
 series.points = [widgets.chart_point(101,1.0,18.0),widgets.chart_point(102,2.0,25.0),widgets.chart_point(103,3.0,21.0)]
 screen.set_chart_series(chart,&[series]) or >>
 screen.place(chart,24.0,80.0,780.0,360.0) or >>
-mut appearance := widgets.chart_appearance()
+$appearance := widgets.chart_appearance()
 appearance.y_unit = " ms"
 screen.set_chart_appearance(chart,&appearance) or >>
 ```
@@ -128,7 +128,7 @@ Table 默认在表头点击、Enter/空格释放时执行稳定的本地排序�
 
 ```xu
 id := screen.button_with_icon("logo.png", "Build project") or >>
-mut appearance := styles.button_variant(widgets.BUTTON_PRIMARY) or >>
+$appearance := styles.button_variant(widgets.BUTTON_PRIMARY) or >>
 appearance.icon_placement = widgets.ICON_LEADING
 appearance.icon_size = 24.0 * styles.text_scale
 screen.set_control_style(id, &appearance) or >>
@@ -144,7 +144,7 @@ screen.place(id, 24.0, 24.0, size.width, size.height) or >>
 `Tooltip` 页可切换上、下、左、右定位，并在窗口边缘自动翻转。提示默认在锚点上方居中；滚动时只对可见的锚点部分定位，完全滚出裁剪区域时隐藏。鼠标悬停 500 ms 显示，键盘 Tab 或显式 `focus()` 立即显示；鼠标点击不会被当作键盘焦点。点击或滚轮操作收起提示，移出后可再次触发；Escape 抑制当前这一轮提示，离开并重新进入或重新获得焦点后恢复。
 
 ```xu
-mut placement := widgets.overlay_placement()
+$placement := widgets.overlay_placement()
 placement.side = widgets.OVERLAY_RIGHT
 placement.align = widgets.OVERLAY_CENTER
 screen.set_tooltip_placement(tooltip_id, &placement) or >>

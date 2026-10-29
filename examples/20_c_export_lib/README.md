@@ -24,7 +24,7 @@ Xu 编译器在 AOT 编译时将公开函数 (`pub fn`) 符号导出为全局符
 | 9 | **动态切片** | `[]int`, `[]u8`, `[]f64` | `XuSliceInt`, `XuSliceByte`, `XuSliceF64` | `XuSliceDesc` | `XuSlice` | `C.xu_sum_slice`, ... | `XuSlice` 描述符 | 动态数组切片视图。与 string 共享 3 槽描述符：`offset 0: ptr`, `offset -8: len`, `offset -16: cap` (0=只读借用)。 |
 | 10 | **定长数组** | `[4]int` | `XuFixedArray4` | `XuFixedArray4` | `XuFixedArray4` | `C.xu_sum_fixed_array` | `XuFixedArray4` | 固定长度数组。连续内存降序排列，首元素位于 Top Slot `[ptr]`，末元素位于 `[ptr - 24]`。 |
 | 11 | **代数枚举** | `enum Status` | `int64_t*` (tag 指针) | `POINTER(c_int64)` | `*const i64` | `*C.int64_t` | `ref long` | 变体标签值（`0=Ok, 1=Pending, 2=Failed`），按引用传递指针以支持模式匹配。 |
-| 12 | **可变引用 (原地修改)** | `&mut Counter` | `XuCounter*` (指针传参) | `POINTER(XuCounter)` | `*mut i64` | `*C.XuCounter` | `ref long` | 底层指针直接寻址，修改调用方内存中的结构体/数据字段。 |
+| 12 | **可变引用 (原地修改)** | `$&Counter` | `XuCounter*` (指针传参) | `POINTER(XuCounter)` | `*mut i64` | `*C.XuCounter` | `ref long` | 底层指针直接寻址，修改调用方内存中的结构体/数据字段。 |
 | 13 | **闭包 / 回调函数** | `fn(int, int) int` | `XuClosure` 闭包描述符 | `XuClosureDesc` | `XuClosure` | `invoke_xu_callback` | `XuClosure` / `delegate` | 闭包描述符：`offset 0: fn_ptr`, `offset -8: env`。调用时传入 `env` 及常规参数。 |
 | 14 | **空类型过程** | `void` | `void` | `None` | `()` | `void` | `void` | 无返回值副作用过程（打印输出、状态机等）。 |
 
@@ -284,7 +284,7 @@ python test_python.py
      1. int (64-bit)        2. i32 (32-bit)        3. u32 (unsigned)
      4. u8 (byte)           5. bool (logic)        6. f64 (IEEE float)
      7. string (UTF-8)      8. struct (arg/return) 9. slice ([]T views)
-    10. array ([4]int)     11. enum (variants)    12. &mut (pointer in-place)
+    10. array ([4]int)     11. enum (variants)    12. $& (pointer in-place)
     13. callback (closure) 14. void (procedure)
 ====================================================================
 ```

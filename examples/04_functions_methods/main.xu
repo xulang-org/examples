@@ -12,14 +12,14 @@ fn (c Counter) get() int {
     << c.n
 }
 
-fn (c &mut Counter) inc() {
+fn (c $&Counter) inc() {
     c.n += 1
 }
 
 fn main() int {
     println(add(2, 3))
 
-    mut c := Counter{n: 10}
+    $c := Counter{n: 10}
     println(c.get())
     c.inc()
     println(c.get())

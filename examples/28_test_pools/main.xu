@@ -14,7 +14,7 @@ postgres #github.com/xulang-org/packages/postgres
 fn verify_redis_pool() {
     println("1. Testing Redis Connection Pool...")
     p := redis.new_pool("127.0.0.1:6379", 5)
-    mut c := p.get() or (err) {
+    $c := p.get() or (err) {
         println("   [FAIL] Redis get error: " + err.msg())
         <<
     }
@@ -31,7 +31,7 @@ fn verify_redis_pool() {
 fn verify_memcached_pool() {
     println("2. Testing Memcached Connection Pool...")
     p := memcached.new_pool("127.0.0.1:11211", 5)
-    mut c := p.get() or (err) {
+    $c := p.get() or (err) {
         println("   [FAIL] Memcached get error: " + err.msg())
         <<
     }
@@ -53,7 +53,7 @@ fn verify_nats_pool() {
         <<
     }
     println("   NATS pool published message successfully.")
-    mut c := p.get() or (err) {
+    $c := p.get() or (err) {
         println("   [FAIL] NATS get error: " + err.msg())
         <<
     }
@@ -75,7 +75,7 @@ fn verify_mqtt_pool() {
         <<
     }
     println("   MQTT pool published message successfully.")
-    mut c := p.get() or (err) {
+    $c := p.get() or (err) {
         println("   [FAIL] MQTT get error: " + err.msg())
         <<
     }
@@ -107,7 +107,7 @@ fn verify_s3_pool() {
 
 fn verify_sqlite_pool() {
     println("7. Testing SQLite Connection Pool...")
-    mut db := sqlite.open_pool(":memory:", 1, 1)
+    $db := sqlite.open_pool(":memory:", 1, 1)
     db.ping() or (err) {
         println("   [FAIL] SQLite ping error: " + err.msg())
         <<
@@ -121,7 +121,7 @@ fn verify_sqlite_pool() {
 fn verify_postgres_pool() {
     println("8. Testing PostgreSQL Connection Pool...")
     dsn := "postgres://postgres:secret@127.0.0.1:5432/postgres?sslmode=disable"
-    mut db := postgres.open_pool(dsn, 5, 2)
+    $db := postgres.open_pool(dsn, 5, 2)
     db.ping() or (err) {
         println("   [FAIL] PostgreSQL ping error: " + err.msg())
         <<
