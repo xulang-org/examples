@@ -10,51 +10,55 @@ fn hello_args(extra string) string {
 
 fn check_core() int {
     limits := xacp.default_limits()
+    // These independent session checks deliberately reuse the same hello nonce.
+    mut nonces := xacp.new_nonce_registry(1, false)
     hello := xacp.parse_frame(hello_args("")) or >>
     status := xacp.parse_frame("id: !i 2\nop: proc.status\nargs: {}\n") or >>
     mut session := xacp.open_session()
-    opened := xacp.dispatch(mut &session, &hello, &limits)
+    opened := xacp.dispatch(mut &session, &hello, &limits, mut &nonces)
     if !opened.ok || session.state != xacp.STATE_OPEN { << 1 }
     if session.permissions != xacp.PERM_INFO || session.nonce != "core-nonce" { << 2 }
-    unimplemented := xacp.dispatch(mut &session, &status, &limits)
+    unimplemented := xacp.dispatch(mut &session, &status, &limits, mut &nonces)
     if unimplemented.ok || unimplemented.err_code != "not_implemented" { << 3 }
     if session.state != xacp.STATE_OPEN || session.active_id != 0 { << 4 }
     if xacp.set_permissions(mut &session, xacp.PERM_ALL) { << 5 }
     xacp.close_session(mut &session)
     if session.nonce != "" || session.permissions != xacp.PERM_NONE { << 6 }
-    closed := xacp.dispatch(mut &session, &status, &limits)
+    closed := xacp.dispatch(mut &session, &status, &limits, mut &nonces)
     if closed.ok || closed.err_code != "session_closed" { << 7 }
 
     // Host pre-grants cannot bypass the mandatory first hello.
     mut fresh := xacp.open_session()
     if !xacp.set_permissions(mut &fresh, xacp.PERM_ALL) { << 8 }
-    premature := xacp.dispatch(mut &fresh, &status, &limits)
+    premature := xacp.dispatch(mut &fresh, &status, &limits, mut &nonces)
     if premature.ok || premature.err_code != "hello_required" || fresh.state != xacp.STATE_CLOSED { << 9 }
 
     // Request/allowed intersection for every known bit combination.
-    for requested in 0:16 {
+    mut allowed := xacp.PERM_ALL ^ xacp.PERM_UI_RAW
+    if os.getenv("XU_XACP_ALLOW_RAW") == "1" { allowed = xacp.PERM_ALL }
+    for requested in 0:32 {
         doc := xacp.parse_frame(hello_args("  token: core-token\n  permissions: !i " + str(requested) + "\n")) or >>
         mut info := xacp.open_session()
-        result := xacp.dispatch(mut &info, &doc, &limits)
+        result := xacp.dispatch(mut &info, &doc, &limits, mut &nonces)
         if !result.ok || info.permissions != (requested & xacp.PERM_INFO) { << 10 }
         mut authenticated := xacp.open_session()
-        granted := xacp.dispatch_with_token(mut &authenticated, &doc, &limits, "core-token")
-        if !granted.ok || authenticated.permissions != requested { << 11 }
+        granted := xacp.dispatch_with_token(mut &authenticated, &doc, &limits, "core-token", mut &nonces)
+        if !granted.ok || authenticated.permissions != (requested & allowed) { << 11 }
     }
     token_hello := xacp.parse_frame(hello_args("  token: core-token\n")) or >>
     mut development := xacp.open_session()
-    granted_all := xacp.dispatch_with_token(mut &development, &token_hello, &limits, "core-token")
-    if !granted_all.ok || development.permissions != xacp.PERM_ALL { << 12 }
+    granted_all := xacp.dispatch_with_token(mut &development, &token_hello, &limits, "core-token", mut &nonces)
+    if !granted_all.ok || development.permissions != allowed { << 12 }
     mut bad_token := xacp.open_session()
-    rejected := xacp.dispatch_with_token(mut &bad_token, &token_hello, &limits, "different-token")
+    rejected := xacp.dispatch_with_token(mut &bad_token, &token_hello, &limits, "different-token", mut &nonces)
     if rejected.ok || rejected.err_code != "auth_failed" || bad_token.state != xacp.STATE_CLOSED { << 13 }
     if bad_token.nonce != "" || bad_token.permissions != xacp.PERM_NONE { << 14 }
     mut missing_token := xacp.open_session()
-    missing := xacp.dispatch_with_token(mut &missing_token, &hello, &limits, "core-token")
+    missing := xacp.dispatch_with_token(mut &missing_token, &hello, &limits, "core-token", mut &nonces)
     if missing.ok || missing.err_code != "auth_failed" || missing_token.state != xacp.STATE_CLOSED { << 15 }
-    invalid := xacp.parse_frame(hello_args("  permissions: !i 16\n")) or >>
+    invalid := xacp.parse_frame(hello_args("  permissions: !i 32\n")) or >>
     mut malformed := xacp.open_session()
-    schema := xacp.dispatch(mut &malformed, &invalid, &limits)
+    schema := xacp.dispatch(mut &malformed, &invalid, &limits, mut &nonces)
     if schema.ok || schema.err_code != "schema_error" || malformed.state != xacp.STATE_CLOSED { << 16 }
 
     // Lifecycle errors keep OPEN, preserve the active request, and allow recovery.
