@@ -9,14 +9,14 @@
 //   open /tmp/XuDesignSystem.app
 
 fn main() int {
-    mut app := ui.new_app()
-    mut win := app.new_window(ui.WindowOpts{
+    $app := ui.new_app()
+    $win := app.new_window(ui.WindowOpts{
         title: "Xu Design System & VI Specification",
         width: 1280,
         height: 860,
     })
 
-    r := mut &win
+    r := $&win
     _ := webview.attach(r, webview.WebviewOpts{
         url: "xu://app/index.html",
         dev_tools: true,

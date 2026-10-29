@@ -148,8 +148,8 @@ int main() {
     std::cout << "    xu_status_code(Ok)=" << code_ok << ", Failed=" << code_failed << "\n";
     assert(code_ok == 100 && code_failed == 300);
 
-    // 12. &mut
-    std::cout << "\n[12. &mut] Testing mutable struct reference...\n";
+    // 12. $&
+    std::cout << "\n[12. $&] Testing mutable struct reference...\n";
     XuCounter cnt = { .val = 200 };
     xu_mutate_counter(&cnt, 100);
     std::cout << "    xu_mutate_counter(&cnt{200}, 100) -> cnt.val = " << cnt.val << " (expected 300)\n";

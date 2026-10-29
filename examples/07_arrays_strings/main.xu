@@ -1,7 +1,7 @@
 @main
 
 fn main() int {
-    mut nums := [1, 2, 3]
+    $nums := [1, 2, 3]
     nums.push(4)
     println(nums.len)
     for n in nums {
