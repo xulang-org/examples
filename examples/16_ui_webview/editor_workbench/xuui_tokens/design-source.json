@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/xulang-org/xu-ui-design",
+  "revision": "21dcaee5be0a44f8526b74ccf0dd3003f114c452",
+  "version": "0.1.1-dev.1",
+  "tokensSHA256": "d0fc99da6aea9edba10a6c1a891172923867178eeed3ce1accd7102adf5584de",
+  "adapterSHA256": "181aac7d54eb2eb76ad47fef8d3f10d43f9d57451778c6949f2f334939f9cd51",
+  "generator": "scripts/native-tokens.mjs",
+  "sdk": "0.10.11",
+  "license": "MIT"
+}
