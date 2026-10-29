@@ -53,10 +53,6 @@ pub fn danger_soft(dark bool) draw.Color {
     << draw.rgb(251,230,233)
 }
 
-pub fn theme(dark bool) widgets.Theme {
-    << widgets.Theme{normal: surface(dark),hovered: elevated(dark),pressed: subtle(dark),disabled: surface(dark),foreground: text(dark),muted: muted(dark),accent: brand(dark),focus: focus(dark)}
-}
-
 // Editor appearance for XU SDK 0.10.11. Other controls retain SDK defaults.
 pub fn editor_styles(dark bool) widgets.Styles {
     mut styles := widgets.light_styles()
@@ -64,7 +60,13 @@ pub fn editor_styles(dark bool) widgets.Styles {
     styles.background = canvas(dark)
     mut input := styles.input.clone()
     input.radius = 8.0
+    input.min_height = 40.0
+    input.padding.left = 12.0
+    input.padding.right = 12.0
+    input.padding.top = 8.0
+    input.padding.bottom = 8.0
     input.border_width = 1.0
+    input.focus_width = 2.0
     input.font.size = 16.0
     input.inherit_font = false
     input.palette.normal = surface(dark)
@@ -80,8 +82,18 @@ pub fn editor_styles(dark bool) widgets.Styles {
     input.palette.border = control_border(dark)
     input.palette.invalid = danger(dark)
     input.palette.invalid_fill = danger_soft(dark)
+    input.palette.read_only = subtle(dark)
     input.palette.selection = brand(dark)
     input.palette.selection_text = on_brand(dark)
+    mut hover := widgets.state_paint(widgets.STATE_HOVERED)
+    hover.unless = widgets.STATE_DISABLED | widgets.STATE_INVALID | widgets.STATE_READ_ONLY
+    hover.fields = widgets.PAINT_BORDER
+    hover.border = brand(dark)
+    mut focused := widgets.state_paint(widgets.STATE_FOCUSED)
+    focused.unless = widgets.STATE_DISABLED | widgets.STATE_INVALID
+    focused.fields = widgets.PAINT_BORDER
+    focused.border = focus(dark)
+    input.states = [hover,focused]
     styles.input = input.clone()
     styles.text_area = input.clone()
     styles.text_area.align_y = 0.0
