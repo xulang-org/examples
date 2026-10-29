@@ -1,59 +1,31 @@
 EXPORTS
-    xu_add_int = _xu_main_xu_add_int
-    _xu_main_xu_add_int
-    xu_factorial = _xu_main_xu_factorial
-    _xu_main_xu_factorial
-    xu_add_i32 = _xu_main_xu_add_i32
-    _xu_main_xu_add_i32
-    xu_clamp_i32 = _xu_main_xu_clamp_i32
-    _xu_main_xu_clamp_i32
-    xu_add_u32 = _xu_main_xu_add_u32
-    _xu_main_xu_add_u32
-    xu_rotate_left_u32 = _xu_main_xu_rotate_left_u32
-    _xu_main_xu_rotate_left_u32
-    xu_mask_u8 = _xu_main_xu_mask_u8
-    _xu_main_xu_mask_u8
-    xu_add_u8 = _xu_main_xu_add_u8
-    _xu_main_xu_add_u8
-    xu_is_even = _xu_main_xu_is_even
-    _xu_main_xu_is_even
-    xu_logical_and = _xu_main_xu_logical_and
-    _xu_main_xu_logical_and
-    xu_add_f64 = _xu_main_xu_add_f64
-    _xu_main_xu_add_f64
-    xu_scale_f64 = _xu_main_xu_scale_f64
-    _xu_main_xu_scale_f64
-    xu_string_length = _xu_main_xu_string_length
-    _xu_main_xu_string_length
-    xu_count_char = _xu_main_xu_count_char
-    _xu_main_xu_count_char
-    xu_string_byte_at = _xu_main_xu_string_byte_at
-    _xu_main_xu_string_byte_at
-    xu_print_string = _xu_main_xu_print_string
-    _xu_main_xu_print_string
-    xu_greeting = _xu_main_xu_greeting
-    _xu_main_xu_greeting
-    xu_concat_hello = _xu_main_xu_concat_hello
-    _xu_main_xu_concat_hello
-    xu_point_distance_sq = _xu_main_xu_point_distance_sq
-    _xu_main_xu_point_distance_sq
-    xu_make_point = _xu_main_xu_make_point
-    _xu_main_xu_make_point
-    xu_check_mixed_record = _xu_main_xu_check_mixed_record
-    _xu_main_xu_check_mixed_record
-    xu_sum_slice = _xu_main_xu_sum_slice
-    _xu_main_xu_sum_slice
-    xu_sum_byte_slice = _xu_main_xu_sum_byte_slice
-    _xu_main_xu_sum_byte_slice
-    xu_sum_f64_slice = _xu_main_xu_sum_f64_slice
-    _xu_main_xu_sum_f64_slice
-    xu_sum_fixed_array = _xu_main_xu_sum_fixed_array
-    _xu_main_xu_sum_fixed_array
-    xu_status_code = _xu_main_xu_status_code
-    _xu_main_xu_status_code
-    xu_mutate_counter = _xu_main_xu_mutate_counter
-    _xu_main_xu_mutate_counter
-    xu_apply_callback = _xu_main_xu_apply_callback
-    _xu_main_xu_apply_callback
-    xu_hello_from_lib = _xu_main_xu_hello_from_lib
-    _xu_main_xu_hello_from_lib
+    xu_hello_from_lib
+    xu_factorial
+    xu_is_even
+    xu_string_length
+    xu_print_string
+    xu_point_distance_sq
+    xu_check_mixed_record
+    xu_sum_slice
+    xu_sum_byte_slice
+    xu_sum_f64_slice
+    xu_sum_fixed_array
+    xu_status_code
+    xu_add_int
+    xu_add_i32
+    xu_add_u32
+    xu_rotate_left_u32
+    xu_mask_u8
+    xu_add_u8
+    xu_logical_and
+    xu_add_f64
+    xu_scale_f64
+    xu_count_char
+    xu_string_byte_at
+    xu_mutate_counter
+    xu_clamp_i32
+    xu_apply_callback
+    xu_greeting
+    xu_concat_hello
+    xu_make_point
+    xu_ms_callback

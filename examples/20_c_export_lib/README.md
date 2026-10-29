@@ -288,3 +288,11 @@ python test_python.py
     13. callback (closure) 14. void (procedure)
 ====================================================================
 ```
+
+## Windows x64 实际运行验证
+
+使用 LLVM-MinGW 的 x64 C 编译器和归档器运行 `build_and_test.ps1`；ARM64 Windows 可通过系统 x64 仿真运行调用端。可用 `-Compiler`、`-Cc`、`-Ar`、`-Python`、`-Csc` 指定工具的完整路径。Python 必须与 DLL 同为 x64；未安装的可选宿主会明确打印 SKIP。
+
+脚本会执行 Xu 自测、C 静态/动态库调用、可用的 Python/C# 调用，并检查每个外部进程退出码。产物位于 examples 仓库的 `build/c_export_lib/windows-x64/`。对象以 O0 构建以保留示例桥接使用的函数标签；非 UI 库显式提供 `windows_headless.c` 中的可选 UI 宿主桩。
+
+`win_bridge.s` 保存 Windows 非易失整数/SIMD 寄存器并保持栈对齐。Windows 回调经 `xu_ms_callback` 从 Xu 调用约定转换为 Microsoft x64 调用约定，环境指向 `{callback, user_env}`，调用期间必须保持有效。C# 使用普通构建也会执行的断言；任一断言失败会返回非零退出码。

@@ -1,6 +1,6 @@
 @main
 
-const max = 100
+const MAX = 100
 
 fn main() int {
     name := "Xu"
@@ -9,6 +9,6 @@ fn main() int {
 
     println(name)
     println(age)
-    println(max)
+    println(MAX)
     << 0
 }

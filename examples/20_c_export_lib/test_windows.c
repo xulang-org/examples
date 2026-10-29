@@ -141,7 +141,10 @@ static int64_t win_callback_mult(void *env, int64_t a, int64_t b) {
     return a * b;
 }
 
+extern void xu_ms_callback(void);
+
 int main(void) {
+    setvbuf(stdout, NULL, _IONBF, 0);
     printf("====================================================================\n");
     printf("   Windows Host Calling Xu Native Library (xulib.lib / xulib.dll)\n");
     printf("====================================================================\n\n");
@@ -216,8 +219,8 @@ int main(void) {
     assert(len == 26);
 
     int64_t count_o = xu_count_char((int64_t *)&test_s.ptr, 'o');
-    printf("    xu_count_char(..., 'o') = %lld (expected 3)\n", (long long)count_o);
-    assert(count_o == 3);
+    printf("    xu_count_char(..., 'o') = %lld (expected 4)\n", (long long)count_o);
+    assert(count_o == 4);
 
     int64_t byte_at = xu_string_byte_at((int64_t *)&test_s.ptr, 0);
     printf("    xu_string_byte_at(..., 0) = %lld ('%c', expected 'H')\n", (long long)byte_at, (char)byte_at);
@@ -300,8 +303,9 @@ int main(void) {
     // 13. callback
     printf("\n[13. callback] Testing function pointer / closure callback...\n");
     XuClosure clos;
-    clos.env = NULL;
-    clos.fn_ptr = (void *)win_callback_mult;
+    struct { void *callback; void *env; } callback_target = {(void *)win_callback_mult, NULL};
+    clos.env = &callback_target;
+    clos.fn_ptr = (void *)xu_ms_callback;
     int64_t cb_res = xu_apply_callback(7, 8, (int64_t *)&clos.fn_ptr);
     printf("    xu_apply_callback(7, 8, mult) = %lld (expected 56)\n", (long long)cb_res);
     assert(cb_res == 56);

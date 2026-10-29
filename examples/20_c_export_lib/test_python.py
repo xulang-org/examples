@@ -344,6 +344,12 @@ def main():
         ]
 
     closure_desc = XuClosureDesc(env=None, fn_ptr=ctypes.cast(py_callback_mult, ctypes.c_void_p))
+    if os.name == "nt":
+        class WindowsCallbackTarget(ctypes.Structure):
+            _fields_ = [("callback", ctypes.c_void_p), ("env", ctypes.c_void_p)]
+        callback_target = WindowsCallbackTarget(ctypes.cast(py_callback_mult, ctypes.c_void_p), None)
+        closure_desc.env = ctypes.addressof(callback_target)
+        closure_desc.fn_ptr = ctypes.cast(get_fn("xu_ms_callback"), ctypes.c_void_p)
     fn_apply_cb = get_fn("xu_apply_callback")
     fn_apply_cb.argtypes = [ctypes.c_int64, ctypes.c_int64, ctypes.c_void_p]
     fn_apply_cb.restype = ctypes.c_int64

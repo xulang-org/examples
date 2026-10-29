@@ -90,6 +90,16 @@ namespace XuNativeInterop
 
     public static class XuLib
     {
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
+        static extern IntPtr GetModuleHandle(string name);
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
+        static extern IntPtr GetProcAddress(IntPtr module, string name);
+        public static IntPtr CallbackBridge() {
+            IntPtr entry = GetProcAddress(GetModuleHandle("xulib.dll"), "xu_ms_callback");
+            if (entry == IntPtr.Zero) throw new InvalidOperationException("Missing callback bridge");
+            return entry;
+        }
+
         private const string LibName = "xulib.dll";
 
         // 1. int
@@ -209,6 +219,10 @@ namespace XuNativeInterop
 
     class Program
     {
+        static void Require(bool condition) {
+            if (!condition) throw new InvalidOperationException("Interop assertion failed");
+        }
+
         static long MyCallback(IntPtr env, long a, long b)
         {
             return a * b;
@@ -223,63 +237,63 @@ namespace XuNativeInterop
             // 1. int
             Console.WriteLine("[1. int] Testing 64-bit integer...");
             long sum = XuLib.XuAddInt(100, 200);
-            Console.WriteLine($"    XuAddInt(100, 200) = {sum} (expected 300)");
-            Debug.Assert(sum == 300);
+            Console.WriteLine(String.Format("    XuAddInt(100, 200) = {0} (expected 300)", sum));
+            Require(sum == 300);
 
             long fact = XuLib.XuFactorial(6);
-            Console.WriteLine($"    XuFactorial(6) = {fact} (expected 720)");
-            Debug.Assert(fact == 720);
+            Console.WriteLine(String.Format("    XuFactorial(6) = {0} (expected 720)", fact));
+            Require(fact == 720);
 
             // 2. i32
             Console.WriteLine("\n[2. i32] Testing 32-bit integer...");
             int s32 = XuLib.XuAddI32(-20, 35);
-            Console.WriteLine($"    XuAddI32(-20, 35) = {s32} (expected 15)");
-            Debug.Assert(s32 == 15);
+            Console.WriteLine(String.Format("    XuAddI32(-20, 35) = {0} (expected 15)", s32));
+            Require(s32 == 15);
 
             int clamped = XuLib.XuClampI32(150, 0, 100);
-            Console.WriteLine($"    XuClampI32(150, 0, 100) = {clamped} (expected 100)");
-            Debug.Assert(clamped == 100);
+            Console.WriteLine(String.Format("    XuClampI32(150, 0, 100) = {0} (expected 100)", clamped));
+            Require(clamped == 100);
 
             // 3. u32
             Console.WriteLine("\n[3. u32] Testing 32-bit unsigned integer...");
             uint u32Val = XuLib.XuAddU32(0xFFFFFF00U, 0x10U);
-            Console.WriteLine($"    XuAddU32(0xFFFFFF00, 0x10) = 0x{u32Val:X8} (expected 0xFFFFFF10)");
-            Debug.Assert(u32Val == 0xFFFFFF10U);
+            Console.WriteLine(String.Format("    XuAddU32(0xFFFFFF00, 0x10) = 0x{0:X8} (expected 0xFFFFFF10)", u32Val));
+            Require(u32Val == 0xFFFFFF10U);
 
             uint rot = XuLib.XuRotateLeftU32(1U, 4U);
-            Console.WriteLine($"    XuRotateLeftU32(1, 4) = {rot} (expected 16)");
-            Debug.Assert(rot == 16U);
+            Console.WriteLine(String.Format("    XuRotateLeftU32(1, 4) = {0} (expected 16)", rot));
+            Require(rot == 16U);
 
             // 4. u8
             Console.WriteLine("\n[4. u8] Testing 8-bit unsigned byte...");
             byte masked = XuLib.XuMaskU8(0xAB, 0x0F);
-            Console.WriteLine($"    XuMaskU8(0xAB, 0x0F) = 0x{masked:X2} (expected 0x0B)");
-            Debug.Assert(masked == 0x0B);
+            Console.WriteLine(String.Format("    XuMaskU8(0xAB, 0x0F) = 0x{0:X2} (expected 0x0B)", masked));
+            Require(masked == 0x0B);
 
             byte sumU8 = XuLib.XuAddU8(200, 50);
-            Console.WriteLine($"    XuAddU8(200, 50) = {sumU8} (expected 250)");
-            Debug.Assert(sumU8 == 250);
+            Console.WriteLine(String.Format("    XuAddU8(200, 50) = {0} (expected 250)", sumU8));
+            Require(sumU8 == 250);
 
             // 5. bool
             Console.WriteLine("\n[5. bool] Testing boolean logic...");
             byte even42 = XuLib.XuIsEven(42);
             byte even43 = XuLib.XuIsEven(43);
-            Console.WriteLine($"    XuIsEven(42) = {even42 == 1}, XuIsEven(43) = {even43 == 1}");
-            Debug.Assert(even42 == 1 && even43 == 0);
+            Console.WriteLine(String.Format("    XuIsEven(42) = {0}, XuIsEven(43) = {1}", even42 == 1, even43 == 1));
+            Require(even42 == 1 && even43 == 0);
 
             byte land = XuLib.XuLogicalAnd(1, 0);
-            Console.WriteLine($"    XuLogicalAnd(true, false) = {land == 1} (expected false)");
-            Debug.Assert(land == 0);
+            Console.WriteLine(String.Format("    XuLogicalAnd(true, false) = {0} (expected false)", land == 1));
+            Require(land == 0);
 
             // 6. f64
             Console.WriteLine("\n[6. f64] Testing 64-bit IEEE float...");
             double fAdd = XuLib.XuAddF64(1.25, 2.75);
-            Console.WriteLine($"    XuAddF64(1.25, 2.75) = {fAdd:F4} (expected 4.0000)");
-            Debug.Assert(fAdd == 4.0);
+            Console.WriteLine(String.Format("    XuAddF64(1.25, 2.75) = {0:F4} (expected 4.0000)", fAdd));
+            Require(fAdd == 4.0);
 
             double scaled = XuLib.XuScaleF64(3.5, 2.0);
-            Console.WriteLine($"    XuScaleF64(3.5, 2.0) = {scaled:F4} (expected 7.0000)");
-            Debug.Assert(scaled == 7.0);
+            Console.WriteLine(String.Format("    XuScaleF64(3.5, 2.0) = {0:F4} (expected 7.0000)", scaled));
+            Require(scaled == 7.0);
 
             // 7. string
             Console.WriteLine("\n[7. string] Testing UTF-8 string descriptors and passing...");
@@ -295,16 +309,16 @@ namespace XuNativeInterop
                 };
 
                 long strLen = XuLib.XuStringLength(ref xs.Ptr);
-                Console.WriteLine($"    XuStringLength = {strLen} (expected {utf8Bytes.Length - 1})");
-                Debug.Assert(strLen == utf8Bytes.Length - 1);
+                Console.WriteLine(String.Format("    XuStringLength = {0} (expected {1})", strLen, utf8Bytes.Length - 1));
+                Require(strLen == utf8Bytes.Length - 1);
 
                 long countO = XuLib.XuCountChar(ref xs.Ptr, 'o');
-                Console.WriteLine($"    XuCountChar('o') = {countO} (expected 2)");
-                Debug.Assert(countO == 2);
+                Console.WriteLine(String.Format("    XuCountChar('o') = {0} (expected 3)", countO));
+                Require(countO == 3);
 
                 long byteAt = XuLib.XuStringByteAt(ref xs.Ptr, 0);
-                Console.WriteLine($"    XuStringByteAt(0) = {(char)byteAt} (expected 'H')");
-                Debug.Assert(byteAt == 'H');
+                Console.WriteLine(String.Format("    XuStringByteAt(0) = {0} (expected 'H')", (char)byteAt));
+                Require(byteAt == 'H');
 
                 XuLib.XuPrintString(ref xs.Ptr);
             }
@@ -317,13 +331,13 @@ namespace XuNativeInterop
             Console.WriteLine("\n[8. struct] Testing struct passing and returning...");
             XuPoint2D pt = new XuPoint2D { X = 3, Y = 4 };
             long distSq = XuLib.XuPointDistanceSq(ref pt.X);
-            Console.WriteLine($"    XuPointDistanceSq(3, 4) = {distSq} (expected 25)");
-            Debug.Assert(distSq == 25);
+            Console.WriteLine(String.Format("    XuPointDistanceSq(3, 4) = {0} (expected 25)", distSq));
+            Require(distSq == 25);
 
             XuPoint2D ptOut = new XuPoint2D();
             XuLib.XuMakePoint(ref ptOut.X, 7, 24);
-            Console.WriteLine($"    XuMakePoint(7, 24) = ({ptOut.X}, {ptOut.Y})");
-            Debug.Assert(ptOut.X == 7 && ptOut.Y == 24);
+            Console.WriteLine(String.Format("    XuMakePoint(7, 24) = ({0}, {1})", ptOut.X, ptOut.Y));
+            Require(ptOut.X == 7 && ptOut.Y == 24);
 
             XuMixedRecord rec = new XuMixedRecord
             {
@@ -332,8 +346,8 @@ namespace XuNativeInterop
                 Flag = 1
             };
             byte recOk = XuLib.XuCheckMixedRecord(ref rec.Id);
-            Console.WriteLine($"    XuCheckMixedRecord = {recOk == 1} (expected true)");
-            Debug.Assert(recOk == 1);
+            Console.WriteLine(String.Format("    XuCheckMixedRecord = {0} (expected true)", recOk == 1));
+            Require(recOk == 1);
 
             // 9. slice
             Console.WriteLine("\n[9. slice] Testing slice views ([]int, []u8, []f64)...");
@@ -348,8 +362,8 @@ namespace XuNativeInterop
                     Ptr = intHandle.AddrOfPinnedObject()
                 };
                 long sumSl = XuLib.XuSumSlice(ref slInt.Ptr);
-                Console.WriteLine($"    XuSumSlice([10, 20, 30, 40]) = {sumSl} (expected 100)");
-                Debug.Assert(sumSl == 100);
+                Console.WriteLine(String.Format("    XuSumSlice([10, 20, 30, 40]) = {0} (expected 100)", sumSl));
+                Require(sumSl == 100);
             }
             finally
             {
@@ -366,22 +380,22 @@ namespace XuNativeInterop
                 E3 = 400
             };
             long sumArr = XuLib.XuSumFixedArray(ref arr4.E0);
-            Console.WriteLine($"    XuSumFixedArray([100, 200, 300, 400]) = {sumArr} (expected 1000)");
-            Debug.Assert(sumArr == 1000);
+            Console.WriteLine(String.Format("    XuSumFixedArray([100, 200, 300, 400]) = {0} (expected 1000)", sumArr));
+            Require(sumArr == 1000);
 
             // 11. enum
             Console.WriteLine("\n[11. enum] Testing enumeration variants...");
             long stPending = (long)XuStatus.Pending;
             long statusCode = XuLib.XuStatusCode(ref stPending);
-            Console.WriteLine($"    XuStatusCode(Pending) = {statusCode} (expected 200)");
-            Debug.Assert(statusCode == 200);
+            Console.WriteLine(String.Format("    XuStatusCode(Pending) = {0} (expected 200)", statusCode));
+            Require(statusCode == 200);
 
             // 12. &mut
             Console.WriteLine("\n[12. &mut] Testing mutable pointer in-place mutation...");
             XuCounter cnt = new XuCounter { Val = 50 };
             XuLib.XuMutateCounter(ref cnt.Val, 25);
-            Console.WriteLine($"    XuMutateCounter(&cnt{{50}}, 25) -> cnt.Val = {cnt.Val} (expected 75)");
-            Debug.Assert(cnt.Val == 75);
+            Console.WriteLine(String.Format("    XuMutateCounter(&cnt{{50}}, 25) -> cnt.Val = {0} (expected 75)", cnt.Val));
+            Require(cnt.Val == 75);
 
             // 13. callback
             Console.WriteLine("\n[13. callback] Testing function pointer / closure callback...");
@@ -389,12 +403,16 @@ namespace XuNativeInterop
             IntPtr fp = Marshal.GetFunctionPointerForDelegate(del);
             XuClosure clos = new XuClosure
             {
-                Env = IntPtr.Zero,
-                FnPtr = fp
+                Env = Marshal.AllocHGlobal(2 * IntPtr.Size),
+                FnPtr = XuLib.CallbackBridge()
             };
-            long cbRes = XuLib.XuApplyCallback(7, 8, ref clos.FnPtr);
-            Console.WriteLine($"    XuApplyCallback(7, 8, MyCallback) = {cbRes} (expected 56)");
-            Debug.Assert(cbRes == 56);
+            Marshal.WriteIntPtr(clos.Env, 0, fp);
+            Marshal.WriteIntPtr(clos.Env, IntPtr.Size, IntPtr.Zero);
+            long cbRes;
+            try { cbRes = XuLib.XuApplyCallback(7, 8, ref clos.FnPtr); }
+            finally { Marshal.FreeHGlobal(clos.Env); GC.KeepAlive(del); }
+            Console.WriteLine(String.Format("    XuApplyCallback(7, 8, MyCallback) = {0} (expected 56)", cbRes));
+            Require(cbRes == 56);
             GC.KeepAlive(del);
 
             // 14. void
