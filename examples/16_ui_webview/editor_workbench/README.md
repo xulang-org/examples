@@ -28,4 +28,4 @@ Windows 需真实 DirectWrite 命中查询。旧版 Wine 对 `HitTestTextPositio
 
 更新资源时，在固定的设计仓库提交执行 `npm run build`，复制 `dist/xu/xuui_tokens/mod.xu`，更新来源和校验值，并按仓库规则递增本模块版本。不得手工改生成的色值导致 Web 与原生分叉。
 
-验收范围为 macOS arm64、SDK 0.10.11 的编译和本机交互；Windows、Linux、中文 IME 候选位置和屏幕阅读器需各平台人工验收。当前自绘 Editor 未向本机辅助功能树提供可操作子控件，不能宣称已支持 VoiceOver；Token 接入不会补齐 SDK 语义接口。
+已在 macOS arm64、SDK 0.10.11 验证编译打包、英文标题提交、Tab 切换、多行中文粘贴及主题切换后的输入保留；Windows、Linux、中文 IME 候选位置和屏幕阅读器需各平台人工验收。当前自绘 Editor 未向本机辅助功能树提供可操作子控件，不能宣称已支持 VoiceOver；Token 接入不会补齐 SDK 语义接口。
