@@ -1,10 +1,13 @@
 # 日期与时间控件
 
-需要 **Xu 0.10.4-dev.1**。
+需要满足本目录 `xu.xun` 中 `xu:` 要求的 SDK。
+
+从仓库根执行，默认使用同级 `../xu`；可用 `XU_ROOT` 指定匹配的 Xu 源码目录：
 
 ```sh
-XU_ROOT=/path/to/xu-ui python3 scripts/ui_examples.py check date_time
-XU_ROOT=/path/to/xu-ui python3 scripts/ui_examples.py run date_time
+python3 scripts/ui_examples.py check date_time
+python3 scripts/ui_examples.py build date_time
+python3 scripts/ui_examples.py run date_time
 ```
 
 `DatePicker` 与 `TimePicker` 的值都是 `time.Time`。日期控件提供周一为首日的月历、上/下月按钮、日期范围和键盘导航；时间控件提供 24 小时制的时、分、秒分段输入与加减按钮。日期和时间同步显示为 RFC3339。初始值固定为闰日 `2024-02-29T14:35:20.123Z`，便于检查跨月行为。
@@ -38,6 +41,3 @@ _ = deadline
 `Duration` 的单位转换、加减及解析会检查整数溢出；`Instant` 不能传给日历控件，也不能格式化为日期。`instant_from_ns` 用于同一单调时钟来源的原生事件或确定性测试，不用于 Unix 时间。`zero_instant` 在 UI 调度中表示未设置的截止时间。
 
 原有 `time.now()` / `time.since()` / `time.sleep(int)`、单数单位函数以及 `new_timer(int)` / `new_ticker(int)` 继续兼容。它们的时长和单调读数使用纳秒 `int`；新增代码可使用有类型的接口，避免混淆毫秒、纳秒和日历时间。
-
-
-新增 `DatePicker.set_today` / `set_clearable` / `clear` 与 Shift+Page Up/Down 年份跳转；`TimePicker.set_12_hour(true)` 显示 AM/PM，存储仍使用 24 小时字段。Screen 对应 `set_date_options`、`clear_calendar` 和 `set_clock_format`。完整演示见 [component_workshop](../component_workshop/)。

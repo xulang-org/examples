@@ -2,8 +2,8 @@
 
 语言教程、可运行示例与桌面 UI 示例的独立仓库。
 
-默认与语言仓库 `xu` 放在同级目录。使用当前产品编译器；开发规则见
-`../xu/docs/DEVELOPMENT.md`（本机文档）。
+默认与语言仓库 `xu` 放在同级目录。使用当前产品编译器；贡献规则见
+[CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ```sh
 make run EXAMPLE=01_hello
@@ -15,6 +15,9 @@ XU_ROOT=/path/to/xu make run EXAMPLE=01_hello
 `XU_ROOT` 选择语言仓库；`XU` 可显式选择 hosted 产品编译器。
 驱动示例的清单通过 `file:../../../packages` 引用同级 packages 根模块；
 若改变目录布局，应相应调整这些显式依赖路径。
+SQLite 示例须先准备 packages 的原生桥；完整步骤与当前 macOS 目标限制见
+[SQLite 示例](examples/22_standalone_sqlite/README.md)。Native C 的归档准备见
+[Native C 示例](examples/19_native_c/README.md)。
 输出放在忽略的 `build/`，不提交编译器或运行产物。
 
 - [UI 示例：绘图、编辑控件、菜单、屏幕查询、多窗口与 WebView 请求](examples/16_ui_webview/)

@@ -28,6 +28,7 @@ pub fn ready(ech chan ui.Event) ui.Event {
     }
     << ui.Event{kind: ui.EV_EXIT,window_id: 0,menu_id: "",width: 0,height: 0}
 }
+
 pub fn app(title string,width int,height int) ui.App {
     eprintln("demo.app: enter")
     mut app := ui.new_app()
