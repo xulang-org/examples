@@ -1,11 +1,12 @@
 # 16 — 原生 UI 与 WebView 示例
 
-这组示例覆盖 Xu 0.10.8-dev.1 开发版的绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
+这组示例覆盖绘图、文字输入、布局控件、样式、多窗口和异步桌面服务。使用满足各示例 `xu.xun` 中 `xu:` 要求的 SDK，并保持编译器与 UI 宿主源码配套。先学习绘图与基本控件，再看 editor_workbench、style_gallery、component_catalog、webview_requests，最后用图片工作台串起各层。
 
 | 示例 | 内容 | 主要操作 |
 |---|---|---|
-| [interaction_gallery](interaction_gallery/) | 精细控件交互、Tree 层级与筛选、浮动标签、真实任务进度、通知队列 | 主题、密度、减少动效、All controls |
-| [webview_component](webview_component/) | 同一 Canvas 窗口内嵌多个原生 WebView、独立 IPC、布局与焦点 | 隐藏、重载、释放、模态弹层、Ctrl+Tab |
+| [component_workshop](component_workshop/) | 46 个原生组件入口，覆盖主题、字号、密度、状态与交互；需要 Xu 0.10.11 | 左侧选择组件，调整顶部配置，使用真实鼠标与键盘验证状态 |
+| [interaction_gallery](interaction_gallery/) | 精细控件交互、Tree 层级与筛选、浮动标签、任务进度和通知队列 | 主题、密度、减少动效 |
+| [webview_component](webview_component/) | 同一 Canvas 窗口内嵌多个原生 WebView | 独立 IPC、布局与焦点 |
 | [draw](draw/) | Frame、逻辑坐标、变换栈、裁剪、指针 | 点击圆、调整窗口 |
 | [draw_gallery](draw_gallery/) | 路径、渐变、PNG、排版、图层、DisplayList、SurfaceCache | Space 切换缓存、R 失效 |
 | [widgets](widgets/) | 约束布局、控件、焦点、捕获、滚动、重绘边界 | Tab、Enter、勾选、滚动 |
@@ -15,16 +16,24 @@
 | [workbench](workbench/) | 图片浏览与独立预览的综合应用 | 选择图片、缩放窗口 |
 | [editor_workbench](editor_workbench/) | Input、TextArea、结构化菜单、屏幕查询 | 文字编辑、Tab、快捷键、Document 菜单 |
 | [component_catalog](component_catalog/) | Table、TreeView、Pagination、ComboBox、多选、颜色、面包屑、加载与浮层 | 三个分类页、排序、筛选、Tab 焦点约束、主题切换 |
+| [xacp_screen](xacp_screen/) | XACP Screen 树查询、截图资源和权限化 UI 操作 | 启动时检查屏幕节点并生成截图 |
 | [date_time](date_time/) | DatePicker 月历、TimePicker 分段输入、Time / Instant / Duration | 翻月、选闰日、编辑时分秒、T/F/D 切换样式 |
 | [style_gallery](style_gallery/) | 统一主题、字体缩放、密度、局部覆盖、状态与滚动条 | 点击 Theme/Text/Density、编辑、拖动滑块 |
+| [controls_gallery](controls_gallery/) | 扩展控件、主题、文字缩放与密度 | T/S/D、Tab、方向键 |
 | [webview_requests](webview_requests/) | WebView 并发、取消、超时、大文本、原生查询 | Run all checks、请求中关闭窗口 |
 | [open](open/) | 原有 WebView、菜单、托盘示例 | 网页与原生壳交互 |
 | [shaped](shaped/) | 原有透明异形窗口 | 拖动窗口 |
+| [shaped_webview](shaped_webview/) | macOS 异形窗口与 WebView | 见子目录 README 单独打包 |
 | [remote](remote/) | 原有远程 WebView + Xu IPC | 先启动 remote_http 服务 |
+
+`shaped_webview` 未注册到统一启动器，使用其 README 中的直接打包命令。
+`shared` 是通过 `file:../shared` 参与应用构建的库，没有独立可执行入口，见[依赖构建说明](shared/README.md#依赖构建)。
+`xu_design_system` 包含静态资源、HTTP 服务和桌面入口，使用[专用构建说明](xu_design_system/README.md#构建和运行)，不要把两个入口一起按目录构建。
+`remote_http` 是下文的 Python 网页服务，无 Xu 源码，无需 Xu 编译。
 
 ## 统一入口
 
-整组示例需要 **Xu 0.10.1+**（精细交互与内嵌 WebView 组件需要 **0.10.8-dev.1+**）。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
+以各应用 `xu.xun` 中的 `xu:` 字段为 SDK 要求，不要只依赖启动器的最低版本检查。XACP Screen adapter 示例需要 **Xu 0.10.10-dev.1+**。默认从同级 `../xu` 找源码和 `bin/xu`；也可用 `XU_ROOT`、`XU` 或 `--compiler` 选择。开发版示例使用匹配的 UI 工作树构建；不要用旧版已安装 SDK 检查新增 API。
 
 ```sh
 python3 scripts/ui_examples.py list
