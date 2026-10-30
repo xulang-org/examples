@@ -92,7 +92,7 @@ screen.place(group,24.0,24.0,420.0,40.0) or >>
 
 独立操作发 ACTION_ACTIVATE，单选/多选发 ACTION_CHANGE，Action.value 为 key。button_group_values 返回选中的 key；set_button_group_checked 设置受控值；set_button_group_label 只改文案。ButtonGroupAppearance 控制布局，set_motion 和 set_control_style 与其他控件一致。
 
-Chart 通过自己的原生 Canvas 绘制折线、面积、分组柱状、散点和环形，不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
+Chart 通过自己的原生 Canvas 绘制 20 种图表类型（折线 `CHART_LINE`、面积 `CHART_AREA`、分组柱状 `CHART_BAR`、散点 `CHART_SCATTER`、环形 `CHART_DONUT`、阶梯折线 `CHART_STEP_LINE`、堆叠面积 `CHART_STACKED_AREA`、堆叠柱状 `CHART_STACKED_BAR`、水平条形 `CHART_HORIZONTAL_BAR`、饼图 `CHART_PIE`、南丁格尔玫瑰 `CHART_ROSE`、雷达 `CHART_RADAR`、仪表盘 `CHART_GAUGE`、气泡 `CHART_BUBBLE`、直方图 `CHART_HISTOGRAM`、箱线 `CHART_BOXPLOT`、热力 `CHART_HEATMAP`、K 线/蜡烛 `CHART_CANDLESTICK`、瀑布 `CHART_WATERFALL`、漏斗 `CHART_FUNNEL`），不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
 
 ```xu
 chart := screen.chart() or >>
@@ -110,7 +110,7 @@ ChartAppearance 配置网格、图例、提示、缩放/平移、数字精度、
 
 ACTION_CHART_HOVER/SELECT/VIEWPORT/LEGEND 区分交互；chart_hovered、chart_selection 和 chart_viewport 返回详细数据。chart_position 与 chart_hit_test 供业务侧组合标注。set_chart_domain 固定数值坐标域，use_chart_auto_domain 恢复自动域；set_chart_viewport 接收 0..1 归一化范围。pause/resume/seek_chart_animation 提供数据过渡控制。
 
-首批限制为 8 系列、共 4096 个有效数据点；更新额外保留最多同等数量的退出点。ID 为正 32 位整数。折线/面积/柱状要求 x 严格递增，散点允许任意顺序；环形只接收一个非负值系列。当前没有 ECharts 配置兼容、多轴、类别/时间/对数轴、堆叠、地图、brush 或海量采样。
+首批限制为 8 系列、共 4096 个有效数据点；更新额外保留最多同等数量的退出点。ID 为正 32 位整数。折线/面积/阶梯/堆叠/柱状/直方/箱线/K 线/瀑布要求 x 严格递增，散点/气泡/热力允许任意顺序；环形/饼图/玫瑰/仪表盘/瀑布/漏斗接收单个系列，雷达图每系列至少 3 个轴点。`chart_bubble_point` 与 `chart_range_point` 提供气泡尺寸与区间/四分位/OHLC 数据点构造。当前没有 ECharts 配置兼容、多轴、类别/时间/对数轴、地图、brush 或海量采样。
 
 AnimationController 为应用自定义绘制提供显式时钟、播放/暂停/续播/反向/进度定位/取消/完成、延迟与重复。animation_options 配置时长、曲线、速率、次数和交替方向；iterations=0 表示循环。调用方用 next_tick 安排唤醒，并将 value() 用于自己的 Frame 绘制；暂停与静止不持续请求帧，减少动效结束循环。Screen 图表的数据过渡采用单次正向动画。
 

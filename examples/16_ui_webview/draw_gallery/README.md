@@ -2,7 +2,7 @@
 
 需要与本目录 `xu.xun` 的 `xu:` 要求匹配的 SDK，使用 `#ui` / `#ui/draw` 原生宿主，无 WebView。
 
-演示贝塞尔路径、描边、渐变、内嵌 PNG、采样、透明度、复杂文字排版、离屏图层、`DisplayList` 与 `SurfaceCache`。
+演示贝塞尔路径、描边、渐变、高阶几何原语（圆角矩形、胶囊、扇形/环形扇区、正多边形、星形、菱形、网格、虚线、箭头、阴影、二次/三次曲线）、色彩工具（`hex` / `hsl` / `lerp_color` / `lighten` / `darken` / `with_opacity`）、内嵌 PNG、采样、透明度、复杂文字排版、离屏图层、`DisplayList` 与 `SurfaceCache`。
 
 ## 运行
 

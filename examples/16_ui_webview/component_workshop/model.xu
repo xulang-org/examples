@@ -242,9 +242,15 @@ fn (m $&Workshop) configure_controls(s $&widgets.Screen) int {
             s.set_read_only(page.ids[i], state == 2) or >>
         }}
     if position == 39 {
-        s.set_button_group_checked(page.ids[1], m.chart_kind + 1, true) or >>
-        s.set_enabled(page.ids[1], state != 1) or >>
-        s.set_read_only(page.ids[1], state == 2) or >>
+        for r in 0:4 {
+            gid := page.ids[1 + r]
+            for k in 0:5 {
+                key := r * 5 + k + 1
+                s.set_button_group_checked(gid, key, m.chart_kind + 1 == key) or >>
+            }
+            s.set_enabled(gid, state != 1) or >>
+            s.set_read_only(gid, state == 2) or >>
+        }
     }
     s.set_enabled(m.motion, animated(m.selected) ||(m.selected >= 33 && m.selected <= 36)) or >>
     s.set_selected_button(m.custom, m.customized) or >>

@@ -120,7 +120,8 @@ fn (m $&Workshop) apply_appearance(s $&widgets.Screen) int {
         s.clear_control_style(id) or >>
         $appearance := widgets.chart_appearance()
         appearance.y_unit = " ms"
-        if m.chart_kind == widgets.CHART_DONUT{appearance.y_unit = ""}
+        if m.chart_kind == widgets.CHART_DONUT || m.chart_kind == widgets.CHART_PIE || m.chart_kind == widgets.CHART_ROSE || m.chart_kind == widgets.CHART_FUNNEL{appearance.y_unit = ""}
+        else if m.chart_kind == widgets.CHART_GAUGE{appearance.y_unit = "%"}
         if m.customized{appearance.grid = false
             appearance.area_opacity = 0.26
             appearance.inner_radius = 0.78
