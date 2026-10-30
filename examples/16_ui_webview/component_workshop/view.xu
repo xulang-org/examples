@@ -227,8 +227,21 @@ fn new_page(s $&widgets.Screen, index int) Page{
     }
     if index == 39 {
         ids.push(s.chart() or >>)
-        types :=[widgets.button_group_item(1, "Line"), widgets.button_group_item(2, "Area"), widgets.button_group_item(3, "Bar"), widgets.button_group_item(4, "Scatter"), widgets.button_group_item(5, "Donut")]
-        ids.push(s.button_group(&types, widgets.BUTTON_GROUP_SINGLE) or >>)
+        row0 :=[widgets.button_group_item(1, "Line"), widgets.button_group_item(2, "Area"), widgets.button_group_item(3, "Bar"), widgets.button_group_item(4, "Scatter"), widgets.button_group_item(5, "Donut")]
+        row1 :=[widgets.button_group_item(6, "Step"), widgets.button_group_item(7, "StackArea"), widgets.button_group_item(8, "StackBar"), widgets.button_group_item(9, "H-Bar"), widgets.button_group_item(10, "Pie")]
+        row2 :=[widgets.button_group_item(11, "Rose"), widgets.button_group_item(12, "Radar"), widgets.button_group_item(13, "Gauge"), widgets.button_group_item(14, "Bubble"), widgets.button_group_item(15, "Histogram")]
+        row3 :=[widgets.button_group_item(16, "Boxplot"), widgets.button_group_item(17, "Heatmap"), widgets.button_group_item(18, "Candle"), widgets.button_group_item(19, "Waterfall"), widgets.button_group_item(20, "Funnel")]
+        row4 :=[widgets.button_group_item(21, "Spline"), widgets.button_group_item(22, "SplineArea"), widgets.button_group_item(23, "PolarBar"), widgets.button_group_item(24, "Treemap"), widgets.button_group_item(25, "Sankey")]
+        row5 :=[widgets.button_group_item(26, "Violin"), widgets.button_group_item(27, "Bullet"), widgets.button_group_item(28, "Lollipop"), widgets.button_group_item(29, "Dumbbell"), widgets.button_group_item(30, "Pareto")]
+        $selector := widgets.button_group_appearance()
+        selector.equal_width = true
+        selector.allow_empty = true
+        rows :=[row0, row1, row2, row3, row4, row5]
+        for r in 0:6 {
+            gid := s.button_group(&rows[r], widgets.BUTTON_GROUP_SINGLE) or >>
+            s.set_button_group_appearance(gid, &selector) or >>
+            ids.push(gid)
+        }
         series := chart_data(widgets.CHART_LINE, 0)
         s.set_chart_series(ids[0], &series) or >>
     }
@@ -401,23 +414,73 @@ fn workshop_menu_items(english bool)[]widgets.MenuItem{
 fn chart_data(kind int, revision int)[]widgets.ChartSeries{
     $result :=[]widgets.ChartSeries{}
     $series_count := 2
-    if kind == widgets.CHART_DONUT{series_count = 1}
+    single := kind == widgets.CHART_DONUT || kind == widgets.CHART_PIE || kind == widgets.CHART_ROSE ||
+        kind == widgets.CHART_GAUGE || kind == widgets.CHART_HISTOGRAM || kind == widgets.CHART_BOXPLOT ||
+        kind == widgets.CHART_CANDLESTICK || kind == widgets.CHART_WATERFALL || kind == widgets.CHART_FUNNEL ||
+        (kind >= widgets.CHART_POLAR_BAR && kind <= widgets.CHART_SANKEY) || kind == widgets.CHART_VIOLIN ||
+        kind == widgets.CHART_BULLET || kind == widgets.CHART_DUMBBELL || kind == widgets.CHART_PARETO
+    if single{series_count = 1}
+    if kind == widgets.CHART_HEATMAP{series_count = 3}
     for si in 0:series_count{
         $name := "Build 构建"
         if si == 1 {name = "Index 索引"}
-        if kind == widgets.CHART_DONUT{name = "Workload 工作量"}
+        if si == 2 {name = "Render 绘制"}
+        if single{name = "Workload 工作量"}
         $series := widgets.chart_series(si + 1, name, kind)
-        series.smooth = kind == widgets.CHART_LINE || kind == widgets.CHART_AREA
+        series.smooth = kind == widgets.CHART_LINE || kind == widgets.CHART_AREA || kind == widgets.CHART_STACKED_AREA ||
+            kind == widgets.CHART_SMOOTH_LINE || kind == widgets.CHART_SMOOTH_AREA
         $count := 12 - revision % 2
         if kind == widgets.CHART_SCATTER{count = 64}
-        if kind == widgets.CHART_DONUT{count = 5}
+        else if kind == widgets.CHART_BUBBLE{count = 16}
+        else if kind == widgets.CHART_DONUT || kind == widgets.CHART_PIE || kind == widgets.CHART_ROSE ||
+                kind == widgets.CHART_FUNNEL || kind == widgets.CHART_TREEMAP || kind == widgets.CHART_SANKEY{count = 5}
+        else if kind == widgets.CHART_RADAR || kind == widgets.CHART_PARETO{count = 6}
+        else if kind == widgets.CHART_GAUGE{count = 3}
+        else if kind == widgets.CHART_POLAR_BAR{count = 4}
+        else if kind == widgets.CHART_HORIZONTAL_BAR || kind == widgets.CHART_HEATMAP || kind == widgets.CHART_BULLET ||
+                kind == widgets.CHART_LOLLIPOP || kind == widgets.CHART_DUMBBELL || kind == widgets.CHART_VIOLIN{count = 8}
+        else if kind == widgets.CHART_WATERFALL{count = 7}
         for i in 0:count{
             x := f64(i + 1)
             phase := f64(revision) * 0.9 + f64(si) * 1.7
-            y := 48.0 + f64(si) * 20.0 + math.sin(x * 0.55 + phase) * 20.0 + math.cos(x * 0.17 + phase) * 7.0
+            $y := 48.0 + f64(si) * 20.0 + math.sin(x * 0.55 + phase) * 20.0 + math.cos(x * 0.17 + phase) * 7.0
+            if kind == widgets.CHART_FUNNEL || kind == widgets.CHART_PARETO || kind == widgets.CHART_TREEMAP || kind == widgets.CHART_SANKEY{
+                y = f64((count - i) * 22 + (revision % 3) * 4)
+            } else if kind == widgets.CHART_GAUGE || kind == widgets.CHART_POLAR_BAR{
+                y = math.max(12.0, math.min(96.0, 34.0 + f64(i) * 18.0 + math.sin(phase + x) * 14.0))
+            } else if kind == widgets.CHART_WATERFALL{
+                deltas :=[42.0, 18.0, 0.0 - 14.0, 24.0, 0.0 - 11.0, 16.0, 0.0]
+                y = deltas[i] + math.sin(phase) * 3.0
+                if i == count - 1 {y = 0.0}
+            }
             $point := widgets.chart_point(i + 1, x, y)
+            if kind == widgets.CHART_BUBBLE{
+                point = widgets.chart_bubble_point(i + 1, x, y, 12.0 + math.abs(math.cos(x * 0.7 + phase)) * 36.0)
+            } else if kind == widgets.CHART_BOXPLOT || kind == widgets.CHART_CANDLESTICK ||
+                      kind == widgets.CHART_VIOLIN || kind == widgets.CHART_DUMBBELL || kind == widgets.CHART_BULLET{
+                $close := y + math.sin(x * 0.9 + phase) * 12.0
+                if (kind == widgets.CHART_BOXPLOT || kind == widgets.CHART_VIOLIN || kind == widgets.CHART_DUMBBELL || kind == widgets.CHART_BULLET) && close < y{
+                    close = y + 10.0
+                }
+                low := math.min(y, close) - 8.0 - math.abs(math.cos(x + phase)) * 6.0
+                high := math.max(y, close) + 8.0 + math.abs(math.sin(x + phase)) * 6.0
+                point = widgets.chart_range_point(i + 1, x, y, low, high, close)
+            } else if kind == widgets.CHART_WATERFALL && i == count - 1 {
+                point.size = 1.0
+            }
             point.label = "Sample 样本 " + str(i + 1)
-            if kind == widgets.CHART_DONUT{point.label =["Compile 编译", "Index 索引", "Render 绘制", "I/O 输入输出", "Other 其他"][i]}
+            if kind == widgets.CHART_DONUT || kind == widgets.CHART_PIE || kind == widgets.CHART_ROSE ||
+               kind == widgets.CHART_FUNNEL || kind == widgets.CHART_TREEMAP || kind == widgets.CHART_SANKEY{
+                point.label =["Compile 编译", "Index 索引", "Render 绘制", "I/O 输入输出", "Other 其他"][i]
+            } else if kind == widgets.CHART_RADAR{
+                point.label =["Throughput", "Latency", "Memory", "Startup", "Cache", "Binary"][i]
+            } else if kind == widgets.CHART_GAUGE{
+                point.label =["CPU 处理器", "Memory 内存", "Cache 缓存"][i]
+            } else if kind == widgets.CHART_POLAR_BAR{
+                point.label =["Core 0", "Core 1", "Core 2", "Core 3"][i]
+            } else if kind == widgets.CHART_WATERFALL && i == count - 1 {
+                point.label = "Total 总计"
+            }
             series.points.push(point)
         }
         result.push(series)

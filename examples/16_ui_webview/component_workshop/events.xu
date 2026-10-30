@@ -40,7 +40,7 @@ fn register_events(m &Workshop, s &widgets.Screen) widgets.ActionDispatcher#Work
     d.on(m.pages[36].ids[0], widgets.ACTION_ACTIVATE, modal_open) or >>
     for i in 2:4 {d.on(m.pages[36].ids[i], widgets.ACTION_ACTIVATE, modal_close) or >> }
     for id in m.pages[38].ids{for kind in[widgets.ACTION_ACTIVATE, widgets.ACTION_CHANGE] {d.on(id, kind, group_changed) or >> }}
-    d.on(m.pages[39].ids[1], widgets.ACTION_CHANGE, chart_kind_changed) or >>
+    for r in 1:7 {d.on(m.pages[39].ids[r], widgets.ACTION_CHANGE, chart_kind_changed) or >> }
     for kind in[widgets.ACTION_CHART_HOVER, widgets.ACTION_CHART_SELECT] {d.on(m.pages[39].ids[0], kind, chart_hit) or >> }
     d.on(m.pages[39].ids[0], widgets.ACTION_CHART_VIEWPORT, chart_viewport_changed) or >>
     d.on(m.pages[41].ids[0], widgets.ACTION_COMMIT, split_committed) or >>
