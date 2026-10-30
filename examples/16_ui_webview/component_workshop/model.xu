@@ -242,7 +242,7 @@ fn (m $&Workshop) configure_controls(s $&widgets.Screen) int {
             s.set_read_only(page.ids[i], state == 2) or >>
         }}
     if position == 39 {
-        for r in 0:4 {
+        for r in 0:6 {
             gid := page.ids[1 + r]
             for k in 0:5 {
                 key := r * 5 + k + 1

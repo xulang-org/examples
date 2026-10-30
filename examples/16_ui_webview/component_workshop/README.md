@@ -92,7 +92,7 @@ screen.place(group,24.0,24.0,420.0,40.0) or >>
 
 独立操作发 ACTION_ACTIVATE，单选/多选发 ACTION_CHANGE，Action.value 为 key。button_group_values 返回选中的 key；set_button_group_checked 设置受控值；set_button_group_label 只改文案。ButtonGroupAppearance 控制布局，set_motion 和 set_control_style 与其他控件一致。
 
-Chart 通过自己的原生 Canvas 绘制 20 种图表类型（折线 `CHART_LINE`、面积 `CHART_AREA`、分组柱状 `CHART_BAR`、散点 `CHART_SCATTER`、环形 `CHART_DONUT`、阶梯折线 `CHART_STEP_LINE`、堆叠面积 `CHART_STACKED_AREA`、堆叠柱状 `CHART_STACKED_BAR`、水平条形 `CHART_HORIZONTAL_BAR`、饼图 `CHART_PIE`、南丁格尔玫瑰 `CHART_ROSE`、雷达 `CHART_RADAR`、仪表盘 `CHART_GAUGE`、气泡 `CHART_BUBBLE`、直方图 `CHART_HISTOGRAM`、箱线 `CHART_BOXPLOT`、热力 `CHART_HEATMAP`、K 线/蜡烛 `CHART_CANDLESTICK`、瀑布 `CHART_WATERFALL`、漏斗 `CHART_FUNNEL`），不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
+Chart 通过自己的原生 Canvas 绘制 30 种图表类型（折线 `CHART_LINE`、面积 `CHART_AREA`、分组柱状 `CHART_BAR`、散点 `CHART_SCATTER`、环形 `CHART_DONUT`、阶梯折线 `CHART_STEP_LINE`、堆叠面积 `CHART_STACKED_AREA`、堆叠柱状 `CHART_STACKED_BAR`、水平条形 `CHART_HORIZONTAL_BAR`、饼图 `CHART_PIE`、南丁格尔玫瑰 `CHART_ROSE`、雷达 `CHART_RADAR`、仪表盘 `CHART_GAUGE`、气泡 `CHART_BUBBLE`、直方图 `CHART_HISTOGRAM`、箱线 `CHART_BOXPLOT`、热力 `CHART_HEATMAP`、K 线/蜡烛 `CHART_CANDLESTICK`、瀑布 `CHART_WATERFALL`、漏斗 `CHART_FUNNEL`、样条曲线 `CHART_SMOOTH_LINE`、样条面积 `CHART_SMOOTH_AREA`、极坐标环柱 `CHART_POLAR_BAR`、矩形树图 `CHART_TREEMAP`、桑基流向 `CHART_SANKEY`、小提琴 `CHART_VIOLIN`、子弹图 `CHART_BULLET`、棒棒糖 `CHART_LOLLIPOP`、哑铃 `CHART_DUMBBELL`、帕累托 `CHART_PARETO`），不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
 
 ```xu
 chart := screen.chart() or >>

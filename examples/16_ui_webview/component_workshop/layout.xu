@@ -173,7 +173,7 @@ fn (m &Workshop) layout(s $&widgets.Screen) int {
         if scale > 1.4 && content < 560.0 {selector.vertical = true
             selector_h = row * 5.0}
         $cy := y
-        for r in 0:4 {
+        for r in 0:6 {
             gid := page.ids[1 + r]
             s.set_button_group_appearance(gid, &selector) or >>
             s.place(gid, 24.0, cy, content, selector_h) or >>

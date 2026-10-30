@@ -25,15 +25,18 @@ fn paint_vector_showcase(context &draw.Context, fragment $&draw.Frame) int {
 
     fragment.fill_regular_polygon(432.0, 474.0, 42.0, 6, -90.0, indigo.with_opacity(0.45)) or >>
     fragment.stroke_regular_polygon(432.0, 474.0, 42.0, 6, -90.0, indigo.lighten(0.35), 2.0) or >>
-    fragment.fill_ring(432.0, 474.0, 12.0, 22.0, teal.with_opacity(0.85)) or >>
+    fragment.fill_gear(432.0, 474.0, 26.0, 18.0, 9.0, 8, teal.with_opacity(0.85)) or >>
     fragment.fill_star(536.0, 474.0, 44.0, 19.0, 5, -90.0, amber) or >>
     fragment.stroke_star(536.0, 474.0, 44.0, 19.0, 5, -90.0, amber.lighten(0.45), 1.5) or >>
-    fragment.fill_diamond(628.0, 474.0, 30.0, 42.0, coral.with_opacity(0.75)) or >>
-    fragment.stroke_diamond(628.0, 474.0, 30.0, 42.0, coral.lighten(0.30), 1.8) or >>
+    fragment.fill_shield(628.0, 474.0, 56.0, 68.0, coral.with_opacity(0.75)) or >>
+    fragment.stroke_shield(628.0, 474.0, 56.0, 68.0, coral.lighten(0.30), 1.8) or >>
     fragment.checkmark(614.0, 460.0, 28.0, coral.contrasting_ink(demo.ink(), demo.background()), 2.4) or >>
 
     fragment.grid(688.0, 424.0, 240.0, 100.0, 6, 4, demo.muted().with_opacity(0.25), 1.0) or >>
+    fragment.hatch_rect(688.0, 424.0, 240.0, 100.0, 16.0, false, indigo.with_opacity(0.18), 1.0) or >>
     fragment.dashed_rect(688.0, 424.0, 240.0, 100.0, 6.0, 4.0, demo.muted().with_opacity(0.65), 1.2) or >>
+    vir_c := draw.sample_palette(draw.PALETTE_VIRIDIS, 0.72)
+    fragment.fill_ribbon(696.0, 488.0, 504.0, 812.0, 444.0, 460.0, vir_c.with_opacity(0.42)) or >>
     spline_pts := [draw.path_point(700.0, 508.0), draw.path_point(744.0, 442.0), draw.path_point(792.0, 496.0),
         draw.path_point(842.0, 436.0), draw.path_point(892.0, 482.0)]
     fragment.smooth_curve(&spline_pts, 0.0, teal, 2.5) or >>
