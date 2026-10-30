@@ -16,3 +16,6 @@ The adapter session explicitly receives only `PERM_UI_READ` and
 `PERM_UI_MUTATE`. Screenshot surfaces are native resources and must be
 disposed, including on error paths. The returned tree is a bounded copy;
 control handles remain local to the live screen.
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

@@ -6,5 +6,8 @@
   "adapterSHA256": "181aac7d54eb2eb76ad47fef8d3f10d43f9d57451778c6949f2f334939f9cd51",
   "generator": "scripts/native-tokens.mjs",
   "sdk": "0.10.11",
-  "license": "MIT"
+  "license": "MIT",
+  "localTransform": "Xu Phase C syntax migration: mut bindings to $ bindings; token values unchanged",
+  "localAdapterSHA256": "3852ca5ae24e44284fcf3c037d9c1d719b392b004c032f5a3c068d14f930f70a",
+  "localSDK": "0.10.13-dev.1"
 }

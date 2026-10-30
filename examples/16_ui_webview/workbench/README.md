@@ -28,3 +28,6 @@ python3 scripts/ui_examples.py build workbench
 主窗口与预览窗口分别创建图片资源，避免跨 Canvas 使用句柄。替换图片时释放旧资源并使图片节点失效；取消或解码失败显示状态，不丢掉当前图片。关闭主窗口结束工作台，关闭预览不结束主窗口。
 
 入口见 [main.xu](main.xu)。共享的窗口启动、事件等待和文字辅助函数见 [shared/](../shared/)；应用仍自行持有模型、资源和事件分发，不另开事件消费者。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

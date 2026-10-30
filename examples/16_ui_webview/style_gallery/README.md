@@ -60,3 +60,6 @@ python3 scripts/ui_examples.py run style_gallery
 事件循环先排空已排队输入，再绘制一帧，避免快速输入逐键填满帧队列。Draw 默认不启用相机平移。桌面对象构建使用 UI 协程栈配置，支持原生字体排版调用。
 
 日期和时间选择见 [date_time](../date_time/)；控件覆盖与尚未封装的能力见 [UI 示例说明](../README.md#控件与宿主能力边界)。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

@@ -29,3 +29,8 @@ Windows 需真实 DirectWrite 命中查询。旧版 Wine 对 `HitTestTextPositio
 更新资源时，在固定的设计仓库提交执行 `npm run build`，复制 `dist/xu/xuui_tokens/mod.xu`，更新来源和校验值，并按仓库规则递增本模块版本。不得手工改生成的色值导致 Web 与原生分叉。
 
 已在 macOS arm64、SDK 0.10.11 验证编译打包、英文标题提交、Tab 切换、多行中文粘贴及主题切换后的输入保留；Windows、Linux、中文 IME 候选位置和屏幕阅读器需各平台人工验收。当前自绘 Editor 未向本机辅助功能树提供可操作子控件，不能宣称已支持 VoiceOver；Token 接入不会补齐 SDK 语义接口。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。
+
+本目录针对当前 SDK 对生成适配器进行了仅语法迁移（`mut` 绑定改为 `$` 绑定），没有修改 Token 色值或状态配置。`design-source.json` 同时保留上游 `adapterSHA256`，并记录本地 `localAdapterSHA256`、迁移说明与 SDK。

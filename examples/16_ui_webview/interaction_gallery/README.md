@@ -8,3 +8,6 @@ All controls 页面演示三态勾选框、Switch、独立 Radio 与 RadioGroup�
 
 
 逐项检查全部 45 个入口及三主题、三密度、三字号，请运行 [component_workshop](../component_workshop/)。本示例继续专注工作流组合。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

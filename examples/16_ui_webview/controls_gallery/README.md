@@ -15,3 +15,6 @@ python3 scripts/ui_examples.py run controls_gallery
 按 T 用 `StyleSwitcher.next()` 切换深色、浅色、高对比主题；S 切换文字缩放；D 切换紧凑密度。每次从 `styles()` 取得完整样式，用各控件的 `paint_styled()` 绘制。固定矩形便于对照每种控件；保留布局见 style_gallery；使用 `StyleSwitcher.apply(view)` / `cycle(view)` 可将同一套样式应用到 View，详见官网 API。
 
 窗口中的事件只由一个 worker 消费。匹配 window_id 与 generation，等待 canvas_ready 后创建资源；标签保留到整帧提交成功，关闭后不再使用失效的原生句柄。空闲时等待事件，不持续重绘。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

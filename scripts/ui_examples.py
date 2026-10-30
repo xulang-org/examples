@@ -89,8 +89,11 @@ def main() -> int:
             parser.error("style_gallery, date_time and component_catalog require Xu 0.10.1 or newer")
     if "xacp_screen" in selected:
         release = tuple(map(int, version.groups()[:3]))
-        dev_iteration = int(version.group(4)) if version.group(4) else None
-        if release < (0, 10, 10) or (release == (0, 10, 10) and dev_iteration is not None and dev_iteration < 1):
+        suffix = version.group(4)
+        dev_match = re.fullmatch(r"dev\.(\d+)", suffix or "")
+        dev_iteration = int(dev_match.group(1)) if dev_match else None
+        if release < (0, 10, 10) or (release == (0, 10, 10) and suffix is not None
+                                    and (dev_iteration is None or dev_iteration < 1)):
             parser.error("xacp_screen requires Xu 0.10.10-dev.1 or newer")
     output = ROOT / "build" / "ui" / target
     output.mkdir(parents=True, exist_ok=True)
