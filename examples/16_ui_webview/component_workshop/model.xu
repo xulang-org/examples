@@ -150,7 +150,6 @@ fn (m $&Workshop) apply_locale(s $&widgets.Screen) int {
         s.set_option_text(m.theme, i, themes[i]) or >>
         s.set_option_text(m.density, i, densities[i]) or >>
         s.set_option_text(m.scale, i, scales[i]) or >>
-        s.set_option_text(m.pages[12].ids[0], i, choices[i]) or >>
         s.set_option_text(m.pages[21].ids[0], i, choices[i]) or >>
         s.set_option_text(m.pages[22].ids[0], i, segments[i]) or >>
         s.set_text(m.pages[38].ids[3 + i], group_titles[i]) or >>
