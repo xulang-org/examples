@@ -1,10 +1,15 @@
 # 控件样式图库
 
-需要 **Xu 0.10.1+**（开发分支建议 **0.10.2-dev.1+**）。使用对应的 SDK 或开发编译器：
+需要 Xu 0.10.10。测量和临时绘制样式使用控件的显式 `clone()`，保留模型中原控件的所有权与状态。
+
+从仓库根执行，默认使用同级 `../xu`；可用 `XU_ROOT` 指定匹配的 Xu 源码目录：
+
+从仓库根执行，默认使用同级 `../xu`；可用 `XU_ROOT` 指定匹配的 Xu 源码目录：
 
 ```sh
-XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py check style_gallery
-XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py run style_gallery
+python3 scripts/ui_examples.py check style_gallery
+python3 scripts/ui_examples.py build style_gallery
+python3 scripts/ui_examples.py run style_gallery
 ```
 
 切换深色、浅色、高对比度主题；把文字放大到 140%；切换紧凑密度。局部绿色按钮保留独立主题，并演示图片图标。检查悬停、按下、键盘焦点、勾选、禁用、错误和只读状态；输入框和多行编辑器支持原生 IME、选区、光标与预编辑下划线。滚动条支持拖动、轨道翻页、滚轮与键盘。
@@ -55,3 +60,6 @@ XU_ROOT=/path/to/xu-v0.10.1 python3 scripts/ui_examples.py run style_gallery
 事件循环先排空已排队输入，再绘制一帧，避免快速输入逐键填满帧队列。Draw 默认不启用相机平移。桌面对象构建使用 UI 协程栈配置，支持原生字体排版调用。
 
 日期和时间选择见 [date_time](../date_time/)；控件覆盖与尚未封装的能力见 [UI 示例说明](../README.md#控件与宿主能力边界)。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

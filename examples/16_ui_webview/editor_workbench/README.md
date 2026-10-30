@@ -1,8 +1,11 @@
 # Writing desk
 
-Xu 0.10.1 正式版 原生 Input、TextArea、结构化菜单与显示器查询示例。
+Xu 0.10.2 正式版 原生 Input、TextArea、结构化菜单与显示器查询示例。
+
+从仓库根编译与运行（工具链要求见[父目录说明](../README.md#统一入口)）：
 
 ```sh
+python3 scripts/ui_examples.py build editor_workbench
 python3 scripts/ui_examples.py run editor_workbench
 ```
 
@@ -16,3 +19,6 @@ python3 scripts/ui_examples.py run editor_workbench
 文字变化会重新排版；仅选区、焦点变化时复用不可变 TextLayout。已记录但尚未提交的布局句柄继续保留到帧被接受。
 
 Windows 需真实 DirectWrite 命中查询。旧版 Wine 对 `HitTestTextPosition` 返回 `E_NOTIMPL`，只能用于其他接口与编译验收。中文输入法的候选窗口仍需人工使用本机 IME 验收。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

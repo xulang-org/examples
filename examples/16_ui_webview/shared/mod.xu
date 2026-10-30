@@ -28,13 +28,14 @@ pub fn ready(ech chan ui.Event) ui.Event {
     }
     << ui.Event{kind: ui.EV_EXIT,window_id: 0,menu_id: "",width: 0,height: 0}
 }
+
 pub fn app(title string,width int,height int) ui.App {
     eprintln("demo.app: enter")
-    mut app := ui.new_app()
+    $app := ui.new_app()
     eprintln("demo.app: new_app ok")
-    mut window := app.new_window(ui.WindowOpts{title: title,width: width,height: height})
+    $window := app.open_window(ui.WindowOpts{title: title,width: width,height: height}) or >>
     eprintln("demo.app: new_window ok id=" + str(window.id))
-    if draw.attach(mut &window) < 0 { >> errors.new("demo: failed to attach draw content") }
+    if draw.attach($&window) < 0 { >> errors.new("demo: failed to attach draw content") }
     eprintln("demo.app: draw attach ok")
     << app
 }
@@ -56,7 +57,7 @@ pub fn muted() draw.Color { << draw.rgb(157,173,190) }
 pub fn accent() draw.Color { << draw.rgb(78,205,196) }
 // Inline labels copy their UTF-8 into the frame. Explicit TextLayout handles
 // must instead remain live until present/freeze/snapshot has accepted them.
-pub fn text(context &draw.Context,frame &mut draw.Frame,x f64,y f64,size f64,color draw.Color,value string) int {
+pub fn text(context &draw.Context,frame $&draw.Frame,x f64,y f64,size f64,color draw.Color,value string) int {
     << frame.text(x,y,size,color,&value) or >>
 }
 pub fn quit() int { << ui.append_shell_cmd("quit_app") or >> }

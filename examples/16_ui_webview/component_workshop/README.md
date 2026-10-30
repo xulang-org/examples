@@ -1,13 +1,32 @@
 # 原生组件工作坊
 
-需要 Xu **0.10.8-dev.1**。45 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。
+使用含 `ActionDispatcher` 与 `apply_appearance` 的当前 Xu 框架源码/SDK。46 个命名入口覆盖基础、输入、数据、反馈、容器及内嵌 WebView，均调用公共组件和 Screen API。
 
 ```sh
-XU_ROOT=/path/to/xu python3 scripts/ui_examples.py check component_workshop
-XU_ROOT=/path/to/xu python3 scripts/ui_examples.py run component_workshop
+XU_ROOT=/path/to/xu XU=/path/to/xu/bin/xu python3 scripts/ui_examples.py check component_workshop
+XU_ROOT=/path/to/xu XU=/path/to/xu/bin/xu python3 scripts/ui_examples.py run component_workshop
 ```
 
+事件按控件 ID 注册，精确 `(id, kind)` 优先于 `on_any(id)`；重复注册覆盖原函数，非法 ID/kind 报错。回调显式借入业务模型、Screen 和 Action，返回空字符串表示成功，错误文本由框架抛出。回调中的 Xu 可失败调用须先捕获，不让抛错 ABI 穿过函数值。
+
+```xu
+fn clicked(m $&Workshop,s $&widgets.Screen,a &widgets.Action) string {
+    m.appearance_dirty = true
+    << ""
+}
+
+$events := widgets.action_dispatcher(&model,&screen)
+events.on(button_id,widgets.ACTION_ACTIVATE,clicked) or >>
+_ := events.dispatch_or_fallback(&action,$&model,$&screen) or >>
+```
+
+文件职责：`main.xu` 组装与事件循环；`model.xu` 业务状态、locale 与控件状态配置；`view.xu` 创建组件和数据；`layout.xu` 布局；`style.xu` 独立应用主题、密度、字号、实例样式与动效；`events.xu` 注册函数表和控件 handler；`events_tools.xu` 各控件族的工具操作。handler 只更新业务状态/控件值或请求样式刷新，主循环在绘制前调用样式路径；没有按页号分支的集中 `update`。定时器动作与原生输入动作都经过同一分发表。
+
+框架标准循环 `run_screen` 也先 dispatch，未处理时调用可选 fallback/旧 `update`。本例因真实任务调度保留自管循环，通过 `dispatch_or_fallback` 使用同样顺序，无业务 fallback。
+
 左侧选择组件；顶部切换亮色/暗色/高对比、常规/紧凑/触控、100%/140%/200% 字号。状态菜单测试普通、禁用、只读与错误；不适用时会明确说明。Hover、pressed、focus、selected 使用真实鼠标和键盘操作，Focus sample 把焦点交给预览。
+
+工具操作随可用宽度和字号换行，并与预览一起滚动，避免大字号截断按钮文案。Focus sample 会将目标控件滚入可见区域。
 
 Default/Custom 切换实例圆角、描边和间距，Default 恢复主题继承。Motion 切换过渡时间与曲线，Reduce motion 立即结束过渡。组件选项分别演示三态、提交型拖动、候选分组、筛选、全选、数据加载/错误、真实任务进度、通知与模态确认等。
 
@@ -23,7 +42,7 @@ Default/Custom 切换实例圆角、描边和间距，Default 恢复主题继承
 - StyledLabel 展示换行、按原生排版 cluster 省略，以及完整文字提示。完整 text 保留在控件中。
 - WebView 使用真实系统子视图；隐藏恢复保留页面内容，Ctrl+Tab 回到 Canvas 焦点链。网页 CSS 由网页自身管理。
 
-WebView 需要链接对应宿主插件，构建时不能使用 `--no-webview`。可见的原生网页不参加 Canvas 离屏截图；与 Canvas 浮层重叠时临时隐藏，关闭浮层后恢复。完整多实例 IPC 演示见 [webview_component](../webview_component/)。
+WebView 需要链接对应宿主插件，构建时不能使用 `--no-webview`。统一启动器会保留 WebView 插件。可见的原生网页不参加 Canvas 离屏截图；与 Canvas 浮层重叠时临时隐藏，关闭浮层后恢复。
 
 组件的 hover 和选中动画只在状态变化期间请求帧；拖动直接跟随指针。缩放与密度是控件的真实配置，不使用画布整体缩放来伪装适配。文本编辑的撤销/重做历史、高级虚拟化、拖放及系统无障碍桥接尚未实现。ButtonGroup 和 Toast 的 Undo 是应用动作示例，不代表文本编辑历史。
 
@@ -42,7 +61,7 @@ screen.set_badge_count(unread,123,99,false) or >>
 左下角的语言菜单切换组件默认文案与格式：中文、English 或 Custom。Custom 展示自定义日期占位/星期标题/日期顺序和小数分隔符。应用传入的标题、选项和验证文案由应用自己翻译。
 
 ```xu
-mut locale := widgets.locale_zh_cn()
+$locale := widgets.locale_zh_cn()
 locale.set_text(widgets.TEXT_TODAY,"回到今天") or >>
 locale.set_first_weekday(0) or >>
 screen.set_locale(&locale) or >>
@@ -77,12 +96,12 @@ Chart 通过自己的原生 Canvas 绘制折线、面积、分组柱状、散点
 
 ```xu
 chart := screen.chart() or >>
-mut series := widgets.chart_series(1,"Build",widgets.CHART_LINE)
+$series := widgets.chart_series(1,"Build",widgets.CHART_LINE)
 series.smooth = true
 series.points = [widgets.chart_point(101,1.0,18.0),widgets.chart_point(102,2.0,25.0),widgets.chart_point(103,3.0,21.0)]
 screen.set_chart_series(chart,&[series]) or >>
 screen.place(chart,24.0,80.0,780.0,360.0) or >>
-mut appearance := widgets.chart_appearance()
+$appearance := widgets.chart_appearance()
 appearance.y_unit = " ms"
 screen.set_chart_appearance(chart,&appearance) or >>
 ```
@@ -119,3 +138,43 @@ Table 默认在表头点击、Enter/空格释放时执行稳定的本地排序�
 `set_cell`/`table_cell` 仍按源行索引读写数据，排序只修改显示映射；`table_view_cell` 读取显示行，`table_row_at` 返回显示行对应的源行，`table_view_row` 做反向查询。选中行在排序后跟随同一源行；`table_selected_row` 返回该源行，原有 `selected` 返回显示行。`set_table_selected_row` 按源行选中。源行身份只在当前数据集及行数范围内成立，不代替业务主键。
 
 `sort_table(id, column, descending)` 供程序排序，column=-1 恢复源行顺序。排序列上的 `set_cell` 更新会刷新本地排序，源数据索引不变；删掉选中源行时清除选择。手动/远程排序的业务身份由应用维护。只读或禁用时不响应用户排序；程序仍可更新数据与排序。工作坊提供乱序组件名和 2/7/14/120/210 等数值，可直接比较文本与数值排序，并保留当前选中源行。
+
+## 图标与文字按钮
+
+`Button` 页首先展示图标＋文字按钮，覆盖图标在文字左、右、上、下四种布局。按钮按实际内容宽度排列，空间不足时换行；每个图标按钮都有独立的尺寸 Stepper，可在 12–64 px 间调节，修改一个不会影响其他按钮，上下布局的高度随自己的图标增长。尺寸会随全局字号和密度缩放。禁用状态只作用于示例按钮，仍可分别调节尺寸。`IconButton` 页单独展示纯图标按钮与动作提示。两者都支持键盘激活、禁用状态和主题/字号切换。
+
+```xu
+id := screen.button_with_icon("logo.png", "Build project") or >>
+$appearance := styles.button_variant(widgets.BUTTON_PRIMARY) or >>
+appearance.icon_placement = widgets.ICON_LEADING
+appearance.icon_size = 24.0 * styles.text_scale
+screen.set_control_style(id, &appearance) or >>
+size := screen.measure_button(id) or >>
+screen.place(id, 24.0, 24.0, size.width, size.height) or >>
+```
+
+图片随 `www/logo.png` 嵌入，Screen 持有并在销毁时释放；打包时保留 `--www` 资源目录。
+
+
+## Tooltip 定位与触发
+
+`Tooltip` 页可切换上、下、左、右定位，并在窗口边缘自动翻转。提示默认在锚点上方居中；滚动时只对可见的锚点部分定位，完全滚出裁剪区域时隐藏。鼠标悬停 500 ms 显示，键盘 Tab 或显式 `focus()` 立即显示；鼠标点击不会被当作键盘焦点。点击或滚轮操作收起提示，移出后可再次触发；Escape 抑制当前这一轮提示，离开并重新进入或重新获得焦点后恢复。
+
+```xu
+$placement := widgets.overlay_placement()
+placement.side = widgets.OVERLAY_RIGHT
+placement.align = widgets.OVERLAY_CENTER
+screen.set_tooltip_placement(tooltip_id, &placement) or >>
+```
+
+## 密码输入框
+
+`PasswordInput` 页提供真实的单行密码模式、显隐切换、清空、示例重置，以及禁用、只读和错误状态。每个 Unicode 字素绘制为一个圆点，中文、组合音符和 emoji 共用原值的 UTF-8 光标、选择与删除位置。显隐切换保留值与选择；粘贴可用，复制和剪切在显示原值时仍被禁用。XACP 节点文本和原生输入法的周围文字查询不返回密码内容。
+
+```xu
+password := screen.password_input("Xu-密码🙂") or >>
+screen.set_password_visible(password, true) or >>
+value := screen.text_value(password) or >>
+```
+
+`text_value()` 为应用返回实际值；示例不会把输入的密码写入状态栏或日志。密码模式只用于单行 Input，多行 TextArea 会拒绝此模式。
