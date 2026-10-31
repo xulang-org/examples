@@ -2,6 +2,7 @@
 #ui
 #ui/draw
 #ui/layout
+#ui/chart
 #ui/widgets
 #ui/webview
 #time
@@ -1260,15 +1261,15 @@ fn (m $&Workshop) work(s $&widgets.Screen,now time.Instant) int {
     << 0
 }
 
-fn chart_data(kind int,revision int) []widgets.ChartSeries {
-    $result := []widgets.ChartSeries{}
+fn chart_data(kind int,revision int) []chart.ChartSeries {
+    $result := []chart.ChartSeries{}
     $series_count := 2
     if kind == widgets.CHART_DONUT { series_count = 1 }
     for si in 0:series_count {
         $name := "Build 构建"
         if si == 1 { name = "Index 索引" }
         if kind == widgets.CHART_DONUT { name = "Workload 工作量" }
-        $series := widgets.chart_series(si + 1,name,kind)
+        $series := chart.chart_series(si + 1,name,kind)
         series.smooth = kind == widgets.CHART_LINE || kind == widgets.CHART_AREA
         $count := 12 - revision % 2
         if kind == widgets.CHART_SCATTER { count = 64 }
@@ -1277,7 +1278,7 @@ fn chart_data(kind int,revision int) []widgets.ChartSeries {
             x := f64(i + 1)
             phase := f64(revision) * 0.9 + f64(si) * 1.7
             y := 48.0 + f64(si) * 20.0 + math.sin(x * 0.55 + phase) * 20.0 + math.cos(x * 0.17 + phase) * 7.0
-            $point := widgets.chart_point(i + 1,x,y)
+            $point := chart.chart_point(i + 1,x,y)
             point.label = "Sample 样本 " + str(i + 1)
             if kind == widgets.CHART_DONUT { point.label = ["Compile 编译","Index 索引","Render 绘制","I/O 输入输出","Other 其他"][i] }
             series.points.push(point)
