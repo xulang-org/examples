@@ -1,6 +1,7 @@
 @main
 
 #ui/widgets
+#ui/chart
 #ui/draw
 #ui/layout
 #time
@@ -121,7 +122,7 @@ fn (m $&Workshop) apply_appearance(s $&widgets.Screen) int {
     }
     if m.selected == 39 {
         s.clear_control_style(id) or >>
-        $appearance := widgets.chart_appearance()
+        $appearance := chart.chart_appearance()
         appearance.y_unit = " ms"
         if m.chart_kind == widgets.CHART_DONUT || m.chart_kind == widgets.CHART_PIE || m.chart_kind == widgets.CHART_ROSE ||
            m.chart_kind == widgets.CHART_FUNNEL || m.chart_kind == widgets.CHART_TREEMAP || m.chart_kind == widgets.CHART_SANKEY{appearance.y_unit = ""}

@@ -2,6 +2,7 @@
 
 #ui
 #ui/widgets
+#ui/chart
 #ui/draw
 #time
 #math
@@ -505,12 +506,12 @@ fn workshop_menu_items(english bool)[]widgets.MenuItem{
     <<[widgets.menu_item(10, translated[0]), grid, export, png, svg, unavailable, save, separator, heading, compact, comfortable]
 }
 
-fn chart_data(kind int, revision int)[]widgets.ChartSeries{
+fn chart_data(kind int, revision int)[]chart.ChartSeries{
     << chart_data_locale(kind, revision, true)
 }
 
-fn chart_data_locale(kind int, revision int, english bool)[]widgets.ChartSeries{
-    $result :=[]widgets.ChartSeries{}
+fn chart_data_locale(kind int, revision int, english bool)[]chart.ChartSeries{
+    $result :=[]chart.ChartSeries{}
     $series_count := 2
     single := kind == widgets.CHART_DONUT || kind == widgets.CHART_PIE || kind == widgets.CHART_ROSE ||
         kind == widgets.CHART_GAUGE || kind == widgets.CHART_HISTOGRAM || kind == widgets.CHART_BOXPLOT ||
@@ -530,7 +531,7 @@ fn chart_data_locale(kind int, revision int, english bool)[]widgets.ChartSeries{
             if si == 2 {name = "Render"}
             if single{name = "Workload"}
         }
-        $series := widgets.chart_series(si + 1, name, kind)
+        $series := chart.chart_series(si + 1, name, kind)
         series.smooth = kind == widgets.CHART_LINE || kind == widgets.CHART_AREA || kind == widgets.CHART_STACKED_AREA ||
             kind == widgets.CHART_SMOOTH_LINE || kind == widgets.CHART_SMOOTH_AREA
         $count := 12 - revision % 2
@@ -557,9 +558,9 @@ fn chart_data_locale(kind int, revision int, english bool)[]widgets.ChartSeries{
                 y = deltas[i] + math.sin(phase) * 3.0
                 if i == count - 1 {y = 0.0}
             }
-            $point := widgets.chart_point(i + 1, x, y)
+            $point := chart.chart_point(i + 1, x, y)
             if kind == widgets.CHART_BUBBLE{
-                point = widgets.chart_bubble_point(i + 1, x, y, 12.0 + math.abs(math.cos(x * 0.7 + phase)) * 36.0)
+                point = chart.chart_bubble_point(i + 1, x, y, 12.0 + math.abs(math.cos(x * 0.7 + phase)) * 36.0)
             } else if kind == widgets.CHART_BOXPLOT || kind == widgets.CHART_CANDLESTICK ||
                       kind == widgets.CHART_VIOLIN || kind == widgets.CHART_DUMBBELL || kind == widgets.CHART_BULLET{
                 $close := y + math.sin(x * 0.9 + phase) * 12.0
@@ -568,7 +569,7 @@ fn chart_data_locale(kind int, revision int, english bool)[]widgets.ChartSeries{
                 }
                 low := math.min(y, close) - 8.0 - math.abs(math.cos(x + phase)) * 6.0
                 high := math.max(y, close) + 8.0 + math.abs(math.sin(x + phase)) * 6.0
-                point = widgets.chart_range_point(i + 1, x, y, low, high, close)
+                point = chart.chart_range_point(i + 1, x, y, low, high, close)
             } else if kind == widgets.CHART_WATERFALL && i == count - 1 {
                 point.size = 1.0
             }

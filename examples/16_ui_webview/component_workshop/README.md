@@ -96,12 +96,12 @@ Chart 通过自己的原生 Canvas 绘制 30 种图表类型（折线 `CHART_LIN
 
 ```xu
 chart := screen.chart() or >>
-$series := widgets.chart_series(1,"Build",widgets.CHART_LINE)
+$series := chart.chart_series(1,"Build",widgets.CHART_LINE)
 series.smooth = true
-series.points = [widgets.chart_point(101,1.0,18.0),widgets.chart_point(102,2.0,25.0),widgets.chart_point(103,3.0,21.0)]
+series.points = [chart.chart_point(101,1.0,18.0),chart.chart_point(102,2.0,25.0),chart.chart_point(103,3.0,21.0)]
 screen.set_chart_series(chart,&[series]) or >>
 screen.place(chart,24.0,80.0,780.0,360.0) or >>
-$appearance := widgets.chart_appearance()
+$appearance := chart.chart_appearance()
 appearance.y_unit = " ms"
 screen.set_chart_appearance(chart,&appearance) or >>
 ```
