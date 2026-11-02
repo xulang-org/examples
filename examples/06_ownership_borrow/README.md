@@ -1,11 +1,11 @@
 # 06_ownership_borrow
 
-按值 move、`&T` 共享借用、`mut &T` 独占借用。
+按值 move、`&T` 共享借用、`$&T` 独占借用。
 
 ## 本示例体现的特色
 
 - **无 GC**：按值传 `string` 即 move
-- 共享借用 `&x`；独占借用 `mut &x`（绑定须 `mut`）
+- 共享借用 `&x`；独占借用 `$&x`（绑定须 `$`）
 - 安全边界尽量在编译期关闭
 
 详见 [`FEATURES.md`](../../FEATURES.md)。

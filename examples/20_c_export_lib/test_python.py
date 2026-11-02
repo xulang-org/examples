@@ -313,9 +313,9 @@ def main():
     assert code_val == 200
 
     # -------------------------------------------------------------------------
-    # 12. &mut (mutable pointer / in-place struct mutation)
+    # 12. $& (mutable pointer / in-place struct mutation)
     # -------------------------------------------------------------------------
-    print("\n[12. &mut] Testing mutable struct mutation from Python...")
+    print("\n[12. $&] Testing mutable struct mutation from Python...")
     class XuCounter(ctypes.Structure):
         _fields_ = [("val", ctypes.c_int64)]
 

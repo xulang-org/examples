@@ -94,7 +94,7 @@ extern int64_t XU_SYM(xu_sum_fixed_array)(int64_t *arr_top);
 extern int64_t XU_SYM(xu_status_code)(int64_t *status_ptr);
 
 // ----------------------------------------------------------------------------
-// 12. &mut (mutable pointer / in-place struct mutation)
+// 12. $& (mutable pointer / in-place struct mutation)
 // ----------------------------------------------------------------------------
 extern void XU_SYM(xu_mutate_counter)(int64_t *counter_ptr, int64_t delta);
 

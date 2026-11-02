@@ -9,7 +9,7 @@ pub fn fibonacci(n int) int {
 }
 
 pub fn sum_to(n int) int {
-    mut total := 0
+    $total := 0
     for i in 1:n + 1 { total += i }
     << total
 }

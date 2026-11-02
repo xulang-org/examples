@@ -17,7 +17,7 @@
 //   9.  slice    - dynamic array views ([]int, []u8 byte slice, []f64 float slice)
 //   10. array    - fixed-size array ([4]int with descending element layout)
 //   11. enum     - enumeration with variants (Status: Ok, Pending, Failed)
-//   12. &mut     - mutable reference / in-place pointer mutation (&mut Counter)
+//   12. $&     - mutable reference / in-place pointer mutation ($&Counter)
 //   13. callback - higher-order function / closure (fn(int, int) int)
 //   14. void     - procedure with console / runtime side-effects
 // ============================================================================
@@ -31,8 +31,8 @@ pub fn xu_add_int(a int, b int) int {
 
 pub fn xu_factorial(n int) int {
     if n <= 1 { << 1 }
-    mut res := 1
-    mut i := 2
+    $res := 1
+    $i := 2
     while i <= n {
         res = res * i
         i = i + 1
@@ -107,8 +107,8 @@ pub fn xu_string_length(s string) int {
 }
 
 pub fn xu_count_char(s string, ch int) int {
-    mut count := 0
-    mut i := 0
+    $count := 0
+    $i := 0
     while i < s.len {
         if s[i] == ch {
             count = count + 1
@@ -167,8 +167,8 @@ pub fn xu_check_mixed_record(r MixedRecord) bool {
 // 9. slice / dynamic array ([]int, []u8, []f64)
 // ----------------------------------------------------------------------------
 pub fn xu_sum_slice(arr []int) int {
-    mut sum := 0
-    mut i := 0
+    $sum := 0
+    $i := 0
     while i < arr.len {
         sum = sum + arr[i]
         i = i + 1
@@ -177,8 +177,8 @@ pub fn xu_sum_slice(arr []int) int {
 }
 
 pub fn xu_sum_byte_slice(arr []u8) int {
-    mut sum := 0
-    mut i := 0
+    $sum := 0
+    $i := 0
     while i < arr.len {
         sum = sum + int(arr[i])
         i = i + 1
@@ -187,8 +187,8 @@ pub fn xu_sum_byte_slice(arr []u8) int {
 }
 
 pub fn xu_sum_f64_slice(arr []f64) f64 {
-    mut sum := 0.0
-    mut i := 0
+    $sum := 0.0
+    $i := 0
     while i < arr.len {
         sum = sum + arr[i]
         i = i + 1
@@ -221,13 +221,13 @@ pub fn xu_status_code(s Status) int {
 }
 
 // ----------------------------------------------------------------------------
-// 12. &mut (mutable pointer / in-place struct mutation)
+// 12. $& (mutable pointer / in-place struct mutation)
 // ----------------------------------------------------------------------------
 pub struct Counter {
     val int
 }
 
-pub fn xu_mutate_counter(c &mut Counter, delta int) {
+pub fn xu_mutate_counter(c $&Counter, delta int) {
     c.val = c.val + delta
 }
 
@@ -282,9 +282,9 @@ fn main() int {
     fixed := [4]int{100, 200, 300, 400}
     println("10. array: sum_fixed_array = " + str(xu_sum_fixed_array(fixed)))
     println("11. enum: status_code(Pending) = " + str(xu_status_code(Status.Pending)))
-    mut c := Counter{val: 50}
-    xu_mutate_counter(mut &c, 25)
-    println("12. &mut: mutate_counter(50, 25) = " + str(c.val))
+    $c := Counter{val: 50}
+    xu_mutate_counter($&c, 25)
+    println("12. \$&: mutate_counter(50, 25) = " + str(c.val))
     println("13. callback: apply_callback(7, 8, mult) = " + str(xu_apply_callback(7, 8, self_test_mult)))
     xu_hello_from_lib()
     println("=== All Xu Self-Tests Completed Successfully ===")

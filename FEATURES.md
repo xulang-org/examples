@@ -54,15 +54,15 @@ s := load(false) or (err) {
 - 强制处理：可能抛错的调用必须 `or`，或处于可传播上下文。
 - `errors` 包只管错误值；语言提供 `>>` / `or` 机制。
 
-### 3. 默认不可变；改写显式 `mut`
+### 3. 默认不可变；改写显式 `$`
 
 ```xu
 name := "Xu"
-mut age := 20
+$age := 20
 age += 1
 ```
 
-无全局可变变量。独占借用在调用点写 `mut &x`，类型上写 `&mut T`。
+无全局可变变量。独占借用在调用点写 `$&x`，类型上写 `$&T`。
 
 ### 4. 包依赖是 `#路径`，不是 `import "..."`
 
@@ -113,7 +113,7 @@ xu worker(1, ch) // ✅ 启动协程
 ## 内存与安全（无 GC）
 
 - **所有权**：owning 值（`string`、`[]T`、含 owning 字段的 struct 等）按值传参即 move；作用域结束确定性 drop。
-- **借用**：`&T` 共享、`&mut T` 独占；冲突在编译期拒绝。
+- **借用**：`&T` 共享、`$&T` 独占；冲突在编译期拒绝。
 - **切片拷贝语义**：`s[a:b]` / `xs[a:b]` 产生新拥有值，避免无 GC 下的共享视图别名。
 - **越界 / 除零**：运行时 fail-loud（诊断后退出），不静默 wrap 成 UB。
 
@@ -142,11 +142,11 @@ xu worker(1, ch) // ✅ 启动协程
 | 特色 | 示例 |
 |------|------|
 | 最小骨架、`<<` 退出 | [`examples/01_hello`](examples/01_hello) |
-| 默认不可变 / `mut` / `const` | [`examples/02_bindings`](examples/02_bindings) |
+| 默认不可变 / `$` / `const` | [`examples/02_bindings`](examples/02_bindings) |
 | `<-` `->`、区间、`match` | [`examples/03_control_flow`](examples/03_control_flow) |
-| struct + 方法、`&mut` 接收者 | [`examples/04_functions_methods`](examples/04_functions_methods) |
+| struct + 方法、`$&` 接收者 | [`examples/04_functions_methods`](examples/04_functions_methods) |
 | `>>` + `or` | [`examples/05_errors`](examples/05_errors) |
-| move / `&` / `mut &` | [`examples/06_ownership_borrow`](examples/06_ownership_borrow) |
+| move / `&` / `$&` | [`examples/06_ownership_borrow`](examples/06_ownership_borrow) |
 | 数组、字符串切片拷贝、插值 | [`examples/07_arrays_strings`](examples/07_arrays_strings) |
 | enum + match | [`examples/08_enum_match`](examples/08_enum_match) |
 | `struct@`、`#T`、`any` | [`examples/09_generics_temp`](examples/09_generics_temp) |

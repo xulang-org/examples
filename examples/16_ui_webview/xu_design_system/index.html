@@ -114,8 +114,8 @@
 <span class="syn-cmt">// 2. 接口与约束声明</span>
 <span class="syn-kw">struct@</span> <span class="syn-trait">Serializable</span> { <span class="syn-kw">fn</span> <span class="syn-fn">to_bytes</span>() []<span class="syn-type">u8</span> }
 
-<span class="syn-cmt">// 3. 函数、独占借用 (&amp;mut) 与流控 (&gt;&gt; / &lt;&lt;)</span>
-<span class="syn-kw">fn</span> <span class="syn-fn">transfer_ownership</span>(<span class="syn-borrow">user &amp;mut User</span>, amount <span class="syn-type">f64</span>) <span class="syn-type">int</span> {
+<span class="syn-cmt">// 3. 函数、独占借用 ($&amp;) 与流控 (&gt;&gt; / &lt;&lt;)</span>
+<span class="syn-kw">fn</span> <span class="syn-fn">transfer_ownership</span>(<span class="syn-borrow">user $&amp;User</span>, amount <span class="syn-type">f64</span>) <span class="syn-type">int</span> {
     <span class="syn-kw">if</span> amount &lt;= <span class="syn-num">0.0</span> {
         <span class="syn-flow">&gt;&gt;</span> errors.new(<span class="syn-str">"invalid amount payload"</span>) <span class="syn-cmt">// &gt;&gt; 抛出错误</span>
     }
@@ -174,7 +174,7 @@
                 </tr>
                 <tr style="border-bottom:1px solid var(--xu-border-subtle);">
                   <td style="padding:8px 10px; font-weight:700;">借用与所有权修饰</td>
-                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-borrow">&amp;mut User</span>, <span class="syn-borrow">mut &amp;</span></td>
+                  <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><span class="syn-borrow">$&amp;User</span>, <span class="syn-borrow">$&amp;</span></td>
                   <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#EC4899;">#EC4899</code></td>
                   <td style="padding:8px 10px; font-family:var(--xu-font-mono);"><code style="color:#9D174D;">#9D174D</code></td>
                   <td style="padding:8px 10px; color:var(--xu-success); font-weight:700;">AA (5.77:1+) · 洋红/深莓红</td>
@@ -919,7 +919,7 @@
     <span class="syn-kw">pub</span> age  <span class="syn-type">int</span>
 }
 
-<span class="syn-kw">fn</span> (<span class="syn-borrow">u &amp;mut User</span>) <span class="syn-fn">have_birthday</span>() {
+<span class="syn-kw">fn</span> (<span class="syn-borrow">u $&amp;User</span>) <span class="syn-fn">have_birthday</span>() {
     u.age += <span class="syn-num">1</span>
 }
 
@@ -927,7 +927,7 @@
     <span class="syn-kw">if</span> path == <span class="syn-str">""</span> {
         <span class="syn-flow">&gt;&gt;</span> errors.new(<span class="syn-str">"path cannot be empty"</span>) <span class="syn-cmt">// 抛出错误</span>
     }
-    <span class="syn-kw">mut</span> user := User{name: <span class="syn-str">"Alice"</span>, age: <span class="syn-num">20</span>}
+    <span class="syn-kw">$</span>user := User{name: <span class="syn-str">"Alice"</span>, age: <span class="syn-num">20</span>}
     user.have_birthday()
     <span class="syn-flow">&lt;&lt;</span> user <span class="syn-cmt">// 零成本返回所有权</span>
 }</div>
@@ -1005,7 +1005,7 @@
               </p>
               <div class="flow-node-code">
 <span class="syn-kw">fn</span> <span class="syn-fn">handle_stream</span>(req <span class="syn-borrow">&amp;http.Request</span>) <span class="syn-type">http.Response</span> {
-    <span class="syn-kw">mut</span> buffer := <span class="syn-str">"Stream payload initialized"</span> <span class="inline-borrow-tag">Owner: buffer</span></div>
+    <span class="syn-kw">$</span>buffer := <span class="syn-str">"Stream payload initialized"</span> <span class="inline-borrow-tag">Owner: buffer</span></div>
             </div>
 
             <!-- 向下流程箭头 (分支流) -->
@@ -1023,11 +1023,11 @@
                 <span class="badge badge-warning">EXCLUSIVE BORROW · 0 RACE</span>
               </div>
               <p style="font-size:11.5px; color:var(--xu-text-secondary); margin-bottom:4px;">
-                通过 <code>xu</code> 关键字分发后台轻量级协程，传入排他性可变借用 <code>mut &amp;buffer</code>，生命周期限定在协程执行期内，期间主协程对 buffer 的写操作受限，彻底消除数据竞争。
+                通过 <code>xu</code> 关键字分发后台轻量级协程，传入排他性可变借用 <code>$&amp;buffer</code>，生命周期限定在协程执行期内，期间主协程对 buffer 的写操作受限，彻底消除数据竞争。
               </p>
               <div class="flow-node-code">
     <span class="syn-cmt">// 启动 XU 官方轻量级并发协程</span>
-    <span class="syn-kw">xu</span> worker_coroutine(<span class="syn-borrow">mut &amp;buffer</span>) <span class="inline-borrow-tag">Exclusive Borrow: 40ms</span></div>
+    <span class="syn-kw">xu</span> worker_coroutine(<span class="syn-borrow">$&amp;buffer</span>) <span class="inline-borrow-tag">Exclusive Borrow: 40ms</span></div>
             </div>
 
             <!-- 向下流程箭头 (合并汇聚) -->
@@ -1065,7 +1065,7 @@
               </div>
               <div style="font-size:11.5px; color:var(--xu-text-secondary); line-height:1.6;">
                 • 变量 <code>buffer</code>：节点 2 栈分配<br>
-                • 借用域：节点 3 (独占可变借用 <code>&amp;mut</code>)<br>
+                • 借用域：节点 3 (独占可变借用 <code>$&amp;</code>)<br>
                 • 移交目标：<code>http.ok</code> (节点 4 零拷贝转移)<br>
                 • 数据竞争隐患 (Data Race Hazards)：<b>0</b>
               </div>
@@ -1090,7 +1090,7 @@
                 <span style="font-size:10px; color:var(--xu-text-muted);">10分钟前</span>
               </div>
               <div style="color:var(--xu-text-secondary); font-size:11.5px;">
-                节点 3 的 <code>xu worker_coroutine(mut &amp;buffer)</code> 流程借用域已完成静态生命周期闭环，无泄漏风险，建议合并。
+                节点 3 的 <code>xu worker_coroutine($&amp;buffer)</code> 流程借用域已完成静态生命周期闭环，无泄漏风险，建议合并。
               </div>
             </div>
 

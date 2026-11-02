@@ -1,11 +1,11 @@
 # 04_functions_methods
 
-普通函数、struct、值方法与 `&mut` 方法。
+普通函数、struct、值方法与 `$&` 方法。
 
 ## 本示例体现的特色
 
 - 无 class：`struct` + 方法
-- 接收者类型写 `T` / `&T` / `&mut T`（不是 `fn (mut c T)`）
+- 接收者类型写 `T` / `&T` / `$&T`（不是 `fn ($c T)`）
 - 成功路径用 `<<` 返回
 
 详见 [`FEATURES.md`](../../FEATURES.md)。
