@@ -38,9 +38,9 @@ fn watch(ech chan ui.Event) {
 }
 
 fn main() int {
-    mut app := ui.new_app()
-    mut win := app.new_window(ui.WindowOpts{title: "T", width: 480, height: 200})
-    r := mut &win
+    $app := ui.new_app()
+    $win := app.new_window(ui.WindowOpts{title: "T", width: 480, height: 200})
+    r := $&win
     _ := draw.attach(r)
     xu watch(app.event_ch)
     app.run() or (err) {

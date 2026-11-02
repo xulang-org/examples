@@ -67,18 +67,18 @@ fn main() int {
 
 ## 2. 绑定与常量
 
-默认**不可变**；要改写加 `mut`。
+默认**不可变**；要改写加 `$`。
 
 ```xu
 name := "Xu"
-mut age := 20
+$age := 20
 age += 1
 
 const MAX = 100
 ```
 
 - `:=` 推导类型；函数参数与返回类型须写明。
-- `mut` 只修饰绑定，和类型上的 `&mut T` 不是一回事。
+- `$` 只修饰绑定，和类型上的 `$&T` 不是一回事。
 - 禁止全局可变变量；`const` 为编译期常量。
 
 示例：[`examples/02_bindings`](examples/02_bindings)
@@ -96,7 +96,7 @@ const MAX = 100
 | `i32` / `u32` / `u8` / `byte` | 独立窄整数；无隐式拓宽；算术 wrap |
 | `[]T` | 动态数组 |
 | `struct` / `enum` | 组合与标签联合 |
-| `&T` / `&mut T` | 共享 / 独占借用 |
+| `&T` / `$&T` | 共享 / 独占借用 |
 | `any` | 动态盒（写一次；`is` / `as`） |
 | `map[string]int` 等 | 键为 `int` 或 `string`；值不可为引用，owning 值须遵守所有权规则 |
 
@@ -146,13 +146,13 @@ struct Counter {
 
 fn (c Counter) get() int { << c.n }
 
-fn (c &mut Counter) inc() {
+fn (c $&Counter) inc() {
  c.n += 1
 }
 ```
 
 - 值接收者：只读语义。
-- `&mut` 接收者：调用方绑定须为 `mut`，或已是 `&mut`。
+- `$&` 接收者：调用方绑定须为 `$`，或已是 `$&`。
 - 字段默认**包内可见**；跨模块字段加 `pub` 或 `pub:` 区块。
 
 示例：[`examples/04_functions_methods`](examples/04_functions_methods)
@@ -217,7 +217,7 @@ fn len_of(s &string) int {
  << s.len
 }
 
-fn append_bang(s &mut string) {
+fn append_bang(s $&string) {
  s.push_str("!")
 }
 ```
@@ -226,10 +226,10 @@ fn append_bang(s &mut string) {
 |------|------|
 | 按值传 `string` / `[]T` / owning struct | **move** |
 | `&x` | 共享借用 |
-| `mut &x`（`x` 须 `mut`） | 独占借用 |
-| `*r` | 解引用标量读/写（写需 `&mut`） |
+| `$&x`（`x` 须 `$`） | 独占借用 |
+| `*r` | 解引用标量读/写（写需 `$&`） |
 
-共享借用存活期间不可写 / move / 再取 `&mut`；独占借用期间禁止冲突访问。
+共享借用存活期间不可写 / move / 再取 `$&`；独占借用期间禁止冲突访问。
 
 示例：[`examples/06_ownership_borrow`](examples/06_ownership_borrow)
 
@@ -238,7 +238,7 @@ fn append_bang(s &mut string) {
 ## 8. 数组与字符串
 
 ```xu
-mut xs := [1, 2, 3]
+$xs := [1, 2, 3]
 xs.push(4)
 for x in xs { println(x) }
 
@@ -366,7 +366,7 @@ xu test test.example.xu -v # 替换成自己的测试组件文件
 
 1. **返回写 `<<`，不是 `return`**；break/continue 是 `<-` / `->`。
 2. **错误用 `>>` + `or`，不要 `Result`/`?`。**
-3. **默认不可变**；改绑定加 `mut`，独占借用写 `mut &x`。
+3. **默认不可变**；改绑定加 `$`，独占借用写 `$&x`。
 4. **字符串切片是拷贝**，不是共享视图。
 5. **区间用 `:`**（半开 `[start, end)`），不是 `0..n`，也不是 `0 -> n` 或 `0...9`。
 6. **`or` 只接错误**；布尔或用 `||`。

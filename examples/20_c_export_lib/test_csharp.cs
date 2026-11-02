@@ -20,7 +20,7 @@ namespace XuNativeInterop
     //   9.  slice    - []int, []u8, []f64 dynamic views
     //   10. array    - [4]int fixed-size array
     //   11. enum     - Status enum variants
-    //   12. &mut     - ref Counter in-place mutation
+    //   12. $&     - ref Counter in-place mutation
     //   13. callback - delegate / function pointer closure
     //   14. void     - procedure with side-effects
     // ========================================================================
@@ -194,7 +194,7 @@ namespace XuNativeInterop
         [DllImport(LibName, EntryPoint = "xu_status_code", CallingConvention = CallingConvention.Cdecl)]
         public static extern long XuStatusCode(ref long statusPtr);
 
-        // 12. &mut
+        // 12. $&
         [DllImport(LibName, EntryPoint = "xu_mutate_counter", CallingConvention = CallingConvention.Cdecl)]
         public static extern void XuMutateCounter(ref long counterPtr, long delta);
 
@@ -376,8 +376,8 @@ namespace XuNativeInterop
             Console.WriteLine($"    XuStatusCode(Pending) = {statusCode} (expected 200)");
             Debug.Assert(statusCode == 200);
 
-            // 12. &mut
-            Console.WriteLine("\n[12. &mut] Testing mutable pointer in-place mutation...");
+            // 12. $&
+            Console.WriteLine("\n[12. $&] Testing mutable pointer in-place mutation...");
             XuCounter cnt = new XuCounter { Val = 50 };
             XuLib.XuMutateCounter(ref cnt.Val, 25);
             Console.WriteLine($"    XuMutateCounter(&cnt{{50}}, 25) -> cnt.Val = {cnt.Val} (expected 75)");

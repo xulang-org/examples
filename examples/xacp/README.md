@@ -85,15 +85,15 @@ XU_UI_SIM=1 XU_XACP_TOKEN=local-control-token XACP_EXAMPLE_TCP=4321 ./build/xacp
 
 本阶段采用显式库附着，不设置自动 startup 环境钩子。应用调用
 `xacp.attach_stdio()` 或 `xacp.attach_tcp(port)` 获取 `ScreenControl`，
-在持有 Screen 的协程调用 `xacp.register_screen(mut &control, &screen)`，
-然后在非阻塞 UI 事件循环中持续调用 `xacp.poll(mut &control, mut &screen)`。
+在持有 Screen 的协程调用 `xacp.register_screen($&control, &screen)`，
+然后在非阻塞 UI 事件循环中持续调用 `xacp.poll($&control, $&screen)`。
 `xu xacp attach` 运行 main，并转发 stdin/stdout，不注入独占控制参数；
 应用仍须调用附着 API。`control` 和 `--xacp-stdio` / `--xacp-tcp` 继续跳过 main。
 附着 API 可单独导入使用；`--xacp` 额外提供发现帮助和独占入口。
 
 每进程支持一个附着控制器、一个已注册 Screen。重复注册拒绝；先
 `unregister_screen` 再注册可更换 Screen。控制旁路只持有 channel 和复制的
-请求正文、权限、注册 generation，不持有 `&mut Screen`。UI 协程执行
+请求正文、权限、注册 generation，不持有 `$&Screen`。UI 协程执行
 `dispatch_screen`，把数据序列化进 `ControlReply.data` 后回复。
 `ui.tree` 返回真实节点 id/kind/parent、位置、大小、可见/启用/焦点和转义后的 text；
 `ui.act`、`ui.input` 返回 actions。`ui.screenshot` 成功时返回真实 Surface 的尺寸
