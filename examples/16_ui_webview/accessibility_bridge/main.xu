@@ -1,0 +1,113 @@
+@main
+#ui
+#ui/widgets
+demo #"github.com/xulang-org/examples/ui_demo"
+
+fn run_accessibility_checks(s $&widgets.Screen) int {
+    // 1. Create button and input widgets
+    btn_id := s.button("Submit") or >>
+    s.place(btn_id, 10.0, 10.0, 120.0, 32.0) or >>
+    
+    input_id := s.input("Hello Accessibility") or >>
+    s.place(input_id, 10.0, 50.0, 200.0, 32.0) or >>
+    
+    // 2. Build accessibility tree snapshot
+    tree1 := s.accessibility_tree() or >>
+    println("TREE1_COUNT=" + str(tree1.len))
+    if tree1.len < 2 {
+        eprintln("Expected at least 2 accessibility nodes, got " + str(tree1.len))
+        << 1
+    }
+    
+    // Verify button node properties
+    btn_node := widgets.accessibility_node_by_id(&tree1, btn_id) or >>
+    if btn_node.role != widgets.ROLE_BUTTON {
+        eprintln("Expected button role " + str(widgets.ROLE_BUTTON) + ", got " + str(btn_node.role))
+        << 2
+    }
+    if btn_node.name != "Submit" {
+        eprintln("Expected button name 'Submit', got " + btn_node.name)
+        << 3
+    }
+    println("BUTTON_NODE_OK: role=" + widgets.role_name(btn_node.role) + " name=" + btn_node.name)
+    
+    // Verify input node properties
+    input_node := widgets.accessibility_node_by_id(&tree1, input_id) or >>
+    if input_node.role != widgets.ROLE_TEXT_FIELD {
+        eprintln("Expected text field role, got " + str(input_node.role))
+        << 4
+    }
+    println("INPUT_NODE_OK: role=" + widgets.role_name(input_node.role))
+    
+    // 3. Focus input and change button state, then diff
+    s.focus(input_id) or >>
+    _ := s.xacp_act(btn_id, "set_text", "Saving...", false) or >>
+    
+    tree2 := s.accessibility_tree() or >>
+    changes := widgets.diff_accessibility_trees(&tree1, &tree2)
+    println("DIFF_CHANGES_COUNT=" + str(changes.len))
+    
+    $has_focus_change := false
+    $has_name_change := false
+    for ch in changes {
+        println("CHANGE: id=" + str(ch.id) + " kind=" + str(ch.kind) + " name=" + ch.name)
+        if ch.id == input_id && ch.has_change(widgets.CHANGE_FOCUS) {
+            has_focus_change = true
+        }
+        if ch.id == btn_id && ch.has_change(widgets.CHANGE_NAME) {
+            has_name_change = true
+        }
+    }
+    
+    if !has_focus_change {
+        eprintln("Expected focus change on input node")
+        << 5
+    }
+    if !has_name_change {
+        eprintln("Expected name change on button node")
+        << 6
+    }
+    
+    println("ACCESSIBILITY_BRIDGE=PASS")
+    << 0
+}
+
+fn scene(ech chan ui.Event) int {
+    ready := demo.ready(ech) or >>
+    if ready.kind == ui.EV_EXIT { << 0 }
+    $screen := widgets.screen(&ready) or >>
+    screen.resize(800.0, 600.0) or >>
+    
+    ret := run_accessibility_checks($&screen) or (err) {
+        eprintln("Checks failed: " + err.msg())
+        demo.quit() or >>
+        << 1
+    }
+    if ret != 0 {
+        eprintln("Checks returned " + str(ret))
+        demo.quit() or >>
+        << ret
+    }
+    demo.quit() or >>
+    << 0
+}
+
+fn worker(ech chan ui.Event) {
+    scene(ech) or (err) {
+        demo.fail(err.msg())
+        <<
+    }
+}
+
+fn launch() int {
+    $app := demo.app("Xu UI / Accessibility Bridge Test", 800, 600) or >>
+    xu worker(app.event_ch)
+    << app.run() or >>
+}
+
+fn main() int {
+    << launch() or (err) {
+        eprintln(err.msg())
+        << 1
+    }
+}
