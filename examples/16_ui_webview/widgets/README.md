@@ -28,3 +28,6 @@ python3 scripts/ui_examples.py build widgets
 布局和绘制复用同一棵树。`dispatch_event()` 统一处理输入、焦点和关闭；业务状态改变后仅使受影响节点失效。控制台打印重绘边界复用数量。20 行均保留在树中，只裁掉不可见绘制，并非按需创建的虚拟列表。
 
 入口见 [main.xu](main.xu)。共享的窗口启动、事件等待和文字辅助函数见 [shared/](../shared/)；应用仍自行持有模型、资源和事件分发，不另开事件消费者。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

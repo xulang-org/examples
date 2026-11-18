@@ -19,3 +19,6 @@ screen.load_web_html(id,html) or >>
 - `ui.native_view` 提供独立使用的原生子视图 API；`update` 接受矩形、裁剪范围、圆角、可见、启用与焦点状态。
 
 需要在打包时链接 WebView 后端，不能使用 `--no-webview`。组件采用系统原生表面：与 Canvas 弹层重叠时暂时隐藏网页，弹层关闭后恢复；Canvas 的旋转、透明度与截图不会自动合成网页。`Screen.snapshot` 会明确拒绝包含可见 WebView 的导出。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

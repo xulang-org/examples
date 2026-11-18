@@ -97,3 +97,6 @@ Modal 默认外点消费但不关闭；`set_dismiss_on_outside(true)` 可改为�
 Table、TreeView、Pagination、ComboBox、MultiSelect、ColorPicker、Breadcrumbs 持有原生文字资源，用完调用 `dispose()`。Popover、Modal、Tooltip、Toast 不拥有传入的标签；`StyledLabel` 仍由调用方释放。Frame 接受绘制前不要释放其中引用的资源。`needs_paint`、`painted`、`Action.needs_paint` 和各组件的绘制方法共同支持按需重绘，不需要空闲时持续绘制整个窗口。
 
 这些组件覆盖常用基础交互。高级数据表、富文本编辑、拖拽工作区、完整本地化与辅助技术桥接仍需后续独立设计，示例也没有连接真实服务或后台任务。
+
+事件通过 `ActionDispatcher` 按控件 ID 注册（`on` / `on_any`），在循环中 `dispatch`。
+请使用包含该 API 的当前 Xu 源码/SDK；样式配置在独立样式路径处理。

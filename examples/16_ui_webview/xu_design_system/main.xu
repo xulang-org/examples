@@ -13,14 +13,15 @@ fn main() int {
     $win := app.new_window(ui.WindowOpts{
         title: "Xu Design System & VI Specification",
         width: 1280,
-        height: 860,
+        height: 860
     })
 
     r := $&win
-    _ := webview.attach(r, webview.WebviewOpts{
-        url: "xu://app/index.html",
-        dev_tools: true,
-    })
+    $wv := webview.attach(r)
+    wv.load_url("xu://app/index.html") or (err) {
+        println(err.msg())
+        << 1
+    }
 
     app.run() or (err) {
         println(err.msg())

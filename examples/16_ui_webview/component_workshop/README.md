@@ -1,11 +1,28 @@
 # 原生组件工作坊
 
-需要 Xu **0.10.11**。46 个命名入口涵盖全部基础、输入、数据、反馈与容器组件，并加入 Field、RadioGroup、ToastHost 和内嵌 WebView。全部示例调用公共组件和 Screen API。旧正式 SDK 0.10.7 缺少本示例所需的图表、菜单等 API，不能用于构建本示例。
+使用含 `ActionDispatcher` 与 `apply_appearance` 的当前 Xu 框架源码/SDK。46 个命名入口覆盖基础、输入、数据、反馈、容器及内嵌 WebView，均调用公共组件和 Screen API。
 
 ```sh
-XU_ROOT=/path/to/xu python3 scripts/ui_examples.py check component_workshop
-XU_ROOT=/path/to/xu python3 scripts/ui_examples.py run component_workshop
+XU_ROOT=/path/to/xu XU=/path/to/xu/bin/xu python3 scripts/ui_examples.py check component_workshop
+XU_ROOT=/path/to/xu XU=/path/to/xu/bin/xu python3 scripts/ui_examples.py run component_workshop
 ```
+
+事件按控件 ID 注册，精确 `(id, kind)` 优先于 `on_any(id)`；重复注册覆盖原函数，非法 ID/kind 报错。回调显式借入业务模型、Screen 和 Action，返回空字符串表示成功，错误文本由框架抛出。回调中的 Xu 可失败调用须先捕获，不让抛错 ABI 穿过函数值。
+
+```xu
+fn clicked(m $&Workshop,s $&widgets.Screen,a &widgets.Action) string {
+    m.appearance_dirty = true
+    << ""
+}
+
+$events := widgets.action_dispatcher(&model,&screen)
+events.on(button_id,widgets.ACTION_ACTIVATE,clicked) or >>
+_ := events.dispatch_or_fallback(&action,$&model,$&screen) or >>
+```
+
+文件职责：`main.xu` 组装与事件循环；`model.xu` 业务状态、locale 与控件状态配置；`view.xu` 创建组件和数据；`layout.xu` 布局；`style.xu` 独立应用主题、密度、字号、实例样式与动效；`events.xu` 注册函数表和控件 handler；`events_tools.xu` 各控件族的工具操作。handler 只更新业务状态/控件值或请求样式刷新，主循环在绘制前调用样式路径；没有按页号分支的集中 `update`。定时器动作与原生输入动作都经过同一分发表。
+
+框架标准循环 `run_screen` 也先 dispatch，未处理时调用可选 fallback/旧 `update`。本例因真实任务调度保留自管循环，通过 `dispatch_or_fallback` 使用同样顺序，无业务 fallback。
 
 左侧选择组件；顶部切换亮色/暗色/高对比、常规/紧凑/触控、100%/140%/200% 字号。状态菜单测试普通、禁用、只读与错误；不适用时会明确说明。Hover、pressed、focus、selected 使用真实鼠标和键盘操作，Focus sample 把焦点交给预览。
 
@@ -75,16 +92,16 @@ screen.place(group,24.0,24.0,420.0,40.0) or >>
 
 独立操作发 ACTION_ACTIVATE，单选/多选发 ACTION_CHANGE，Action.value 为 key。button_group_values 返回选中的 key；set_button_group_checked 设置受控值；set_button_group_label 只改文案。ButtonGroupAppearance 控制布局，set_motion 和 set_control_style 与其他控件一致。
 
-Chart 通过自己的原生 Canvas 绘制折线、面积、分组柱状、散点和环形，不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
+Chart 通过自己的原生 Canvas 绘制 30 种图表类型（折线 `CHART_LINE`、面积 `CHART_AREA`、分组柱状 `CHART_BAR`、散点 `CHART_SCATTER`、环形 `CHART_DONUT`、阶梯折线 `CHART_STEP_LINE`、堆叠面积 `CHART_STACKED_AREA`、堆叠柱状 `CHART_STACKED_BAR`、水平条形 `CHART_HORIZONTAL_BAR`、饼图 `CHART_PIE`、南丁格尔玫瑰 `CHART_ROSE`、雷达 `CHART_RADAR`、仪表盘 `CHART_GAUGE`、气泡 `CHART_BUBBLE`、直方图 `CHART_HISTOGRAM`、箱线 `CHART_BOXPLOT`、热力 `CHART_HEATMAP`、K 线/蜡烛 `CHART_CANDLESTICK`、瀑布 `CHART_WATERFALL`、漏斗 `CHART_FUNNEL`、样条曲线 `CHART_SMOOTH_LINE`、样条面积 `CHART_SMOOTH_AREA`、极坐标环柱 `CHART_POLAR_BAR`、矩形树图 `CHART_TREEMAP`、桑基流向 `CHART_SANKEY`、小提琴 `CHART_VIOLIN`、子弹图 `CHART_BULLET`、棒棒糖 `CHART_LOLLIPOP`、哑铃 `CHART_DUMBBELL`、帕累托 `CHART_PARETO`），不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
 
 ```xu
 chart := screen.chart() or >>
-$series := widgets.chart_series(1,"Build",widgets.CHART_LINE)
+$series := chart.chart_series(1,"Build",widgets.CHART_LINE)
 series.smooth = true
-series.points = [widgets.chart_point(101,1.0,18.0),widgets.chart_point(102,2.0,25.0),widgets.chart_point(103,3.0,21.0)]
+series.points = [chart.chart_point(101,1.0,18.0),chart.chart_point(102,2.0,25.0),chart.chart_point(103,3.0,21.0)]
 screen.set_chart_series(chart,&[series]) or >>
 screen.place(chart,24.0,80.0,780.0,360.0) or >>
-$appearance := widgets.chart_appearance()
+$appearance := chart.chart_appearance()
 appearance.y_unit = " ms"
 screen.set_chart_appearance(chart,&appearance) or >>
 ```
@@ -93,7 +110,7 @@ ChartAppearance 配置网格、图例、提示、缩放/平移、数字精度、
 
 ACTION_CHART_HOVER/SELECT/VIEWPORT/LEGEND 区分交互；chart_hovered、chart_selection 和 chart_viewport 返回详细数据。chart_position 与 chart_hit_test 供业务侧组合标注。set_chart_domain 固定数值坐标域，use_chart_auto_domain 恢复自动域；set_chart_viewport 接收 0..1 归一化范围。pause/resume/seek_chart_animation 提供数据过渡控制。
 
-首批限制为 8 系列、共 4096 个有效数据点；更新额外保留最多同等数量的退出点。ID 为正 32 位整数。折线/面积/柱状要求 x 严格递增，散点允许任意顺序；环形只接收一个非负值系列。当前没有 ECharts 配置兼容、多轴、类别/时间/对数轴、堆叠、地图、brush 或海量采样。
+首批限制为 8 系列、共 4096 个有效数据点；更新额外保留最多同等数量的退出点。ID 为正 32 位整数。折线/面积/阶梯/堆叠/柱状/直方/箱线/K 线/瀑布要求 x 严格递增，散点/气泡/热力允许任意顺序；环形/饼图/玫瑰/仪表盘/瀑布/漏斗接收单个系列，雷达图每系列至少 3 个轴点。`chart_bubble_point` 与 `chart_range_point` 提供气泡尺寸与区间/四分位/OHLC 数据点构造。当前没有 ECharts 配置兼容、多轴、类别/时间/对数轴、地图、brush 或海量采样。
 
 AnimationController 为应用自定义绘制提供显式时钟、播放/暂停/续播/反向/进度定位/取消/完成、延迟与重复。animation_options 配置时长、曲线、速率、次数和交替方向；iterations=0 表示循环。调用方用 next_tick 安排唤醒，并将 value() 用于自己的 Frame 绘制；暂停与静止不持续请求帧，减少动效结束循环。Screen 图表的数据过渡采用单次正向动画。
 
