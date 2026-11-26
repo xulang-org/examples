@@ -16,8 +16,8 @@ for {
 ```
 
 ```xu
-ln := net.listen_on("tcp", "127.0.0.1:19000") or (err) { << 1 }
-c := ln.accept() or (err) { -> }
+ln := net.listen_on("tcp", "127.0.0.1:19000") >>> (err) { << 1 }
+c := ln.accept() >>> (err) { -> }
 xu handle(c)
 ```
 

@@ -19,7 +19,7 @@ struct Model {
 fn (m $&Model) label(index int,frame $&draw.Frame,rect layout.Rect,text string,size f64,muted bool) int {
     $color := m.styles.input.palette.foreground
     if muted { color = m.styles.input.palette.muted }
-    << frame.text(rect.x,rect.y,size * m.styles.text_scale,color,&text) or >>
+    << frame.text(rect.x,rect.y,size * m.styles.text_scale,color,&text) >>>
 }
 fn (m $&Model) place(width f64,height f64) int {
     available := math.max(200.0,width - 56.0)
@@ -28,42 +28,42 @@ fn (m $&Model) place(width f64,height f64) int {
     row_h = math.max(row_h,30.0 * m.styles.text_scale)
     styles := m.styles.clone()
     date := $&m.date
-    date.set_bounds(&layout.Rect{x: 28.0,y: 192.0,width: field_w,height: row_h}) or >>
-    date.apply_styles(&styles) or >>
+    date.set_bounds(&layout.Rect{x: 28.0,y: 192.0,width: field_w,height: row_h}) >>>
+    date.apply_styles(&styles) >>>
     $x := 320.0
     $y := 192.0
     if width < 600.0 { x = 28.0
         y = 270.0 }
     clock := $&m.clock
-    clock.set_bounds(&layout.Rect{x: x,y: y,width: field_w,height: row_h}) or >>
+    clock.set_bounds(&layout.Rect{x: x,y: y,width: field_w,height: row_h}) >>>
     << 0
 }
 fn (m $&Model) paint(frame $&draw.Frame,width f64,height f64) int {
-    m.place(width,height) or >>
-    frame.begin() or >>
-    frame.set_bg(m.styles.background) or >>
-    m.label(0,frame,layout.Rect{x: 28.0,y: 26.0,width: width - 56.0,height: 30.0},"DATE / TIME",13.0,true) or >>
-    m.label(1,frame,layout.Rect{x: 28.0,y: 66.0,width: width - 56.0,height: 46.0},"Calendar values. Precise durations.",24.0,false) or >>
-    m.label(2,frame,layout.Rect{x: 28.0,y: 120.0,width: width - 56.0,height: 30.0},"T: theme   F: text size   D: density   Tab: focus",13.0,true) or >>
+    m.place(width,height) >>>
+    frame.begin() >>>
+    frame.set_bg(m.styles.background) >>>
+    m.label(0,frame,layout.Rect{x: 28.0,y: 26.0,width: width - 56.0,height: 30.0},"DATE / TIME",13.0,true) >>>
+    m.label(1,frame,layout.Rect{x: 28.0,y: 66.0,width: width - 56.0,height: 46.0},"Calendar values. Precise durations.",24.0,false) >>>
+    m.label(2,frame,layout.Rect{x: 28.0,y: 120.0,width: width - 56.0,height: 30.0},"T: theme   F: text size   D: density   Tab: focus",13.0,true) >>>
     db := m.date.bounds()
     tb := m.clock.bounds()
-    m.label(3,frame,layout.Rect{x: db.x,y: db.y - 30.0,width: db.width,height: 24.0},"Date",14.0,true) or >>
-    m.label(4,frame,layout.Rect{x: tb.x,y: tb.y - 30.0,width: tb.width,height: 24.0},"Time · 24 hour",14.0,true) or >>
+    m.label(3,frame,layout.Rect{x: db.x,y: db.y - 30.0,width: db.width,height: 24.0},"Date",14.0,true) >>>
+    m.label(4,frame,layout.Rect{x: tb.x,y: tb.y - 30.0,width: tb.width,height: 24.0},"Time · 24 hour",14.0,true) >>>
     styles := m.styles.clone()
     date := $&m.date
-    date.paint_styled(frame,&styles) or >>
+    date.paint_styled(frame,&styles) >>>
     clock := $&m.clock
-    clock.paint_styled(frame,&styles) or >>
+    clock.paint_styled(frame,&styles) >>>
     $baseline := 282.0
     if width < 600.0 { baseline = 350.0 }
-    m.label(5,frame,layout.Rect{x: 28.0,y: baseline,width: width - 56.0,height: 28.0},m.value.format_rfc3339(),18.0,false) or >>
-    m.label(6,frame,layout.Rect{x: 28.0,y: baseline + 42.0,width: width - 56.0,height: 28.0},"time.Time · UTC · date and nanoseconds preserved",13.0,true) or >>
-    m.label(7,frame,layout.Rect{x: 28.0,y: height - 82.0,width: width - 56.0,height: 24.0},"Calendar: arrows / Page Up / Page Down / Enter / Escape",12.0,true) or >>
-    m.label(8,frame,layout.Rect{x: 28.0,y: height - 52.0,width: width - 56.0,height: 24.0},"Time: select a segment, type digits or use Up / Down",12.0,true) or >>
+    m.label(5,frame,layout.Rect{x: 28.0,y: baseline,width: width - 56.0,height: 28.0},m.value.format_rfc3339(),18.0,false) >>>
+    m.label(6,frame,layout.Rect{x: 28.0,y: baseline + 42.0,width: width - 56.0,height: 28.0},"time.Time · UTC · date and nanoseconds preserved",13.0,true) >>>
+    m.label(7,frame,layout.Rect{x: 28.0,y: height - 82.0,width: width - 56.0,height: 24.0},"Calendar: arrows / Page Up / Page Down / Enter / Escape",12.0,true) >>>
+    m.label(8,frame,layout.Rect{x: 28.0,y: height - 52.0,width: width - 56.0,height: 24.0},"Time: select a segment, type digits or use Up / Down",12.0,true) >>>
     // Calendar is an overlay, painted after every field and label.
     date := $&m.date
-    date.paint_popup_styled(frame,&styles) or >>
-    frame.present() or >>
+    date.paint_popup_styled(frame,&styles) >>>
+    frame.present() >>>
     << 0
 }
 fn (m $&Model) set_focus(focus int) {
@@ -75,7 +75,7 @@ fn (m $&Model) set_focus(focus int) {
     clock.set_focus(focus == 2)
 }
 fn (m $&Model) set_cursor(window &ui.Window,cursor int) int {
-    if m.cursor != cursor { window.content_command("cursor\t" + str(cursor)) or >>
+    if m.cursor != cursor { window.content_command("cursor\t" + str(cursor)) >>>
         m.cursor = cursor }
     << 0
 }
@@ -111,7 +111,7 @@ fn (m $&Model) input(window &ui.Window,event &ui.InputEvent) bool {
         if inside_clock { cursor = ui.CURSOR_TEXT }
         if inside_date { cursor = ui.CURSOR_HAND }
         if event.kind == ui.EV_POINTER_LEAVE { cursor = ui.CURSOR_DEFAULT }
-        m.set_cursor(window,cursor) or >>
+        m.set_cursor(window,cursor) >>>
     }
     if event.kind == ui.EV_POINTER_DOWN && event.button == ui.BUTTON_LEFT {
         $focus := 0
@@ -121,62 +121,62 @@ fn (m $&Model) input(window &ui.Window,event &ui.InputEvent) bool {
     }
     was_open := m.date.is_open()
     date := $&m.date
-    da := date.input(event) or >>
+    da := date.input(event) >>>
     if da.kind == widgets.ACTION_CHANGE {
         m.value = m.date.value()
         value := m.value
         clock := $&m.clock
-        clock.set_value(value) or >>
+        clock.set_value(value) >>>
     }
     if da.consumed { << true }
     clock := $&m.clock
-    ta := clock.input(event) or >>
+    ta := clock.input(event) >>>
     if ta.kind == widgets.ACTION_CHANGE {
         m.value = m.clock.value()
         value := m.value
         date := $&m.date
-        date.set_value(value) or >>
+        date.set_value(value) >>>
     }
-    if event.kind == ui.EV_KEY_DOWN && event.key == ui.KEY_ESCAPE && !was_open { demo.quit() or >> }
+    if event.kind == ui.EV_KEY_DOWN && event.key == ui.KEY_ESCAPE && !was_open { demo.quit() >>> }
     << da.needs_paint || ta.needs_paint || was_open != m.date.is_open()
 }
 fn scene(ech chan ui.Event) int {
-    ready := demo.ready(ech) or >>
+    ready := demo.ready(ech) >>>
     if ready.kind == ui.EV_EXIT { << 0 }
-    identity := ui.canvas_of(&ready) or >>
-    context := draw.context_of(&ready) or >>
+    identity := ui.canvas_of(&ready) >>>
+    context := draw.context_of(&ready) >>>
     window := ui.Window{id: identity.window_id,generation: identity.generation,title: "",width: 0,height: 0,
         content_kind: ui.CONTENT_DRAW,content_backend_id: identity.canvas_id,closed: 0}
     // Deterministic initial value makes leap-day and month-end checks repeatable.
     value := time.date(2024,2,29,14,35,20,123000000)
     empty := layout.Rect{x: 0.0,y: 0.0,width: 0.0,height: 0.0}
-    $m := Model{date: widgets.date_picker(&context,&identity,1,&empty,value) or >>,
-        clock: widgets.time_picker(&context,&identity,2,&empty,value) or >>,
+    $m := Model{date: widgets.date_picker(&context,&identity,1,&empty,value) >>>,
+        clock: widgets.time_picker(&context,&identity,2,&empty,value) >>>,
         value: value,styles: widgets.light_styles(),theme: 1,focus: 0,cursor: ui.CURSOR_DEFAULT}
     $frame := context.new_frame(16384)
     $width := 720.0
     $height := 660.0
     $dirty := true
     while true {
-        if dirty { m.paint($&frame,width,height) or >>
+        if dirty { m.paint($&frame,width,height) >>>
             dirty = false }
         event := demo.next(ech)
         if event.kind == ui.EV_EXIT { <- }
         if event.window_id != identity.window_id { -> }
         if event.kind == ui.EV_CANVAS_CLOSED { <- }
         if event.kind == ui.EV_CANVAS_METRICS {
-            metrics := ui.metrics_of(&event) or >>
+            metrics := ui.metrics_of(&event) >>>
             if metrics.width > 0.0 && metrics.height > 0.0 { width = metrics.width
                 height = metrics.height
                 dirty = true }
         } else if event.kind == ui.EV_BLURRED {
             m.set_focus(0)
-            m.set_cursor(&window,ui.CURSOR_DEFAULT) or >>
+            m.set_cursor(&window,ui.CURSOR_DEFAULT) >>>
             dirty = true
         } else if ui.is_input_event(event.kind) {
-            input := ui.input_of(&event) or >>
+            input := ui.input_of(&event) >>>
             if input.canvas_id == identity.canvas_id && input.generation == identity.generation {
-                dirty = m.input(&window,&input) or >>
+                dirty = m.input(&window,&input) >>>
             }
         }
     }
@@ -187,12 +187,12 @@ fn scene(ech chan ui.Event) int {
     frame.dispose()
     << 0
 }
-fn worker(ech chan ui.Event) { scene(ech) or (err) { demo.fail(err.msg())
+fn worker(ech chan ui.Event) { scene(ech) >>> (err) { demo.fail(err.msg())
     << } }
 fn launch() int {
-    $app := demo.app("Xu UI / Date & Time",720,660) or >>
+    $app := demo.app("Xu UI / Date & Time",720,660) >>>
     xu worker(app.event_ch)
-    << app.run() or >>
+    << app.run() >>>
 }
-fn main() int { << launch() or (err) { eprintln(err.msg())
+fn main() int { << launch() >>> (err) { eprintln(err.msg())
     << 1 } }

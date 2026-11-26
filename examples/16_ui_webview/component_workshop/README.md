@@ -16,8 +16,8 @@ fn clicked(m $&Workshop,s $&widgets.Screen,a &widgets.Action) string {
 }
 
 $events := widgets.action_dispatcher(&model,&screen)
-events.on(button_id,widgets.ACTION_ACTIVATE,clicked) or >>
-_ := events.dispatch_or_fallback(&action,$&model,$&screen) or >>
+events.on(button_id,widgets.ACTION_ACTIVATE,clicked) >>>
+_ := events.dispatch_or_fallback(&action,$&model,$&screen) >>>
 ```
 
 文件职责：`main.xu` 组装与事件循环；`model.xu` 业务状态、locale 与控件状态配置；`view.xu` 创建组件和数据；`layout.xu` 布局；`style.xu` 独立应用主题、密度、字号、实例样式与动效；`events.xu` 注册函数表和控件 handler；`events_tools.xu` 各控件族的工具操作。handler 只更新业务状态/控件值或请求样式刷新，主循环在绘制前调用样式路径；没有按页号分支的集中 `update`。定时器动作与原生输入动作都经过同一分发表。
@@ -50,10 +50,10 @@ WebView 需要链接对应宿主插件，构建时不能使用 `--no-webview`。
 Badge 页面使用真实组合场景：按钮右上角的未读数、头像边缘的在线点、工作区行的状态标签。`+1`、清零和 `99+` 操作展示实际数值变化；点击收件箱清零，点击头像切换在线状态。
 
 ```xu
-inbox := screen.button("Inbox 收件箱") or >>
-unread := screen.badge_on(inbox,"12",widgets.BADGE_COUNT) or >>
-screen.set_badge_tone(unread,widgets.BADGE_ERROR) or >>
-screen.set_badge_count(unread,123,99,false) or >>
+inbox := screen.button("Inbox 收件箱") >>>
+unread := screen.badge_on(inbox,"12",widgets.BADGE_COUNT) >>>
+screen.set_badge_tone(unread,widgets.BADGE_ERROR) >>>
+screen.set_badge_count(unread,123,99,false) >>>
 ```
 
 `badge_on` 自动测量并随锚点布局、缩放、滚动和显隐。`set_badge_anchor(id,anchor,x,y)` 可选择锚点上的相对位置；角标必须在锚点之后创建。独立状态标签使用 `badge_size` 的内容尺寸。`BADGE_STATUS` 保持原有标签样式，`BADGE_COUNT` 是紧凑实色计数，`BADGE_DOT` 是状态点。在线点旁仍保留文字，避免只凭颜色传递状态。
@@ -62,12 +62,12 @@ screen.set_badge_count(unread,123,99,false) or >>
 
 ```xu
 $locale := widgets.locale_zh_cn()
-locale.set_text(widgets.TEXT_TODAY,"回到今天") or >>
-locale.set_first_weekday(0) or >>
-screen.set_locale(&locale) or >>
-screen.set_control_locale(date_id,&widgets.locale_en_us()) or >>
+locale.set_text(widgets.TEXT_TODAY,"回到今天") >>>
+locale.set_first_weekday(0) >>>
+screen.set_locale(&locale) >>>
+screen.set_control_locale(date_id,&widgets.locale_en_us()) >>>
 // 恢复整屏语言继承：
-screen.clear_control_locale(date_id) or >>
+screen.clear_control_locale(date_id) >>>
 ```
 
 Locale 可配置日期模板、月份与星期名称、周起始、12/24 小时和时段位置、数字/小数/分组符号以及组件内置文案。切换时保持用户值、选择、任务 ID 与进度。TaskButton 的显式 `set_labels` 业务文案保留；TimePicker 的显式时制也保留，低层 `use_locale_clock` 恢复语言的时制。默认 `locale_default` 保留英文/年月日/周一/24 小时，`locale_en_us` 使用月日年/周日/12 小时。数字配置用于显示，业务输入解析、货币、复杂复数和 RTL 布局由应用或后续能力负责。
@@ -85,9 +85,9 @@ ButtonGroup 展示独立操作、单选和多选三种语义，不能用 Segment
 
 ```xu
 items := [widgets.button_group_item(10,"Undo"),widgets.button_group_item(20,"Redo"),widgets.button_group_item(30,"Save")]
-group := screen.button_group(&items,widgets.BUTTON_GROUP_ACTIONS) or >>
-screen.set_button_group_item_enabled(group,20,false) or >>
-screen.place(group,24.0,24.0,420.0,40.0) or >>
+group := screen.button_group(&items,widgets.BUTTON_GROUP_ACTIONS) >>>
+screen.set_button_group_item_enabled(group,20,false) >>>
+screen.place(group,24.0,24.0,420.0,40.0) >>>
 ```
 
 独立操作发 ACTION_ACTIVATE，单选/多选发 ACTION_CHANGE，Action.value 为 key。button_group_values 返回选中的 key；set_button_group_checked 设置受控值；set_button_group_label 只改文案。ButtonGroupAppearance 控制布局，set_motion 和 set_control_style 与其他控件一致。
@@ -95,15 +95,15 @@ screen.place(group,24.0,24.0,420.0,40.0) or >>
 Chart 通过自己的原生 Canvas 绘制 30 种图表类型（折线 `CHART_LINE`、面积 `CHART_AREA`、分组柱状 `CHART_BAR`、散点 `CHART_SCATTER`、环形 `CHART_DONUT`、阶梯折线 `CHART_STEP_LINE`、堆叠面积 `CHART_STACKED_AREA`、堆叠柱状 `CHART_STACKED_BAR`、水平条形 `CHART_HORIZONTAL_BAR`、饼图 `CHART_PIE`、南丁格尔玫瑰 `CHART_ROSE`、雷达 `CHART_RADAR`、仪表盘 `CHART_GAUGE`、气泡 `CHART_BUBBLE`、直方图 `CHART_HISTOGRAM`、箱线 `CHART_BOXPLOT`、热力 `CHART_HEATMAP`、K 线/蜡烛 `CHART_CANDLESTICK`、瀑布 `CHART_WATERFALL`、漏斗 `CHART_FUNNEL`、样条曲线 `CHART_SMOOTH_LINE`、样条面积 `CHART_SMOOTH_AREA`、极坐标环柱 `CHART_POLAR_BAR`、矩形树图 `CHART_TREEMAP`、桑基流向 `CHART_SANKEY`、小提琴 `CHART_VIOLIN`、子弹图 `CHART_BULLET`、棒棒糖 `CHART_LOLLIPOP`、哑铃 `CHART_DUMBBELL`、帕累托 `CHART_PARETO`），不使用 ECharts 引擎。Data 更新会按稳定 series/point ID 接续当前显示值；支持 hover 提示、点选、图例显隐、十字线、Ctrl/Command + 滚轮缩放、拖动平移和双击/Home/0 复位。普通滚轮留给外层 Scroll。方向键检查数据，Enter 选中，Escape 清理。只读保留数据检查，阻止改变选择与视窗。
 
 ```xu
-chart := screen.chart() or >>
+chart := screen.chart() >>>
 $series := chart.chart_series(1,"Build",widgets.CHART_LINE)
 series.smooth = true
 series.points = [chart.chart_point(101,1.0,18.0),chart.chart_point(102,2.0,25.0),chart.chart_point(103,3.0,21.0)]
-screen.set_chart_series(chart,&[series]) or >>
-screen.place(chart,24.0,80.0,780.0,360.0) or >>
+screen.set_chart_series(chart,&[series]) >>>
+screen.place(chart,24.0,80.0,780.0,360.0) >>>
 $appearance := chart.chart_appearance()
 appearance.y_unit = " ms"
-screen.set_chart_appearance(chart,&appearance) or >>
+screen.set_chart_appearance(chart,&appearance) >>>
 ```
 
 ChartAppearance 配置网格、图例、提示、缩放/平移、数字精度、单位、空文案、调色板、命中半径、柱宽、面积透明度和环形内径。系列可配置颜色、线宽、点半径和平滑曲线。容器和字体遵循 ControlStyle；数值与空文案遵循 Locale，业务系列名与数据点标签由应用提供。
@@ -144,13 +144,13 @@ Table 默认在表头点击、Enter/空格释放时执行稳定的本地排序�
 `Button` 页首先展示图标＋文字按钮，覆盖图标在文字左、右、上、下四种布局。按钮按实际内容宽度排列，空间不足时换行；每个图标按钮都有独立的尺寸 Stepper，可在 12–64 px 间调节，修改一个不会影响其他按钮，上下布局的高度随自己的图标增长。尺寸会随全局字号和密度缩放。禁用状态只作用于示例按钮，仍可分别调节尺寸。`IconButton` 页单独展示纯图标按钮与动作提示。两者都支持键盘激活、禁用状态和主题/字号切换。
 
 ```xu
-id := screen.button_with_icon("logo.png", "Build project") or >>
-$appearance := styles.button_variant(widgets.BUTTON_PRIMARY) or >>
+id := screen.button_with_icon("logo.png", "Build project") >>>
+$appearance := styles.button_variant(widgets.BUTTON_PRIMARY) >>>
 appearance.icon_placement = widgets.ICON_LEADING
 appearance.icon_size = 24.0 * styles.text_scale
-screen.set_control_style(id, &appearance) or >>
-size := screen.measure_button(id) or >>
-screen.place(id, 24.0, 24.0, size.width, size.height) or >>
+screen.set_control_style(id, &appearance) >>>
+size := screen.measure_button(id) >>>
+screen.place(id, 24.0, 24.0, size.width, size.height) >>>
 ```
 
 图片随 `www/logo.png` 嵌入，Screen 持有并在销毁时释放；打包时保留 `--www` 资源目录。
@@ -164,7 +164,7 @@ screen.place(id, 24.0, 24.0, size.width, size.height) or >>
 $placement := widgets.overlay_placement()
 placement.side = widgets.OVERLAY_RIGHT
 placement.align = widgets.OVERLAY_CENTER
-screen.set_tooltip_placement(tooltip_id, &placement) or >>
+screen.set_tooltip_placement(tooltip_id, &placement) >>>
 ```
 
 ## 密码输入框
@@ -172,9 +172,9 @@ screen.set_tooltip_placement(tooltip_id, &placement) or >>
 `PasswordInput` 页提供真实的单行密码模式、显隐切换、清空、示例重置，以及禁用、只读和错误状态。每个 Unicode 字素绘制为一个圆点，中文、组合音符和 emoji 共用原值的 UTF-8 光标、选择与删除位置。显隐切换保留值与选择；粘贴可用，复制和剪切在显示原值时仍被禁用。XACP 节点文本和原生输入法的周围文字查询不返回密码内容。
 
 ```xu
-password := screen.password_input("Xu-密码🙂") or >>
-screen.set_password_visible(password, true) or >>
-value := screen.text_value(password) or >>
+password := screen.password_input("Xu-密码🙂") >>>
+screen.set_password_visible(password, true) >>>
+value := screen.text_value(password) >>>
 ```
 
 `text_value()` 为应用返回实际值；示例不会把输入的密码写入状态栏或日志。密码模式只用于单行 Input，多行 TextArea 会拒绝此模式。

@@ -30,9 +30,9 @@ python3 scripts/ui_examples.py run date_time
 | `time.Duration` | 有正负的时长，精度为纳秒 | `milliseconds`、`seconds`、`add`、`sub`、`sleep`、`timer`、`ticker` |
 
 ```xu
-delay := time.milliseconds(180) or >>
+delay := time.milliseconds(180) >>>
 start := time.instant()
-deadline := start.add(delay) or >>
+deadline := start.add(delay) >>>
 elapsed := time.instant().since(start)
 println(elapsed.format())
 _ = deadline

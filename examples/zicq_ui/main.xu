@@ -16,19 +16,19 @@ fn watch(ech chan ui.Event) {
         sleep_ns(40000000)
         c := draw.poll_click(ech)
         if c.ok == 1 {
-            fd := os_open("/tmp/zicq-ping", 0) or (err) {
+            fd := os_open("/tmp/zicq-ping", 0) >>> (err) {
                 paint("open fail")
                 ->
             }
-            buf := os_fd_read(fd, 256) or (err) {
-                os_fd_close(fd) or (e2) {
+            buf := os_fd_read(fd, 256) >>> (err) {
+                os_fd_close(fd) >>> (e2) {
                     paint("read fail")
                     ->
                 }
                 paint("read fail")
                 ->
             }
-            os_fd_close(fd) or (err) {
+            os_fd_close(fd) >>> (err) {
                 paint("[" + buf + "]")
                 ->
             }
@@ -43,7 +43,7 @@ fn main() int {
     r := $&win
     _ := draw.attach(r)
     xu watch(app.event_ch)
-    app.run() or (err) {
+    app.run() >>> (err) {
         << 1
     }
     << 0

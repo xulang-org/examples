@@ -7,7 +7,7 @@ fn run_typography_checks(ctx &draw.Context) int {
     // 1. Latin Text shaping
     opts := draw.text_options(16.0)
     text1 := "Hello XuLang UI"
-    $l1 := ctx.layout_text(&text1, &opts) or >>
+    $l1 := ctx.layout_text(&text1, &opts) >>>
     m1 := l1.metrics
     println("LATIN_METRICS: w=" + str(int(m1.width)) + " h=" + str(int(m1.height)) + " lines=" + str(m1.lines))
     if m1.width <= 0.0 || m1.height <= 0.0 || m1.lines != 1 {
@@ -17,7 +17,7 @@ fn run_typography_checks(ctx &draw.Context) int {
     
     // 2. CJK Multibyte font fallback shaping
     text_cjk := "富文本与高级表格排版验证"
-    $l2 := ctx.layout_text(&text_cjk, &opts) or >>
+    $l2 := ctx.layout_text(&text_cjk, &opts) >>>
     m2 := l2.metrics
     println("CJK_METRICS: w=" + str(int(m2.width)) + " h=" + str(int(m2.height)) + " lines=" + str(m2.lines))
     if m2.width <= 0.0 || m2.height <= 0.0 || m2.lines != 1 {
@@ -29,7 +29,7 @@ fn run_typography_checks(ctx &draw.Context) int {
     $wrap_opts := draw.text_options(16.0)
     wrap_opts.width = 120.0
     text_long := "Xu is a statically typed systems programming language with ownership and zero GC."
-    $l3 := ctx.layout_text(&text_long, &wrap_opts) or >>
+    $l3 := ctx.layout_text(&text_long, &wrap_opts) >>>
     m3 := l3.metrics
     println("WRAPPED_METRICS: w=" + str(int(m3.width)) + " h=" + str(int(m3.height)) + " lines=" + str(m3.lines))
     if m3.lines <= 1 {
@@ -38,56 +38,56 @@ fn run_typography_checks(ctx &draw.Context) int {
     }
     
     // 4. Hit test on text
-    hit := l1.hit_test(10.0, 8.0) or >>
+    hit := l1.hit_test(10.0, 8.0) >>>
     println("HIT_TEST: index=" + str(hit.index) + " trailing=" + str(hit.trailing) + " inside=" + str(hit.inside))
     
     // 5. Caret position query on CJK cluster (3-byte UTF-8 character boundary)
-    caret := l2.caret(0, false) or >>
+    caret := l2.caret(0, false) >>>
     println("CARET_0: x=" + str(int(caret.x)) + " y=" + str(int(caret.y)) + " h=" + str(int(caret.height)))
     
-    caret2 := l2.caret(3, false) or >>
+    caret2 := l2.caret(3, false) >>>
     println("CARET_3: x=" + str(int(caret2.x)) + " y=" + str(int(caret2.y)) + " h=" + str(int(caret2.height)))
     if caret2.x <= caret.x {
         eprintln("Second character caret should be strictly to the right of first character")
         << 11
     }
     
-    l1.dispose() or >>
-    l2.dispose() or >>
-    l3.dispose() or >>
+    l1.dispose() >>>
+    l2.dispose() >>>
+    l3.dispose() >>>
     
     println("DIRECTWRITE_TYPOGRAPHY=PASS")
     << 0
 }
 
 fn scene(ech chan ui.Event) int {
-    ready := demo.ready(ech) or >>
+    ready := demo.ready(ech) >>>
     if ready.kind == ui.EV_EXIT { << 0 }
-    context := draw.context_of(&ready) or >>
-    ret := run_typography_checks(&context) or (err) {
+    context := draw.context_of(&ready) >>>
+    ret := run_typography_checks(&context) >>> (err) {
         eprintln("Checks failed: " + err.msg())
-        demo.quit() or >>
+        demo.quit() >>>
         << 1
     }
-    demo.quit() or >>
+    demo.quit() >>>
     << ret
 }
 
 fn worker(ech chan ui.Event) {
-    scene(ech) or (err) {
+    scene(ech) >>> (err) {
         demo.fail(err.msg())
         <<
     }
 }
 
 fn launch() int {
-    $app := demo.app("Xu UI / Typography Test", 800, 600) or >>
+    $app := demo.app("Xu UI / Typography Test", 800, 600) >>>
     xu worker(app.event_ch)
-    << app.run() or >>
+    << app.run() >>>
 }
 
 fn main() int {
-    << launch() or (err) {
+    << launch() >>> (err) {
         eprintln(err.msg())
         << 1
     }

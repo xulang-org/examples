@@ -26,7 +26,8 @@ Xu 把静态编译部署与无 GC 内存安全合成在一门系统语言里：�
 | 语句（写在语句首） | 含义 | 表达式里同形符号 |
 |--------------------|------|------------------|
 | `<<` / `<< expr` | 返回 | 左移 |
-| `>> expr` | 抛出错误 | 右移 |
+| `>>> expr` | 抛出错误 | — |
+| `>>` | — | 右移 |
 | `<<< expr` | 进程退出 | — |
 | `<-` | break | channel 接收 |
 | `->` | continue | — |
@@ -35,24 +36,24 @@ Xu 把静态编译部署与无 GC 内存安全合成在一门系统语言里：�
 
 没有用户面的 `return` / `break` / `continue` / `exit` 关键字。
 
-### 2. 错误：`>>` + `or`，不要 `Result` / `?`
+### 2. 错误：`>>>` + `>>> (err)`，不要 `Result` / `?`
 
 ```xu
 #errors
 
 fn load(ok bool) string {
- if !ok { >> errors.new("fail") }
+ if !ok { >>> errors.new("fail") }
  << "ok"
 }
 
-s := load(false) or (err) {
+s := load(false) >>> (err) {
  println(err.msg())
- << 1 // 或给左值赋默认值 / 再 >> 传播
+ << 1 // 或给左值赋默认值 / 再 >>> 传播
 }
 ```
 
-- 强制处理：可能抛错的调用必须 `or`，或处于可传播上下文。
-- `errors` 包只管错误值；语言提供 `>>` / `or` 机制。
+- 强制处理：可能抛错的调用必须 `>>> (err) { ... }` 或 `>>>` 传播，或处于可传播上下文。
+- `errors` 包只管错误值；语言提供 `>>>` 机制。
 
 ### 3. 默认不可变；改写显式 `$`
 
@@ -145,7 +146,7 @@ xu worker(1, ch) // ✅ 启动协程
 | 默认不可变 / `$` / `const` | [`examples/02_bindings`](examples/02_bindings) |
 | `<-` `->`、区间、`match` | [`examples/03_control_flow`](examples/03_control_flow) |
 | struct + 方法、`$&` 接收者 | [`examples/04_functions_methods`](examples/04_functions_methods) |
-| `>>` + `or` | [`examples/05_errors`](examples/05_errors) |
+| `>>>` 错误流 | [`examples/05_errors`](examples/05_errors) |
 | move / `&` / `$&` | [`examples/06_ownership_borrow`](examples/06_ownership_borrow) |
 | 数组、字符串切片拷贝、插值 | [`examples/07_arrays_strings`](examples/07_arrays_strings) |
 | enum + match | [`examples/08_enum_match`](examples/08_enum_match) |

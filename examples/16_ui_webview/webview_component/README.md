@@ -3,9 +3,9 @@
 两个系统 WebView 与原生 Canvas 控件共享一个窗口。左侧编辑预览、右侧参考页面拥有独立文档、请求身份、加载状态和生命周期。
 
 ```xu
-id := screen.webview() or >>
-screen.place(id,28.0,174.0,460.0,450.0) or >>
-screen.load_web_html(id,html) or >>
+id := screen.webview() >>>
+screen.place(id,28.0,174.0,460.0,450.0) >>>
+screen.load_web_html(id,html) >>>
 // 或 screen.load_web_url(id,"https://example.com")
 ```
 

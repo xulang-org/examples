@@ -18,12 +18,12 @@ fn main() int {
 
     r := $&win
     $wv := webview.attach(r)
-    wv.load_url("xu://app/index.html") or (err) {
+    wv.load_url("xu://app/index.html") >>> (err) {
         println(err.msg())
         << 1
     }
 
-    app.run() or (err) {
+    app.run() >>> (err) {
         println(err.msg())
         << 1
     }

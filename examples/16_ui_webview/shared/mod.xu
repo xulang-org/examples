@@ -17,11 +17,11 @@ pub fn ready(ech chan ui.Event) ui.Event {
         event := next(ech)
         if event.kind == ui.EV_CANVAS_READY {
             // Commands sent before canvas_ready can precede native attachment.
-            identity := ui.canvas_of(&event) or >>
+            identity := ui.canvas_of(&event) >>>
             window := ui.Window{id: identity.window_id,generation: identity.generation,
                 title: "",width: 0,height: 0,content_kind: ui.CONTENT_DRAW,content_backend_id: identity.canvas_id,closed: 0}
-            window.content_command("input_enabled\t1") or >>
-            window.content_command("pan_enabled\t0") or >>
+            window.content_command("input_enabled\t1") >>>
+            window.content_command("pan_enabled\t0") >>>
             << event
         }
         if event.kind == ui.EV_EXIT { << event }
@@ -33,9 +33,9 @@ pub fn app(title string,width int,height int) ui.App {
     eprintln("demo.app: enter")
     $app := ui.new_app()
     eprintln("demo.app: new_app ok")
-    $window := app.open_window(ui.WindowOpts{title: title,width: width,height: height}) or >>
+    $window := app.open_window(ui.WindowOpts{title: title,width: width,height: height}) >>>
     eprintln("demo.app: new_window ok id=" + str(window.id))
-    if draw.attach($&window) < 0 { >> errors.new("demo: failed to attach draw content") }
+    if draw.attach($&window) < 0 { >>> errors.new("demo: failed to attach draw content") }
     eprintln("demo.app: draw attach ok")
     << app
 }
@@ -58,11 +58,11 @@ pub fn accent() draw.Color { << draw.rgb(78,205,196) }
 // Inline labels copy their UTF-8 into the frame. Explicit TextLayout handles
 // must instead remain live until present/freeze/snapshot has accepted them.
 pub fn text(context &draw.Context,frame $&draw.Frame,x f64,y f64,size f64,color draw.Color,value string) int {
-    << frame.text(x,y,size,color,&value) or >>
+    << frame.text(x,y,size,color,&value) >>>
 }
-pub fn quit() int { << ui.append_shell_cmd("quit_app") or >> }
+pub fn quit() int { << ui.append_shell_cmd("quit_app") >>> }
 pub fn fail(message string) {
     eprintln(message)
-    quit() or (err) { eprintln(err.msg())
+    quit() >>> (err) { eprintln(err.msg())
         << }
 }

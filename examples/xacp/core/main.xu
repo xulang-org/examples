@@ -12,8 +12,8 @@ fn check_core() int {
     limits := xacp.default_limits()
     // These independent session checks deliberately reuse the same hello nonce.
     $nonces := xacp.new_nonce_registry(1, false)
-    hello := xacp.parse_frame(hello_args("")) or >>
-    status := xacp.parse_frame("id: !i 2\nop: proc.status\nargs: {}\n") or >>
+    hello := xacp.parse_frame(hello_args("")) >>>
+    status := xacp.parse_frame("id: !i 2\nop: proc.status\nargs: {}\n") >>>
     $session := xacp.open_session()
     opened := xacp.dispatch($&session, &hello, &limits, $&nonces)
     if !opened.ok || session.state != xacp.STATE_OPEN { << 1 }
@@ -37,7 +37,7 @@ fn check_core() int {
     $allowed := xacp.PERM_ALL ^ xacp.PERM_UI_RAW
     if os.getenv("XU_XACP_ALLOW_RAW") == "1" { allowed = xacp.PERM_ALL }
     for requested in 0:32 {
-        doc := xacp.parse_frame(hello_args("  token: core-token\n  permissions: !i " + str(requested) + "\n")) or >>
+        doc := xacp.parse_frame(hello_args("  token: core-token\n  permissions: !i " + str(requested) + "\n")) >>>
         $info := xacp.open_session()
         result := xacp.dispatch($&info, &doc, &limits, $&nonces)
         if !result.ok || info.permissions != (requested & xacp.PERM_INFO) { << 10 }
@@ -45,7 +45,7 @@ fn check_core() int {
         granted := xacp.dispatch_with_token($&authenticated, &doc, &limits, "core-token", $&nonces)
         if !granted.ok || authenticated.permissions != (requested & allowed) { << 11 }
     }
-    token_hello := xacp.parse_frame(hello_args("  token: core-token\n")) or >>
+    token_hello := xacp.parse_frame(hello_args("  token: core-token\n")) >>>
     $development := xacp.open_session()
     granted_all := xacp.dispatch_with_token($&development, &token_hello, &limits, "core-token", $&nonces)
     if !granted_all.ok || development.permissions != allowed { << 12 }
@@ -56,13 +56,13 @@ fn check_core() int {
     $missing_token := xacp.open_session()
     missing := xacp.dispatch_with_token($&missing_token, &hello, &limits, "core-token", $&nonces)
     if missing.ok || missing.err_code != "auth_failed" || missing_token.state != xacp.STATE_CLOSED { << 15 }
-    invalid := xacp.parse_frame(hello_args("  permissions: !i 32\n")) or >>
+    invalid := xacp.parse_frame(hello_args("  permissions: !i 32\n")) >>>
     $malformed := xacp.open_session()
     schema := xacp.dispatch($&malformed, &invalid, &limits, $&nonces)
     if schema.ok || schema.err_code != "schema_error" || malformed.state != xacp.STATE_CLOSED { << 16 }
 
     // Lifecycle errors keep OPEN, preserve the active request, and allow recovery.
-    request := xacp.validate_request(&status, &limits) or >>
+    request := xacp.validate_request(&status, &limits) >>>
     started := xacp.begin_request($&development, &request)
     if !started.ok { << 17 }
     busy := xacp.begin_request($&development, &request)
@@ -75,7 +75,7 @@ fn check_core() int {
     if repeated.ok || repeated.err_code != "invalid_request_id" || development.state != xacp.STATE_OPEN { << 21 }
     // Reserving hello alone is insufficient to enter OPEN.
     $unfinished := xacp.open_session()
-    hello_request := xacp.validate_request(&hello, &limits) or >>
+    hello_request := xacp.validate_request(&hello, &limits) >>>
     reserved := xacp.begin_request($&unfinished, &hello_request)
     if !reserved.ok { << 22 }
     unnegotiated := xacp.finish_request($&unfinished, 1)
@@ -83,7 +83,7 @@ fn check_core() int {
     if limits.request_timeout_ms != 5000 { << 24 }
     expected_text := os.getenv("XACP_EXPECT_TIMEOUT_MS")
     if expected_text.len > 0 {
-        expected := strconv.parse(&expected_text,10) or >>
+        expected := strconv.parse(&expected_text,10) >>>
         if xacp.request_timeout_from_env() != expected { << 25 }
     }
     // Timeout cancellation invalidates late finishes, even during a new request.
@@ -104,7 +104,7 @@ fn check_core() int {
 }
 
 fn main() int {
-    << check_core() or (err) {
+    << check_core() >>> (err) {
         eprintln(err.msg())
         << 100
     }

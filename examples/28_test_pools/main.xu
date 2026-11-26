@@ -14,11 +14,11 @@ postgres #github.com/xulang-org/packages/postgres
 fn verify_redis_pool() {
     println("1. Testing Redis Connection Pool...")
     p := redis.new_pool("127.0.0.1:6379", 5)
-    $c := p.get() or (err) {
+    $c := p.get() >>> (err) {
         println("   [FAIL] Redis get error: " + err.msg())
         <<
     }
-    res := c.ping() or (err) {
+    res := c.ping() >>> (err) {
         println("   [FAIL] Redis ping error: " + err.msg())
         <<
     }
@@ -31,11 +31,11 @@ fn verify_redis_pool() {
 fn verify_memcached_pool() {
     println("2. Testing Memcached Connection Pool...")
     p := memcached.new_pool("127.0.0.1:11211", 5)
-    $c := p.get() or (err) {
+    $c := p.get() >>> (err) {
         println("   [FAIL] Memcached get error: " + err.msg())
         <<
     }
-    ver := c.version() or (err) {
+    ver := c.version() >>> (err) {
         println("   [FAIL] Memcached version error: " + err.msg())
         <<
     }
@@ -48,16 +48,16 @@ fn verify_memcached_pool() {
 fn verify_nats_pool() {
     println("3. Testing NATS Connection Pool...")
     p := nats.open_pool("127.0.0.1:4222", 5)
-    p.publish("pool.events", "hello from nats pool") or (err) {
+    p.publish("pool.events", "hello from nats pool") >>> (err) {
         println("   [FAIL] NATS pool publish error: " + err.msg())
         <<
     }
     println("   NATS pool published message successfully.")
-    $c := p.get() or (err) {
+    $c := p.get() >>> (err) {
         println("   [FAIL] NATS get error: " + err.msg())
         <<
     }
-    ok := c.ping() or (err) {
+    ok := c.ping() >>> (err) {
         println("   [FAIL] NATS ping error: " + err.msg())
         <<
     }
@@ -70,12 +70,12 @@ fn verify_nats_pool() {
 fn verify_mqtt_pool() {
     println("4. Testing MQTT Connection Pool...")
     p := mqtt.open_pool("127.0.0.1:1883", "xu_pool_test", 5)
-    p.publish("sensors/pool", "temp=28C", 0) or (err) {
+    p.publish("sensors/pool", "temp=28C", 0) >>> (err) {
         println("   [FAIL] MQTT pool publish error: " + err.msg())
         <<
     }
     println("   MQTT pool published message successfully.")
-    $c := p.get() or (err) {
+    $c := p.get() >>> (err) {
         println("   [FAIL] MQTT get error: " + err.msg())
         <<
     }
@@ -108,11 +108,11 @@ fn verify_s3_pool() {
 fn verify_sqlite_pool() {
     println("7. Testing SQLite Connection Pool...")
     $db := sqlite.open_pool(":memory:", 1, 1)
-    db.ping() or (err) {
+    db.ping() >>> (err) {
         println("   [FAIL] SQLite ping error: " + err.msg())
         <<
     }
-    db.close() or (err) {
+    db.close() >>> (err) {
         <<
     }
     println("   [PASS] SQLite Pool ping/close verified.")
@@ -122,11 +122,11 @@ fn verify_postgres_pool() {
     println("8. Testing PostgreSQL Connection Pool...")
     dsn := "postgres://postgres:secret@127.0.0.1:5432/postgres?sslmode=disable"
     $db := postgres.open_pool(dsn, 5, 2)
-    db.ping() or (err) {
+    db.ping() >>> (err) {
         println("   [FAIL] PostgreSQL ping error: " + err.msg())
         <<
     }
-    db.close() or (err) {
+    db.close() >>> (err) {
         <<
     }
     println("   [PASS] PostgreSQL Pool ping/close verified.")

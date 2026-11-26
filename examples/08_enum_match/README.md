@@ -6,7 +6,7 @@
 
 - 标签联合 `enum`，构造 `Color.Rgb(1, 2, 3)`
 - `match` 须穷尽（或带 `else`）
-- 不用语言面 `Option`/`Result` 套件做错误（错误走 `>>`/`or`）
+- 不用语言面 `Option`/`Result` 套件做错误（错误走 `>>>`）
 
 详见 [`FEATURES.md`](../../FEATURES.md)。
 

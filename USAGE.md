@@ -56,7 +56,7 @@ fn main() int {
 | 语句 | 含义 |
 |------|------|
 | `<<` / `<< expr` | 返回 |
-| `>> expr` | 抛出 `errors.Error` |
+| `>>> expr` | 抛出 `errors.Error` |
 | `<<< expr` | 进程退出 |
 | `<-` | break（语句首、无操作数） |
 | `->` | continue |
@@ -159,7 +159,7 @@ fn (c $&Counter) inc() {
 
 ---
 
-## 6. 错误处理：`>>` + `or`
+## 6. 错误处理：`>>>` + `>>> (err)`
 
 **不要** `Result` / `Ok` / `Err` / `?` / 双返回值。
 
@@ -168,13 +168,13 @@ fn (c $&Counter) inc() {
 
 fn read_name(ok bool) string {
  if !ok {
- >> errors.new("empty")
+ >>> errors.new("empty")
  }
  << "ada"
 }
 
 fn main() int {
- s := read_name(false) or (err) {
+ s := read_name(false) >>> (err) {
  println(err.msg())
  << 1 // 在 main 里常直接退出
  }
@@ -184,7 +184,7 @@ fn main() int {
 
 // 需要「失败给默认值」时，包一层返回 string 的函数：
 fn load_or_fallback(ok bool) string {
- << read_name(ok) or (err) {
+ << read_name(ok) >>> (err) {
  println(err.msg())
  << "fallback"
  }
@@ -193,10 +193,10 @@ fn load_or_fallback(ok bool) string {
 
 要点：
 
-1. `>> expr` 抛出 `errors.Error`。
-2. 调用后接 `or (名字) { ... }` 接住；名字自定。
-3. 无 `or` 时错误向上传播；能到用户边界仍未处理 → 编译错误。
-4. `or` 块内必须对左侧赋值，或用 `<<` / `<-` / `->` / `>>` / `<<<` 终止。
+1. `>>> expr` 抛出 `errors.Error`。
+2. 调用后接 `>>> (名字) { ... }` 接住；名字自定，也可简写 `>>>` 直接向上传播。
+3. 无 `>>> (err)` 时错误无法隐式忽略；能到用户边界仍未处理 → 编译错误。
+4. `>>> (err)` 块内必须对左侧赋值，或用 `<<` / `<-` / `->` / `>>>` / `<<<` 终止。
 5. `err.msg()` 只读；`err is T` 判断；`err as T` 取出并销毁盒子。
 
 示例：[`examples/05_errors`](examples/05_errors)
@@ -365,11 +365,11 @@ xu test test.example.xu -v # 替换成自己的测试组件文件
 ## 13. 常见坑（速记）
 
 1. **返回写 `<<`，不是 `return`**；break/continue 是 `<-` / `->`。
-2. **错误用 `>>` + `or`，不要 `Result`/`?`。**
+2. **错误用 `>>>` + `>>> (err)`，不要 `Result`/`?`。**
 3. **默认不可变**；改绑定加 `$`，独占借用写 `$&x`。
 4. **字符串切片是拷贝**，不是共享视图。
 5. **区间用 `:`**（半开 `[start, end)`），不是 `0..n`，也不是 `0 -> n` 或 `0...9`。
-6. **`or` 只接错误**；布尔或用 `||`。
+6. **`>>>` 只用于错误（`>>` 是右移）**；布尔或用 `||`。
 7. **import 写 `#errors`**，不是 `import "errors"`。
 
 进一步阅读：[语言参考](https://xulang.org/docs/lang/syntax/)与[当前实现状态](https://xulang.org/docs/status/)。

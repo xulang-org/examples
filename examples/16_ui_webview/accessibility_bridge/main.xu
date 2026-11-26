@@ -5,14 +5,14 @@ demo #"github.com/xulang-org/examples/ui_demo"
 
 fn run_accessibility_checks(s $&widgets.Screen) int {
     // 1. Create button and input widgets
-    btn_id := s.button("Submit") or >>
-    s.place(btn_id, 10.0, 10.0, 120.0, 32.0) or >>
+    btn_id := s.button("Submit") >>>
+    s.place(btn_id, 10.0, 10.0, 120.0, 32.0) >>>
     
-    input_id := s.input("Hello Accessibility") or >>
-    s.place(input_id, 10.0, 50.0, 200.0, 32.0) or >>
+    input_id := s.input("Hello Accessibility") >>>
+    s.place(input_id, 10.0, 50.0, 200.0, 32.0) >>>
     
     // 2. Build accessibility tree snapshot
-    tree1 := s.accessibility_tree() or >>
+    tree1 := s.accessibility_tree() >>>
     println("TREE1_COUNT=" + str(tree1.len))
     if tree1.len < 2 {
         eprintln("Expected at least 2 accessibility nodes, got " + str(tree1.len))
@@ -20,7 +20,7 @@ fn run_accessibility_checks(s $&widgets.Screen) int {
     }
     
     // Verify button node properties
-    btn_node := widgets.accessibility_node_by_id(&tree1, btn_id) or >>
+    btn_node := widgets.accessibility_node_by_id(&tree1, btn_id) >>>
     if btn_node.role != widgets.ROLE_BUTTON {
         eprintln("Expected button role " + str(widgets.ROLE_BUTTON) + ", got " + str(btn_node.role))
         << 2
@@ -32,7 +32,7 @@ fn run_accessibility_checks(s $&widgets.Screen) int {
     println("BUTTON_NODE_OK: role=" + widgets.role_name(btn_node.role) + " name=" + btn_node.name)
     
     // Verify input node properties
-    input_node := widgets.accessibility_node_by_id(&tree1, input_id) or >>
+    input_node := widgets.accessibility_node_by_id(&tree1, input_id) >>>
     if input_node.role != widgets.ROLE_TEXT_FIELD {
         eprintln("Expected text field role, got " + str(input_node.role))
         << 4
@@ -40,10 +40,10 @@ fn run_accessibility_checks(s $&widgets.Screen) int {
     println("INPUT_NODE_OK: role=" + widgets.role_name(input_node.role))
     
     // 3. Focus input and change button state, then diff
-    s.focus(input_id) or >>
-    _ := s.xacp_act(btn_id, "set_text", "Saving...", false) or >>
+    s.focus(input_id) >>>
+    _ := s.xacp_act(btn_id, "set_text", "Saving...", false) >>>
     
-    tree2 := s.accessibility_tree() or >>
+    tree2 := s.accessibility_tree() >>>
     changes := widgets.diff_accessibility_trees(&tree1, &tree2)
     println("DIFF_CHANGES_COUNT=" + str(changes.len))
     
@@ -73,40 +73,40 @@ fn run_accessibility_checks(s $&widgets.Screen) int {
 }
 
 fn scene(ech chan ui.Event) int {
-    ready := demo.ready(ech) or >>
+    ready := demo.ready(ech) >>>
     if ready.kind == ui.EV_EXIT { << 0 }
-    $screen := widgets.screen(&ready) or >>
-    screen.resize(800.0, 600.0) or >>
+    $screen := widgets.screen(&ready) >>>
+    screen.resize(800.0, 600.0) >>>
     
-    ret := run_accessibility_checks($&screen) or (err) {
+    ret := run_accessibility_checks($&screen) >>> (err) {
         eprintln("Checks failed: " + err.msg())
-        demo.quit() or >>
+        demo.quit() >>>
         << 1
     }
     if ret != 0 {
         eprintln("Checks returned " + str(ret))
-        demo.quit() or >>
+        demo.quit() >>>
         << ret
     }
-    demo.quit() or >>
+    demo.quit() >>>
     << 0
 }
 
 fn worker(ech chan ui.Event) {
-    scene(ech) or (err) {
+    scene(ech) >>> (err) {
         demo.fail(err.msg())
         <<
     }
 }
 
 fn launch() int {
-    $app := demo.app("Xu UI / Accessibility Bridge Test", 800, 600) or >>
+    $app := demo.app("Xu UI / Accessibility Bridge Test", 800, 600) >>>
     xu worker(app.event_ch)
-    << app.run() or >>
+    << app.run() >>>
 }
 
 fn main() int {
-    << launch() or (err) {
+    << launch() >>> (err) {
         eprintln(err.msg())
         << 1
     }

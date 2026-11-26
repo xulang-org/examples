@@ -41,14 +41,14 @@ Table 使用 6 行示例记录。表头变化触发应用重新填充单元格�
 
 ```xu
 headers := ["Name","Status"]
-$table := widgets.table(&context,&identity,id,&bounds,&headers,rows,selected) or >>
-$tree := widgets.tree_view(&context,&identity,id,&bounds) or >>
-$pager := widgets.pagination(&context,&identity,id,&bounds,pages,current) or >>
-$combo := widgets.combo_box(&context,&identity,id,&bounds,&options,&value) or >>
-$multi := widgets.multi_select(&context,&identity,id,&bounds,&options) or >>
-$color := widgets.color_picker(&context,&identity,id,&bounds,draw.rgba(59,130,246,220)) or >>
-$crumbs := widgets.breadcrumbs(&context,&identity,id,&bounds,&path) or >>
-$spinner := widgets.spinner(&bounds) or >>
+$table := widgets.table(&context,&identity,id,&bounds,&headers,rows,selected) >>>
+$tree := widgets.tree_view(&context,&identity,id,&bounds) >>>
+$pager := widgets.pagination(&context,&identity,id,&bounds,pages,current) >>>
+$combo := widgets.combo_box(&context,&identity,id,&bounds,&options,&value) >>>
+$multi := widgets.multi_select(&context,&identity,id,&bounds,&options) >>>
+$color := widgets.color_picker(&context,&identity,id,&bounds,draw.rgba(59,130,246,220)) >>>
+$crumbs := widgets.breadcrumbs(&context,&identity,id,&bounds,&path) >>>
+$spinner := widgets.spinner(&bounds) >>>
 ```
 
 所有索引从 0 起，分页标签显示从 1 起。Table 最多 16 列、512 行，总单元格不超过 768；无选中行使用 `-1`。`set_cell` 更新文字，`sort_column` / `sort_descending` 表示排序请求，应用自行按数据类型重排记录。组件选中值是行索引，业务 ID 由应用维护。滚动条当前用于指示位置，滚动通过滚轮和键盘完成。
@@ -68,13 +68,13 @@ ColorPicker 的 `value()` 返回 `draw.Color`，`set_channel(index,value)` 对�
 浮层所有矩形使用完整 Canvas 的逻辑像素坐标；采用 View 局部坐标的宿主须先转换。Popover 与 Tooltip 的 `anchor`、目标 `Size`、`viewport` 共同决定位置，空间不足时向上翻转，最终尺寸与位置夹在视口内。普通 Popover 内容由应用自行绘制和裁剪。
 
 ```xu
-$pop := widgets.popover(&identity,id,&anchor,&size,&viewport) or >>
-$hint := widgets.tooltip(&identity,id,&anchor,&size,&viewport) or >>
-$modal := widgets.modal(&identity,id,&panel,&viewport) or >>
-$toast := widgets.toast(&identity,id,&bounds) or >>
+$pop := widgets.popover(&identity,id,&anchor,&size,&viewport) >>>
+$hint := widgets.tooltip(&identity,id,&anchor,&size,&viewport) >>>
+$modal := widgets.modal(&identity,id,&panel,&viewport) >>>
+$toast := widgets.toast(&identity,id,&bounds) >>>
 now := time.instant()
-pop.open(now,reduced_motion) or >>
-toast.show(now,time.seconds(3) or >>,reduced_motion) or >>
+pop.open(now,reduced_motion) >>>
+toast.show(now,time.seconds(3) >>>,reduced_motion) >>>
 ```
 
 时长使用 `time.Duration`，动效和期限使用进程内单调 `time.Instant`；日历值 `time.Time` 用于日期时间控件。Tooltip 默认 hover 500ms，键盘 focus 立即显示；`set_delay(Duration)` 调整延时。Escape 隐藏后，在本次 hover/focus 都结束前不会重现。Toast 的零时长表示持续显示，hover 或 focus 暂停期限，`dismiss` 手动关闭；Toast 消费自身可见区域内的指针输入，包括关闭淡出期间。
