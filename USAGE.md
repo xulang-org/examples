@@ -38,7 +38,7 @@ xu test --debug-build .
 - 可执行包第一行写包声明：`@main`（库包写 `@包名`，常与目录同名）。
 - 入口：`fn main() int`（返回值作进程退出码）或 `fn main()`。
 - **无分号**；条件 / 循环**无括号**。
-- 依赖用行首 `#路径`，例如 `#errors`、`#strings`。包名是路径最后一段：`#encoding/json` → `json.parse(&text)`，返回 `json.Doc`；用 `doc.ok()` 判断是否成功，失败时读取 `doc.error()`，不使用 `or` 接解析错误。
+- 依赖用行首 `#路径`，例如 `#errors`、`#strings`。包名是路径最后一段：`#encoding/json` → `json.parse(&text)`，返回 `json.Doc`；用 `doc.ok()` 判断是否成功，失败时读取 `doc.error()`，不使用 `>>>` 接解析错误。
 
 ```xu
 @main
