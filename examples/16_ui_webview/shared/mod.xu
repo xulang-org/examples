@@ -35,7 +35,7 @@ pub fn app(title string,width int,height int) ui.App {
     eprintln("demo.app: new_app ok")
     $window := app.open_window(ui.WindowOpts{title: title,width: width,height: height}) >>>
     eprintln("demo.app: new_window ok id=" + str(window.id))
-    if draw.attach($&window) < 0 { >>> errors.new("demo: failed to attach draw content") }
+    if draw.attach($&window) < 0 { >> errors.new("demo: failed to attach draw content") }
     eprintln("demo.app: draw attach ok")
     << app
 }
